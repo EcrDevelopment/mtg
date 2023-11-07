@@ -2,20 +2,13 @@
 
 namespace App\Traits;
 
-use App\Models\Certificacion;
 use App\Models\Documento;
-use App\Models\Expediente;
-use App\Models\Imagen;
-use DateTime;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Storage;
+
 
 trait docTallerTrait
 {
     public function listaDocumentos(){
-        //return Documento::where('estadoDocumento',2)->get();
        return Documento::all();
     }
 
@@ -64,7 +57,10 @@ trait docTallerTrait
     }
 
     public function cambiaDiasDeDocumentos(){
-
+        $documentos=Documento::all();
+        foreach($documentos as $doc){
+            $doc->update(["dias"=>$doc->Dias]);
+        }
     }
 
     public function cambiaEstadoDocumentosProximosAvencer(EloquentCollection $docs,$estado){

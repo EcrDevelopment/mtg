@@ -20,10 +20,15 @@ class Documento extends Model
         "ruta",
         "nombre",
         "estadoDocumento",
+        "dias",
     ];
 
     public function TipoDocumento(){
         return $this->belongsTo(TipoDocumento::class,'tipoDocumento');
+    }
+
+    public function Taller(){
+        return $this->belongsToMany(Taller::class, 'documentostaller', 'idDocumento', 'idTaller');
     }
 
     protected $casts = [

@@ -24,8 +24,8 @@ class CustomMail extends Mailable
     public function __construct(User $user)
     {
         $this->user=$user;
-        $this->taller=Taller::find(10);
-        $this->documentos=Taller::find($user->taller)->documentos->where('estadoDocumento',1);
+        $this->taller=Taller::find($user->taller);
+        $this->documentos=Taller::find($user->taller)->documentos->where("dias","<",30);
 
     }
 
@@ -38,7 +38,7 @@ class CustomMail extends Mailable
     public function envelope()
     {
         return new Envelope(
-            subject: 'Aviso de vencimiento de documentos',
+            subject: 'Alerta: Vencimiento de documentos.',
         );
     }
 

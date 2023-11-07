@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\Documento;
 use App\Traits\docTallerTrait;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -20,7 +21,7 @@ class CambiarEstadoDeDocumentosTaller implements ShouldQueue
      * @return void
      */
 
-    protected $taller,$documentos;
+
 
     public function __construct()
     {
@@ -34,6 +35,7 @@ class CambiarEstadoDeDocumentosTaller implements ShouldQueue
      */
     public function handle()
     {
-
+        $this->cambiaDiasDeDocumentos();
+        $this->cambiaEstadoDocumentos();
     }
 }

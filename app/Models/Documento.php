@@ -26,6 +26,13 @@ class Documento extends Model
         return $this->belongsTo(TipoDocumento::class,'tipoDocumento');
     }
 
+    //relacion entre documento y talleres por tabla intermedia documentostaller
+    public function talleres()
+    {
+        return $this->belongsToMany(Taller::class, 'documentostaller', 'idDocumento', 'idTaller');
+    }
+
+
     protected $casts = [
         'fechaExpiracion' => 'datetime:Y-m-d',
     ];

@@ -6,13 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Imagen extends Model
+class Archivo extends Model
 {
-
-
     use HasFactory;
-
-    protected $table = 'imagenes';
+    protected $table = 'archivo';
 
     protected $fillable =
     [
@@ -20,15 +17,12 @@ class Imagen extends Model
         'ruta',
         'extension',
         'estado',
-        'Expediente_idExpediente'
+        'idDocReferenciado'
     ];
 
-    public function Expediente(): BelongsTo
-    {
-        return $this->belongsTo(Expediente::class, 'Expediente_idExpediente');
-    }
+    
     public function anulacion(): BelongsTo
     {
-        return $this->belongsTo(Anulacion::class, 'Expediente_idExpediente');
+        return $this->belongsTo(Anulacion::class, 'idDocReferenciado');
     }
 }

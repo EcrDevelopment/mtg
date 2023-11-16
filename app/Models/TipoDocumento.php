@@ -16,4 +16,10 @@ class TipoDocumento extends Model
         "intervaloValides",
         "estado",
     ];
+
+    //relacion para reporte de documentos vencidos
+    public function documentos()
+    {
+        return $this->hasMany(Documento::class, 'tipoDocumento');
+    }
 }

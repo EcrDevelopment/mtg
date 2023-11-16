@@ -26,7 +26,7 @@
         </h3>
         <p>
             Estimado {{ $user->name }}, el presente correo es para informarle que su taller {{$taller->nombre}}
-            tiene los siguiente documentos próximos a vencer:
+            tiene los siguiente documentos próximos a vencer o vencidos:
         </p>
         <br>
         <div class="block justify-center w-full">

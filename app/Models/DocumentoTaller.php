@@ -10,7 +10,7 @@ class DocumentoTaller extends Model
     use HasFactory;
 
     protected $table="documentostaller";
-    
+
     public $fillable=[
         "idDocumento",
         "idTaller",

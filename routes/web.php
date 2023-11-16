@@ -107,8 +107,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified'])
     Route::get('/finalizarPreConversion/{idCertificacion}',FinalizarPreConversion::class)->name('finalizarPreconver');
 
     Route::get('/mailable', function () {
-        $invoice = App\Models\User::find(150);
-        return new App\Mail\CustomMail($invoice);
+        $user = App\Models\User::find(47);
+        return new App\Mail\CustomMail($user);
     });
 
     //Rutas para importacion de Servicios

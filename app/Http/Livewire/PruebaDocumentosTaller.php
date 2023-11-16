@@ -31,7 +31,8 @@ class PruebaDocumentosTaller extends Component
             }
         }*/
 
-        $this->cambiaEstadoDocumentos();
+        //$this->cambiaEstadoDocumentos();
+        $this->cambiaDiasDeDocumentos();
         $this->emit("CustomAlert", ["titulo" => "TODO OK P HIJO", "mensaje" => "Se cambiaron tus hvds", "icono" => "success"]);
         $this->emit("render");
     }

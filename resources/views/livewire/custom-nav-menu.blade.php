@@ -438,6 +438,12 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
                                                 {{ __('Recepción de materiales') }}
                                             </x-jet-responsive-nav-link>
                                         @endcan
+                                        @can('ConsultarHoja')
+                                            <x-jet-responsive-nav-link class="text-sm" href="{{ route('ConsultarHoja') }}"
+                                                :active="request()->routeIs('ConsultarHoja')">
+                                                {{ __('ConsultarHoja') }}
+                                            </x-jet-responsive-nav-link>
+                                        @endcan
 
                                     </ul>
 

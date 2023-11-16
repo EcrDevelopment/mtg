@@ -92,7 +92,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified'])
     Route::get('/SolicitudAnu/{anuId}/{cerId}/{userId}',VistaSolicitudAnul::class)->name('vistaSolicitudAnul');
     Route::get('/SolicitudEli/{eliId}/{cerId}/{userId}',VistaEliminacion::class)->name('vistaSolicitudEli');
     Route::get('/Notificaciones',NotificacionesPendientes::class)->name('Notificaciones');
-    Route::get('/ConsultarHoja',ConsultarHoja::class)->name('ConsultarHoja');
+    Route::get('/ConsultarHoja',ConsultarHoja::class)->middleware('can:ConsultarHoja')->name('ConsultarHoja');
+    //Route::get('/Recepcion-de-materiales',RecepcionMateriales::class)->middleware('can:recepcion')->name('recepcion');
 
     Route::get('/Servicio',Prueba::class)->middleware('can:servicio')->name('servicio');
 

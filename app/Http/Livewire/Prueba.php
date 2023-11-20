@@ -28,7 +28,7 @@ class Prueba extends Component
 
     //VARIABLES DEL SERVICIO
     public $talleres, $servicios, $taller, $servicio, $tipoServicio, $numSugerido,
-        $estado="esperando", $busquedaCert, $placa, $certificaciones, $fechaCerti, $certificado, $chip;
+        $estado = "esperando", $busquedaCert, $placa, $certificaciones, $fechaCerti, $certificado, $chip;
 
 
     public $externo = false;
@@ -90,7 +90,7 @@ class Prueba extends Component
             if ($this->tipoServicio->id == 10) {
                 $this->chip = $this->obtieneChip();
             }
-            $this->reset(["externo","estado"]);
+            $this->reset(["externo", "estado"]);
         } else {
             $this->tipoServicio = null;
         }
@@ -406,6 +406,7 @@ class Prueba extends Component
         return $chip;
     }
 
+    /*
     public function certificarConChip()
     {
         $taller = Taller::findOrFail($this->taller);
@@ -447,6 +448,57 @@ class Prueba extends Component
             }
         }
     }
+    */
+
+    public function certificarConChip()
+    {
+        try {
+            $taller = Taller::findOrFail($this->taller);
+            $servicio = Servicio::findOrFail($this->servicio);
+            $hoja = $this->procesaFormato($this->numSugerido, $servicio->tipoServicio->id);
+            $chip = $this->chip;
+
+            if ($hoja != null) {
+                if (!empty($chip)) {
+                    if (!empty($this->vehiculo) && !$this->vehiculo->esCertificableGnv) {
+                        $certi = Certificacion::certificarGnvConChip($taller, $servicio, $hoja, $this->vehiculo, Auth::user(), $chip);
+
+                        if ($certi) {
+                            $this->estado = "certificado";
+                            $this->certificacion = $certi;
+
+                            $expe = Expediente::create([
+                                "placa" => $this->vehiculo->placa,
+                                "certificado" => $hoja->numSerie,
+                                "estado" => 1,
+                                "idTaller" => $taller->id,
+                                'usuario_idusuario' => Auth::id(),
+                                'servicio_idservicio' => $servicio->id,
+                            ]);
+
+                            $this->guardarFotos($expe);
+                            guardarArchivosEnExpediente::dispatch($expe, $certi);
+
+                            $certEx = CertifiacionExpediente::create(["idCertificacion" => $certi->id, "idExpediente" => $expe->id]);
+
+                            $this->emit("minAlert", ["titulo" => "¡EXCELENTE TRABAJO!", "mensaje" => "Tu certificado N°: " . $certi->Hoja->numSerie . " está listo.", "icono" => "success"]);
+                        } else {
+                            $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "No fue posible certificar", "icono" => "warning"]);
+                        }
+                    } else {
+                        $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "Debes completar los datos de los equipos para poder certificar", "icono" => "warning"]);
+                    }
+                } else {
+                    $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "No cuentas con chips disponibles para realizar este servicio", "icono" => "warning"]);
+                }
+            } else {
+                $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "No se pudo procesar el formato para la certificación", "icono" => "warning"]);
+            }
+        } catch (\Exception $e) {
+            $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "Ocurrió un error: " . $e->getMessage(), "icono" => "error"]);
+        }
+    }
+
 
     public function guardarFotos(Expediente $expe)
     {
@@ -547,5 +599,4 @@ class Prueba extends Component
 
         return $dupli;
     }
-
 }

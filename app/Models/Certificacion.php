@@ -515,6 +515,7 @@ class Certificacion extends Model
             return null;
         }
     }
+
     public static function certificarGnvPendiente(Taller $taller, Servicio $servicio, Material $hoja, vehiculo $vehiculo, User $inspector, $precio)
     {
         $cert = Certificacion::create([

@@ -103,6 +103,18 @@ class FormEquipos extends Component
                 $this->emitTo('form-equipos', 'mount');
                 $this->emitTo('form-equipos', 'render');
                 break;
+            case 4:
+                $this->salvaRegulador();
+                $this->emitTo('form-equipos', 'mount');
+                $this->emitTo('form-equipos', 'render');
+                break;
+            case 5:
+                $this->salvaCilindroGlp();
+                $this->emitTo('form-equipos', 'mount');
+                $this->emitTo('form-equipos', 'render');
+                break;
+            default:
+            break;
         }
     }
 

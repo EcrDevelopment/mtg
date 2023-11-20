@@ -460,7 +460,7 @@ class Prueba extends Component
 
             if ($hoja != null) {
                 if (!empty($chip)) {
-                    if (!empty($this->vehiculo) && $this->vehiculo->esCertificableGnv) {
+                    if (!empty($this->vehiculo) && !$this->vehiculo->esCertificableGnv) {
                         $certi = Certificacion::certificarGnvConChip($taller, $servicio, $hoja, $this->vehiculo, Auth::user(), $chip);
 
                         if ($certi) {

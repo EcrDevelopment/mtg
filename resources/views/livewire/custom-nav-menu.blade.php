@@ -77,7 +77,9 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
                         <div class="flex items-center justify-center text-center">
                             <i class="fas fa-bell fa-xl text-white hover:text-black"></i>
                         </div>
+
                     </div>
+
                 </x-slot>
 
                 <x-slot name="content">
@@ -94,11 +96,32 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
                             </x-jet-dropdown-link>
                             <div class="border-t border-gray-100"></div>
                         @endif
+                        {{-- aqui va la ruta hacia tu nuevo modulo para ver cual es la anulacion tienes que crear un nuevo componente
+                                 y recibir un id o algo que te muestre la anulacion y el motivo --}}
+                        @if ($notification->type == 'App\Notifications\AnulacionSolicitud')
+                            <x-jet-dropdown-link href="{{ route('leerAnular', [$notification->id]) }}">
+                                <p class="text-xs "> Nueva solicitud de Anulación <strong
+                                        class="text-indigo-500">{{ $notification->data['idAnulacion'] }}</strong></p>
+                            </x-jet-dropdown-link>
+                            <div class="border-t border-gray-100"></div>
+                        @endif
+                        {{--   --}}
+                        @if ($notification->type == 'App\Notifications\SolicitudEliminacion')
+                            <x-jet-dropdown-link href="{{ route('leerEliminar', [$notification->id]) }}">
+                                <p class="text-xs "> Nueva solicitud de Eliminación <strong
+                                        class="text-indigo-500">{{ $notification->data['idEliminacion'] }}</strong></p>
+                            </x-jet-dropdown-link>
+                            <div class="border-t border-gray-100"></div>
+                        @endif
                     @endforeach
-
-
-                    <!-- Authentication -->
-
+                    @hasrole('Administrador del sistema|administrador')
+                    <div class="mt-2 flex justify-center">
+                        <a href="{{ route('Notificaciones') }}"
+                            class="p-2 bg-indigo-500 rounded-xl text-white text-sm  hover:bg-indigo-700">
+                            Tds. Notificaciones
+                        </a>
+                    </div>
+                    @endhasrole
                 </x-slot>
             </x-jet-dropdown>
             <x-jet-dropdown width="48">
@@ -326,11 +349,12 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
                                         @endcan
 
                                         @can('editar-taller')
-                                            @if(Auth::user()->taller)
-                                            <x-jet-responsive-nav-link class="text-sm"
-                                                href="{{ route('editar-taller', Auth::user()->taller) }}" :active="request()->routeIs('editar-taller')">
-                                                Datos de taller
-                                            </x-jet-responsive-nav-link>
+                                            @if (Auth::user()->taller)
+                                                <x-jet-responsive-nav-link class="text-sm"
+                                                    href="{{ route('editar-taller', Auth::user()->taller) }}"
+                                                    :active="request()->routeIs('editar-taller')">
+                                                    Datos de taller
+                                                </x-jet-responsive-nav-link>
                                             @endif
                                         @endcan
 
@@ -414,6 +438,12 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
                                                 {{ __('Recepción de materiales') }}
                                             </x-jet-responsive-nav-link>
                                         @endcan
+                                        @can('ConsultarHoja')
+                                            <x-jet-responsive-nav-link class="text-sm" href="{{ route('ConsultarHoja') }}"
+                                                :active="request()->routeIs('ConsultarHoja')">
+                                                {{ __('ConsultarHoja') }}
+                                            </x-jet-responsive-nav-link>
+                                        @endcan
 
                                     </ul>
 
@@ -445,21 +475,34 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
                                         class="mt-2 divide-y-2 divide-gray-600 overflow-hidden text-sm font-medium bg-gray-600 text-white shadow-inner"
                                         aria-label="submenu">
                                         @can('reportes.reporteGeneralGnv')
-                                            <x-jet-responsive-nav-link class="text-sm" href="{{ route('reportes.reporteGeneralGnv') }}"
-                                                :active="request()->routeIs('reportes.reporteGeneralGnv')">
+                                            <x-jet-responsive-nav-link class="text-sm"
+                                                href="{{ route('reportes.reporteGeneralGnv') }}" :active="request()->routeIs('reportes.reporteGeneralGnv')">
                                                 Reporte general GNV
                                             </x-jet-responsive-nav-link>
                                         @endcan
                                         @can('reportes.reporteMateriales')
-                                            <x-jet-responsive-nav-link class="text-sm" href="{{ route('reportes.reporteMateriales') }}"
-                                                :active="request()->routeIs('reportes.reporteMateriales')">
+                                            <x-jet-responsive-nav-link class="text-sm"
+                                                href="{{ route('reportes.reporteMateriales') }}" :active="request()->routeIs('reportes.reporteMateriales')">
                                                 Reporte de formatos GNV
                                             </x-jet-responsive-nav-link>
                                         @endcan
                                         @can('reportes.reporteServiciosPorInspector')
-                                            <x-jet-responsive-nav-link class="text-sm truncate" href="{{ route('reportes.reporteServiciosPorInspector') }}"
+                                            <x-jet-responsive-nav-link class="text-sm truncate"
+                                                href="{{ route('reportes.reporteServiciosPorInspector') }}"
                                                 :active="request()->routeIs('reportes.reporteServiciosPorInspector')">
                                                 Reporte de Servicios por inspector
+                                            </x-jet-responsive-nav-link>
+                                        @endcan
+                                        @can('reportes.reporteFotosPorInspector')
+                                            <x-jet-responsive-nav-link class="text-sm truncate"
+                                                href="{{ route('reportes.reporteFotosPorInspector') }}" :active="request()->routeIs('reportes.reporteFotosPorInspector')">
+                                                Reporte de Fotos
+                                            </x-jet-responsive-nav-link>
+                                        @endcan
+                                        @can('reportes.reporteDocumentosTaller')
+                                            <x-jet-responsive-nav-link class="text-sm truncate"
+                                                href="{{ route('reportes.reporteDocumentosTaller') }}" :active="request()->routeIs('reportes.reporteDocumentosTaller')">
+                                                Reporte de Documentos a vencer
                                             </x-jet-responsive-nav-link>
                                         @endcan
 
@@ -494,27 +537,26 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
                                         class="mt-2 divide-y-2 divide-gray-600 overflow-hidden text-sm font-medium bg-gray-600 text-white shadow-inner"
                                         aria-label="submenu">
 
-                                            <x-jet-responsive-nav-link class="text-sm" href="{{ route('importar.anuales') }}"
-                                                :active="request()->routeIs('importar.anuales')">
-                                                Revisiones Anuales GNV
-                                            </x-jet-responsive-nav-link>
+                                        <x-jet-responsive-nav-link class="text-sm" href="{{ route('importar.anuales') }}"
+                                            :active="request()->routeIs('importar.anuales')">
+                                            Revisiones Anuales GNV
+                                        </x-jet-responsive-nav-link>
 
-                                            <x-jet-responsive-nav-link class="text-sm" href="{{ route('importar.conversiones') }}"
-                                                :active="request()->routeIs('importar.conversiones')">
-                                                Conversiones a GNV
-                                            </x-jet-responsive-nav-link>
+                                        <x-jet-responsive-nav-link class="text-sm"
+                                            href="{{ route('importar.conversiones') }}" :active="request()->routeIs('importar.conversiones')">
+                                            Conversiones a GNV
+                                        </x-jet-responsive-nav-link>
 
-                                            <x-jet-responsive-nav-link class="text-sm" href="{{ route('importar.desmontes') }}"
-                                                :active="request()->routeIs('importar.desmontes')">
-                                                Desmontes GNV
-                                            </x-jet-responsive-nav-link>
+                                        <x-jet-responsive-nav-link class="text-sm"
+                                            href="{{ route('importar.desmontes') }}" :active="request()->routeIs('importar.desmontes')">
+                                            Desmontes GNV
+                                        </x-jet-responsive-nav-link>
 
                                     </ul>
 
                                 </div>
                             </li>
                         @endcan
-
 
                         {{--                     OPCIONES PARA USUARIOS Y ROLES                  --}}
                         @can('opciones.usuarios')
@@ -586,10 +628,10 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
                                         x-transition:leave-end="opacity-0 max-h-0"
                                         class="mt-2 divide-y-2 divide-gray-600 overflow-hidden text-sm font-medium bg-gray-600 text-white shadow-inner"
                                         aria-label="submenu">
-                                            <x-jet-responsive-nav-link class="text-sm" href="{{ route('table.tiposServicio') }}"
-                                                :active="request()->routeIs('table.tiposServicio')">
-                                                Tipos de servicio
-                                            </x-jet-responsive-nav-link>
+                                        <x-jet-responsive-nav-link class="text-sm"
+                                            href="{{ route('table.tiposServicio') }}" :active="request()->routeIs('table.tiposServicio')">
+                                            Tipos de servicio
+                                        </x-jet-responsive-nav-link>
 
                                     </ul>
 

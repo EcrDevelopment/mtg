@@ -4,7 +4,7 @@
     </a>
     <x-jet-dialog-modal wire:model="open">
         <x-slot name="title">
-            <h1 class="font-bold text-lg">AGREGAR EQUIPO AL VEHICULO {{$vehiculo->placa}}</h1>
+            <h1 class="font-bold text-lg">AGREGAR EQUIPO AL VEHICULO {{$vehiculo->placa}} - {{$tipoServicio->descripcion}}</h1>
         </x-slot>
         <x-slot name="content">
             <div class="mb-4">
@@ -39,6 +39,15 @@
                     @case(3)
                         <x-form-tanque-gnv>
                         </x-form-tanque-gnv>
+                    @break
+
+                    @case(4)
+                        <x-form-regulador-glp>
+                        </x-form-regulador-glp>
+                    @break
+                    @case(5)
+                        <x-form-cilindro-glp>
+                        </x-form-cilindro-glp>
                     @break
 
                     @default

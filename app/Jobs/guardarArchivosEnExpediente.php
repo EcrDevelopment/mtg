@@ -39,7 +39,15 @@ class guardarArchivosEnExpediente implements ShouldQueue
     {
         $expediente=$this->expediente;
         $certificacion=$this->certificacion;
-        $this->guardarFichaTecnica($certificacion,$expediente);
-        $this->guardaCertificado($certificacion,$expediente);
+
+        $idServicio=$certificacion->Servicio->tipoServicio->id;
+
+        if (in_array($idServicio, [1, 2, 7, 8, 10, 12])) {
+            $this->guardarFichaTecnica($certificacion,$expediente);
+            $this->guardaCertificado($certificacion,$expediente);
+        }elseif (in_array($idServicio, [3, 4, 9])) {
+            $this->guardarFichaTecnicaGlp($certificacion,$expediente);
+            $this->guardaCertificado($certificacion,$expediente);
+        }
     }
 }

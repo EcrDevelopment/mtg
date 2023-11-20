@@ -13,6 +13,7 @@ class vehiculo extends Model
 
     public $fillable=[
         "id",
+        "propietario",
         "placa",
         "categoria",
         "marca",
@@ -44,24 +45,34 @@ class vehiculo extends Model
     }
 
     public function cuentaDis($tipo){
-        $cuenta=0;        
+        $cuenta=0;
             if($this->Equipos->count() >0){
                 foreach($this->Equipos as $eq){
                     if($eq->idTipoEquipo == $tipo){
                         $cuenta++;
                     }
                 }
-            }        
+            }
         return $cuenta;
     }
 
-    public function getEsCertificableAttribute(){
+    public function getEsCertificableGnvAttribute(){
         $estado=false;
         $chips=$this->cuentaDis(1);
-        $reg=$this->cuentaDis(2);       
+        $reg=$this->cuentaDis(2);
         $cil=$this->cuentaDis(3);
-            if($chips>0 && $reg>0 && $cil >0){                
-                $estado=true;                
+            if($chips>0 && $reg>0 && $cil >0){
+                $estado=true;
+            }
+        return $estado;
+    }
+
+    public function getEsCertificableGlpAttribute(){
+        $estado=false;
+        $reg=$this->cuentaDis(4);
+        $cil=$this->cuentaDis(5);
+            if($reg>0 && $cil >0){
+                $estado=true;
             }
         return $estado;
     }

@@ -1,20 +1,24 @@
 <div class="max-w-5xl m-auto  bg-white rounded-lg shadow-md dark:bg-gray-300" id="datosVehiculo">
-    <div class="flex items-center justify-between bg-gray-400 py-4 px-6 rounded-t-lg">
+    <div class="flex items-center justify-between bg-green-400 py-4 px-6 rounded-t-lg">
         <span class="text-lg font-semibold text-white dark:text-gray-400">Datos del vehículo</span>
-        <a class="px-3 py-1 text-sm font-bold text-gray-100 transition-colors duration-300 transform bg-gray-600 rounded cursor-pointer hover:bg-gray-500"
-            tabindex="0" role="button">Nuevo</a>
+        <i class="fas fa-check-circle fa-lg"></i>
     </div>
     <div class="mt-2 mb-6 px-8 py-2">
+        <div class="mb-2">
+            <x-jet-label value="Propietario:" />
+            <x-jet-input type="text" class="w-full" wire:model="vehiculo.propietario"  maxlength="245" />
+            <x-jet-input-error for="vehiculo.propietario" />
+        </div>
         <div class="grid grid-cols-1 gap-8 sm:grid-cols-3">
             <div>
                 <x-jet-label value="Placa:" />
-                <x-jet-input list="vehiculos" type="text" class="w-full" wire:model="placa" wire:keydown.enter="buscarVehiculo" maxlength="7" />
+                <x-jet-input type="text" class="w-full" wire:model="vehiculo.placa" maxlength="7" disabled/>
                 <x-jet-input-error for="placa" />
             </div>
             <div>
                 <x-jet-label value="Categoria:" />
-                <select wire:model="categoria"
-                    class="bg-gray-50 border-indigo-500 rounded-md outline-none block w-full ">
+                <select wire:model="vehiculo.categoria"
+                    class="bg-gray-50 border-indigo-500 rounded-md outline-none block w-full " disabled>
                     <option value="">Seleccione</option>
                     <option value="NE">NE</option>
                     <option value="M1">M1</option>
@@ -42,140 +46,125 @@
 
             <div>
                 <x-jet-label value="Marca:" />
-                <x-jet-input type="text" class="w-full" wire:model="marca" />
+                <x-jet-input type="text" class="w-full" wire:model="vehiculo.marca" disabled/>
                 <x-jet-input-error for="marca" />
             </div>
 
             <div>
                 <x-jet-label value="Modelo:" />
-                <x-jet-input type="text" class="w-full" wire:model="modelo" />
+                <x-jet-input type="text" class="w-full" wire:model="vehiculo.modelo" disabled/>
                 <x-jet-input-error for="modelo" />
             </div>
             <div>
                 <x-jet-label value="Version:" />
-                <x-jet-input type="text" class="w-full" wire:model="version" />
+                <x-jet-input type="text" class="w-full" wire:model="vehiculo.version" disabled/>
                 <x-jet-input-error for="version" />
             </div>
             <div>
                 <x-jet-label value="año de fabricación:" />
-                <x-jet-input type="text" class="w-full" wire:model="anioFab" type="number" inputmode="numeric"/>
+                <x-jet-input type="text" class="w-full" wire:model="vehiculo.anioFab" type="number" disabled/>
                 <x-jet-input-error for="anioFab" />
             </div>
 
             <div>
                 <x-jet-label value="VIN / N° Serie:" />
-                <x-jet-input type="text" class="w-full" wire:model="numSerie" />
+                <x-jet-input type="text" class="w-full" wire:model="vehiculo.numSerie" disabled/>
                 <x-jet-input-error for="numSerie" />
             </div>
             <div>
                 <x-jet-label value="N° Serie Motor:" />
-                <x-jet-input type="text" class="w-full" wire:model="numMotor" />
+                <x-jet-input type="text" class="w-full" wire:model="vehiculo.numMotor" disabled/>
                 <x-jet-input-error for="numMotor" />
             </div>
             <div class="flex flex-row justify-center">
                 <div class="w-1/2">
                     <x-jet-label value="Cilindros:" />
-                    <x-jet-input type="text" class="w-5/6" wire:model="cilindros" type="number" inputmode="numeric" />
+                    <x-jet-input type="text" class="w-5/6" wire:model="vehiculo.cilindros" type="number" disabled/>
                     <x-jet-input-error for="cilindros" />
                 </div>
                 <div class="w-1/2">
                     <x-jet-label value="Cilindrada:" />
-                    <x-jet-input type="text" class="w-5/6" wire:model="cilindrada" type="number" inputmode="numeric" />
+                    <x-jet-input type="text" class="w-5/6" wire:model="vehiculo.cilindrada" type="number" disabled/>
                     <x-jet-input-error for="cilindrada" />
                 </div>
             </div>
             <div>
                 <x-jet-label value="Combustible:" />
-                <x-jet-input type="text" class="w-full" wire:model="combustible" list="items"/>
-                <datalist id="items">
-                    <option value="GASOLINA">GASOLINA</option>
-                    <option value="BI-COMBUSTIBLE GNV">BI-COMBUSTIBLE GNV</option>
-                    <option value="BI-COMBUSTIBLE GLP">BI-COMBUSTIBLE GLP</option>
-                    <option value="GNV">GNV</option>
-                    <option value="GLP">GLP</option>
-                </datalist>
-
+                <x-jet-input type="text" class="w-full" wire:model="vehiculo.combustible" disabled/>
                 <x-jet-input-error for="combustible" />
             </div>
             <div class="flex flex-row">
                 <div class="w-1/2">
                     <x-jet-label value="Ejes:" />
-                    <x-jet-input class="w-5/6" wire:model="ejes" type="number" inputmode="numeric"/>
+                    <x-jet-input type="text" class="w-5/6" wire:model="vehiculo.ejes" type="number" disabled/>
                     <x-jet-input-error for="ejes" />
                 </div>
                 <div class="w-1/2">
                     <x-jet-label value="Ruedas:" />
-                    <x-jet-input  class="w-5/6" wire:model="ruedas" type="number" inputmode="numeric"/>
+                    <x-jet-input type="text" class="w-5/6" wire:model="vehiculo.ruedas" type="number" disabled/>
                     <x-jet-input-error for="ruedas" />
                 </div>
             </div>
             <div class="flex flex-row">
                 <div class="w-1/2">
                     <x-jet-label value="Asientos:" />
-                    <x-jet-input  class="w-5/6" wire:model="asientos" type="number" inputmode="numeric"/>
+                    <x-jet-input type="text" class="w-5/6" wire:model="vehiculo.asientos" type="number" disabled/>
                     <x-jet-input-error for="asientos" />
                 </div>
                 <div class="w-1/2">
                     <x-jet-label value="Pasajeros:" />
-                    <x-jet-input  class="w-5/6" wire:model="pasajeros" type="number" inputmode="numeric"/>
+                    <x-jet-input type="text" class="w-5/6" wire:model="vehiculo.pasajeros" type="number" disabled/>
                     <x-jet-input-error for="pasajeros" />
                 </div>
             </div>
             <div class="flex flex-row w-full justify-center m-auto">
                 <div class="w-1/3">
                     <x-jet-label value="Largo:" />
-                    <x-jet-input  class="w-5/6" wire:model="largo" type="number" inputmode="numeric"/>
+                    <x-jet-input type="text" class="w-5/6" wire:model="vehiculo.largo" type="number" disabled/>
                     <x-jet-input-error for="largo" />
                 </div>
                 <div class="w-1/3">
                     <x-jet-label value="Ancho:" />
-                    <x-jet-input  class="w-5/6" wire:model="ancho" type="number" inputmode="numeric"/>
+                    <x-jet-input type="text" class="w-5/6" wire:model="vehiculo.ancho" type="number" disabled/>
                     <x-jet-input-error for="ancho" />
                 </div>
                 <div class="w-1/3">
                     <x-jet-label value="Altura:" />
-                    <x-jet-input  class="w-5/6" wire:model="altura" type="number" inputmode="numeric"/>
+                    <x-jet-input type="text" class="w-5/6" wire:model="vehiculo.altura" type="number" disabled/>
                     <x-jet-input-error for="altura" />
                 </div>
             </div>
             <div>
                 <x-jet-label value="Color:" />
-                <x-jet-input type="text" class="w-full" wire:model="color" />
+                <x-jet-input type="text" class="w-full" wire:model="vehiculo.color" disabled/>
                 <x-jet-input-error for="color" />
             </div>
             <div class="flex flex-row w-full justify-center m-auto">
                 <div class="w-1/3">
                     <x-jet-label value="Peso Neto:" />
-                    <x-jet-input type="text" class="w-5/6" wire:model="pesoNeto" type="number" inputmode="numeric"/>
+                    <x-jet-input type="text" class="w-5/6" wire:model="vehiculo.pesoNeto" type="number" disabled/>
                     <x-jet-input-error for="pesoNeto" />
                 </div>
                 <div class="w-1/3">
                     <x-jet-label value="Peso Bruto:" />
-                    <x-jet-input type="text" class="w-5/6" wire:model="pesoBruto" type="number" inputmode="numeric"/>
+                    <x-jet-input type="text" class="w-5/6" wire:model="vehiculo.pesoBruto" type="number" disabled/>
                     <x-jet-input-error for="pesoBruto" />
                 </div>
                 <div class="w-1/3">
                     <x-jet-label value="Carga Util:" />
-                    <x-jet-input type="text" class="w-5/6" wire:model="cargaUtil" type="number" inputmode="numeric"/>
+                    <x-jet-input type="text" class="w-5/6" wire:model="vehiculo.cargaUtil" type="number" disabled/>
                     <x-jet-input-error for="cargaUtil" />
                 </div>
             </div>
 
         </div>
+
         <div class="mt-4  mb-2 flex flex-row justify-center items-center">
-            <button wire:click="guardaVehiculo" wire:loading.attr="disabled" wire:target="guardaVehiculo"
-                class="hover:cursor-pointer focus:ring-2 focus:ring-offset-2 focus:ring-amber-600 sm:mt-0 inline-flex items-center justify-center px-6 py-3 bg-amber-400 hover:bg-amber-500 focus:outline-none rounded">
-                <p class="text-sm font-medium leading-none text-white">
-                <span wire:loading wire:target="guardaVehiculo">
-                    <i class="fas fa-spinner animate-spin"></i>
-                    &nbsp;
-                </span>
-                    Guardar vehículo
-                </p>
-            </button>
+            <a wire:click="$set('estado','editando')"
+                class="hover:cursor-pointer focus:ring-2 focus:ring-offset-2 focus:ring-amber-600 sm:mt-0 inline-flex items-center justify-center px-6 py-3 bg-indigo-400 hover:bg-indigo-500 focus:outline-none rounded">
+                <p class="text-sm font-medium leading-none text-white">Editar vehículo</p>
+            </a>
         </div>
 
     </div>
-
-
 </div>

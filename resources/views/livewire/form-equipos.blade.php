@@ -6,22 +6,27 @@
                     @switch($tipoServicio->id)
                         @case(1)
                             Datos de los equipos de GNV
-                            @break
+                        @break
+
                         @case(2)
                             Datos de los equipos de GNV
-                            @break
+                        @break
+
                         @case(3)
                             Datos de los equipos de GLP
-                            @break
+                        @break
+
                         @case(4)
                             Datos de los equipos de GLP
-                            @break
+                        @break
+
                         @case(7)
                             Datos de los equipos de GNV
-                            @break
-                        @default                            
+                        @break
+
+                        @default
                     @endswitch
-                    
+
                 </x-slot>
                 <x-slot name="icono">
                     <i class="fas fa-check-circle fa-lg"></i>
@@ -33,36 +38,39 @@
                     @switch($tipoServicio->id)
                         @case(1)
                             Datos de los equipos de GNV
-                            @break
+                        @break
+
                         @case(2)
                             Datos de los equipos de GNV
-                            @break
+                        @break
+
                         @case(3)
                             Datos de los equipos de GLP
-                            @break
+                        @break
+
                         @case(4)
                             Datos de los equipos de GLP
-                            @break
-                        @default                            
+                        @break
+
+                        @default
                     @endswitch
                 </x-slot>
                 <x-slot name="icono">
                     <i class="fas fa-archive fa-lg"></i>
                 </x-slot>
             </x-slot>
-        @endif       
+        @endif
 
-            @livewire('crear-equipo',["vehiculo"=>$vehiculo])            
-      
-        @if ($equipos)            
-            <x-slot name="equip">                    
+        @livewire('crear-equipo', ['vehiculo' => $vehiculo,'tipoServicio'=>$tipoServicio])
+
+        @if ($equipos)
+            <x-slot name="equip">
                 <div wire:model="equipos">
                     @foreach ($equipos as $e)
                         @if (isset($e->idTipoEquipo))
                             @switch($e->idTipoEquipo)
                                 @case(1)
-                                    <div
-                                        class="block  w-5/6 bg-white border border-black p-2 rounded-lg shadow-lg m-auto mb-4">
+                                    <div class="block  w-5/6 bg-white border border-black p-2 rounded-lg shadow-lg m-auto mb-4">
                                         <div class="flex flex-row w-full">
                                             <div class="block  w-5/6">
                                                 <span
@@ -73,11 +81,11 @@
                                             </div>
                                             <div class="w-1/6 flex justify-end items-center space-x-2">
                                                 <a class="bg-amber-300 p-4 rounded-xl hover:bg-amber-500 hover:cursor-pointer"
-                                                    wire:click="edit({{$e}})">
+                                                    wire:click="edit({{ $e }})">
                                                     <i class="fas fa-pen"></i>
                                                 </a>
                                                 <a class="bg-red-300 p-4 rounded-xl hover:bg-red-500 hover:cursor-pointer"
-                                                    wire:click="delete({{$e}})">
+                                                    wire:click="delete({{ $e }})">
                                                     <i class="fas fa-trash"></i>
                                                 </a>
                                             </div>
@@ -86,8 +94,7 @@
                                 @break
 
                                 @case(2)
-                                    <div
-                                        class="block  w-5/6 bg-white border border-black p-2 rounded-lg shadow-lg m-auto mb-4">
+                                    <div class="block  w-5/6 bg-white border border-black p-2 rounded-lg shadow-lg m-auto mb-4">
                                         <div class="flex flex-row w-full">
                                             <div class="block w-5/6">
                                                 <span
@@ -100,7 +107,7 @@
                                             </div>
                                             <div class=" w-1/6 flex justify-end items-center space-x-2">
                                                 <a class="bg-amber-300 p-4 rounded-xl hover:bg-amber-500 hover:cursor-pointer"
-                                                    wire:click="edit({{$e}})">
+                                                    wire:click="edit({{ $e }})">
                                                     <i class="fas fa-pen"></i>
                                                 </a>
                                                 <a class="bg-red-300 p-4 rounded-xl hover:bg-red-500 hover:cursor-pointer"
@@ -113,8 +120,7 @@
                                 @break
 
                                 @case(3)
-                                    <div
-                                        class="block  w-5/6 bg-white border border-black p-2 rounded-lg shadow-lg m-auto mb-4">
+                                    <div class="block  w-5/6 bg-white border border-black p-2 rounded-lg shadow-lg m-auto mb-4">
                                         <div class="flex flex-row w-full">
                                             <div class="block bg w-5/6">
                                                 <span
@@ -131,11 +137,63 @@
                                             </div>
                                             <div class="bg w-1/6 flex justify-end items-center space-x-2">
                                                 <a class="bg-amber-300 p-4 rounded-xl hover:bg-amber-500 hover:cursor-pointer"
-                                                    wire:click="edit({{$e}})">
+                                                    wire:click="edit({{ $e }})">
                                                     <i class="fas fa-pen"></i>
                                                 </a>
                                                 <a class="bg-red-300 p-4 rounded-xl hover:bg-red-500 hover:cursor-pointer"
-                                                    wire:click="delete({{$e}})">
+                                                    wire:click="delete({{ $e }})">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @break
+
+                                @case(4)
+                                    <div class="block  w-5/6 bg-white border border-black p-2 rounded-lg shadow-lg m-auto mb-4">
+                                        <div class="flex flex-row w-full">
+                                            <div class="block w-5/6">
+                                                <span
+                                                    class="bg-sky-200 text-sky-800 text-xs px-2 inline-block rounded-full  uppercase font-semibold tracking-wide">
+                                                    <i class="fas fa-tenge"></i>&nbsp;{{ $e->tipo->nombre }}
+                                                </span>
+                                                <p>Serie: <strong>{{ $e->numSerie }}</strong></p>
+                                                <p>Marca: <strong>{{ $e->marca }}</strong></p>
+                                                <p>Modelo: <strong>{{ $e->modelo }}</strong></p>
+                                            </div>
+                                            <div class=" w-1/6 flex justify-end items-center space-x-2">
+                                                <a class="bg-amber-300 p-4 rounded-xl hover:bg-amber-500 hover:cursor-pointer"
+                                                    wire:click="edit({{ $e }})">
+                                                    <i class="fas fa-pen"></i>
+                                                </a>
+                                                <a class="bg-red-300 p-4 rounded-xl hover:bg-red-500 hover:cursor-pointer"
+                                                    wire:click="delete({{ $e }})">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @break
+
+                                @case(5)
+                                    <div class="block  w-5/6 bg-white border border-black p-2 rounded-lg shadow-lg m-auto mb-4">
+                                        <div class="flex flex-row w-full">
+                                            <div class="block bg w-5/6">
+                                                <span
+                                                    class="bg-orange-400 text-white text-xs px-2 inline-block rounded-full  uppercase font-semibold tracking-wide">
+                                                    <i class="fas fa-battery-empty"></i>&nbsp;{{ $e->tipo->nombre }}
+                                                </span>
+                                                <p>Serie: <strong>{{ $e->numSerie }}</strong></p>
+                                                <p>Marca: <strong>{{ $e->marca }}</strong></p>
+                                                <p>Modelo: <strong>{{ $e->modelo }}</strong></p>
+                                            </div>
+                                            <div class="bg w-1/6 flex justify-end items-center space-x-2">
+                                                <a class="bg-amber-300 p-4 rounded-xl hover:bg-amber-500 hover:cursor-pointer"
+                                                    wire:click="edit({{ $e }})">
+                                                    <i class="fas fa-pen"></i>
+                                                </a>
+                                                <a class="bg-red-300 p-4 rounded-xl hover:bg-red-500 hover:cursor-pointer"
+                                                    wire:click="delete({{ $e }})">
                                                     <i class="fas fa-trash"></i>
                                                 </a>
                                             </div>
@@ -157,28 +215,33 @@
         @endif
 
     </x-form-datos-equipos-gnv>
-    
+
 
     <x-jet-dialog-modal wire:model="open">
         <x-slot name="title">
             <h1 class="font-bold text-lg">EDITANDO EQUIPO</h1>
         </x-slot>
-        <x-slot name="content">            
+        <x-slot name="content">
             @if ($equipo)
                 @switch($equipo->idTipoEquipo)
                     @case(1)
-                        <x-form-edit-chip-gnv/>
-                        
+                        <x-form-edit-chip-gnv />
                     @break
 
                     @case(2)
-                        <x-form-edit-reductor-gnv/>
-                       
+                        <x-form-edit-reductor-gnv />
                     @break
 
                     @case(3)
-                        <x-form-edit-tanque-gnv/>
-                      
+                        <x-form-edit-tanque-gnv />
+                    @break
+
+                    @case(4)
+                        <x-form-edit-regulador-glp />
+                    @break
+
+                    @case(5)
+                        <x-form-edit-cilindro-glp />
                     @break
 
                     @default

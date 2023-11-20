@@ -27,6 +27,15 @@ class Documento extends Model
         return $this->belongsTo(TipoDocumento::class,'tipoDocumento');
     }
 
+
+    //relacion entre documento y talleres por tabla intermedia documentostaller
+    public function talleres()
+    {
+        return $this->belongsToMany(Taller::class, 'documentostaller', 'idDocumento', 'idTaller');
+    }
+
+
+
     public function Taller(){
         return $this->belongsToMany(Taller::class, 'documentostaller', 'idDocumento', 'idTaller');
     }

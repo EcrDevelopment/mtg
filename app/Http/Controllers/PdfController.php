@@ -15,16 +15,16 @@ use Nette\Utils\Json;
 use Spatie\FlareClient\Http\Exceptions\NotFound;
 
 class PdfController extends Controller
-{   
+{
     //vista y descarga de ANUALES FICHAS TECNICAS GNV
-    
+
     public function generarFichaTecnica($id){
         if(Certificacion::findOrFail($id)){
             $certificacion=Certificacion::find($id);
             $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
-            $chip=$certificacion->vehiculo->Equipos->where("idTipoEquipo",1)->first();           
-            $equipos=$certificacion->vehiculo->Equipos->where("idTipoEquipo","!=",1)->sortBy("idTipoEquipo");                     
-            //dd($equipos); 
+            $chip=$certificacion->vehiculo->Equipos->where("idTipoEquipo",1)->first();
+            $equipos=$certificacion->vehiculo->Equipos->where("idTipoEquipo","!=",1)->sortBy("idTipoEquipo");
+            //dd($equipos);
             $hoja=$certificacion->Materiales->where('idTipoMaterial',1)->first();
             $fechaCert=$certificacion->created_at;
             $fec=$fechaCert->format("d/m/Y");
@@ -33,13 +33,13 @@ class PdfController extends Controller
             "empresa"=>"MOTORGAS COMPANY S.A.",
             "carro"=>$certificacion->Vehiculo,
             "taller"=>$certificacion->Taller,
-            "servicio"=>$certificacion->Servicio, 
-            "hoja"=>$hoja, 
+            "servicio"=>$certificacion->Servicio,
+            "hoja"=>$hoja,
             "equipos"=>$equipos,
             "chip"=>$chip,
-            ];                 
+            ];
             $pdf = App::make('dompdf.wrapper');
-            $pdf->loadView('fichaTecnicaGnv',$data);        
+            $pdf->loadView('fichaTecnicaGnv',$data);
             //return $pdf->stream($id.'-'.date('d-m-Y').'-cargo.pdf');
             return  $pdf->stream("FT-".$certificacion->Vehiculo->placa.'-'.$hoja->numSerie.'.pdf');
         }else{
@@ -48,10 +48,10 @@ class PdfController extends Controller
     }
 
     public function datosParaFichaTecnica($id){
-        $certificacion=Certificacion::find($id);                         
-            $chip=$certificacion->vehiculo->Equipos->where("idTipoEquipo",1)->first();           
-            $equipos=$certificacion->vehiculo->Equipos->where("idTipoEquipo","!=",1)->sortBy("idTipoEquipo");                     
-            //dd($equipos); 
+        $certificacion=Certificacion::find($id);
+            $chip=$certificacion->vehiculo->Equipos->where("idTipoEquipo",1)->first();
+            $equipos=$certificacion->vehiculo->Equipos->where("idTipoEquipo","!=",1)->sortBy("idTipoEquipo");
+            //dd($equipos);
             $hoja=$certificacion->Materiales->where('idTipoMaterial',1)->first();
             $fechaCert=$certificacion->created_at;
             $fec=$fechaCert->format("d/m/Y");
@@ -61,11 +61,11 @@ class PdfController extends Controller
             "empresa"=>"MOTORGAS COMPANY S.A.",
             "carro"=>$certificacion->Vehiculo,
             "taller"=>$certificacion->Taller,
-            "servicio"=>$certificacion->Servicio, 
-            "hoja"=>$hoja, 
+            "servicio"=>$certificacion->Servicio,
+            "hoja"=>$hoja,
             "equipos"=>$equipos,
             "chip"=>$chip,
-            ]; 
+            ];
 
             return $data;
     }
@@ -74,20 +74,79 @@ class PdfController extends Controller
         if(Certificacion::findOrFail($idCert)){
             $data=$this->datosParaFichaTecnica($idCert);
             $pdf = App::make('dompdf.wrapper');
-            $pdf->loadView('fichaTecnicaGnv',$data);       
-            return  $pdf->download('FT-'.$data['carro']->placa.'-'.$data['hoja']->numSerie.'.pdf');            
+            $pdf->loadView('fichaTecnicaGnv',$data);
+            return  $pdf->download('FT-'.$data['carro']->placa.'-'.$data['hoja']->numSerie.'.pdf');
         }else{
             return abort(404);
         }
     }
+
+    public function generarFichaTecnicaGlp($id){
+        if(Certificacion::findOrFail($id)){
+            $certificacion=Certificacion::find($id);
+            $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio",
+            "Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+            $equipos=$certificacion->vehiculo->Equipos->where("idTipoEquipo",">",3)->sortBy("idTipoEquipo");
+            $hoja=$certificacion->Materiales->where('idTipoMaterial',3)->first();
+            $cargaUtil=$this->calculaCargaUtil($certificacion->Vehiculo->pesoBruto,$certificacion->Vehiculo->pesoNeto);
+            $fechaCert=$certificacion->created_at;
+            $fec=$fechaCert->format("d/m/Y");
+            $data=[
+            "fecha"=>$fec,
+            "empresa"=>"MOTORGAS COMPANY S.A.",
+            "carro"=>$certificacion->Vehiculo,
+            "taller"=>$certificacion->Taller,
+            "servicio"=>$certificacion->Servicio,
+            "cargaUtil"=>$cargaUtil,
+            "hoja"=>$hoja,
+            "numHoja"=>$this->completarConCeros($hoja->numSerie),
+            "equipos"=>$equipos,
+            ];
+            $pdf = App::make('dompdf.wrapper');
+            $pdf->loadView('fichaTecnicaGlp',$data);
+            return  $pdf->stream("FT-".$certificacion->Vehiculo->placa.'-'.$hoja->numSerie.'-glp.pdf');
+        }else{
+            return abort(404);
+        }
+    }
+
+    public function descargarFichaTecnicaGlp($id){
+        if(Certificacion::findOrFail($id)){
+            $certificacion=Certificacion::find($id);
+            $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio",
+            "Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+            $equipos=$certificacion->vehiculo->Equipos->where("idTipoEquipo",">",3)->sortBy("idTipoEquipo");
+            $hoja=$certificacion->Materiales->where('idTipoMaterial',3)->first();
+            $cargaUtil=$this->calculaCargaUtil($certificacion->Vehiculo->pesoBruto,$certificacion->Vehiculo->pesoNeto);
+            $fechaCert=$certificacion->created_at;
+            $fec=$fechaCert->format("d/m/Y");
+            $data=[
+            "fecha"=>$fec,
+            "empresa"=>"MOTORGAS COMPANY S.A.",
+            "carro"=>$certificacion->Vehiculo,
+            "taller"=>$certificacion->Taller,
+            "servicio"=>$certificacion->Servicio,
+            "cargaUtil"=>$cargaUtil,
+            "hoja"=>$hoja,
+            "numHoja"=>$this->completarConCeros($hoja->numSerie),
+            "equipos"=>$equipos,
+            ];
+            $pdf = App::make('dompdf.wrapper');
+            $pdf->loadView('fichaTecnicaGlp',$data);
+            return  $pdf->download("FT-".$certificacion->Vehiculo->placa.'-'.$hoja->numSerie.'-glp.pdf');
+        }else{
+            return abort(404);
+        }
+    }
+
 
     //vistas de CHECKLIST GNV (SOLO VISTAS)
 
     public function generarCheckListArribaGnv($idCert){
         if(Certificacion::findOrFail($idCert)){
             $certificacion=Certificacion::find($idCert);
-            //$hoja=$certificacion->Materiales->where('idTipoMaterial',1)->first();    
-            $hoja=$certificacion->Hoja;        
+            //$hoja=$certificacion->Materiales->where('idTipoMaterial',1)->first();
+            $hoja=$certificacion->Hoja;
             //dd($certificacion->Chip);
             $data=[
                 'hoja'=>$hoja,
@@ -95,14 +154,14 @@ class PdfController extends Controller
                 "servicio"=>$certificacion->Servicio,
                 "inspector"=>$certificacion->Inspector,
                 "taller"=>$certificacion->taller,
-                "fecha"=>$certificacion->created_at->format('d/m/Y'), 
+                "fecha"=>$certificacion->created_at->format('d/m/Y'),
                 "reductor"=>$certificacion->Reductor,
-                "chip"=>$certificacion->Chip,                
+                "chip"=>$certificacion->Chip,
                 "cilindros"=>$certificacion->Cilindros,
-                "certificacion"=>$certificacion,               
+                "certificacion"=>$certificacion,
             ];
             $pdf = App::make('dompdf.wrapper');
-            $pdf->loadView('checkListCilindroArribaGnv',$data);        
+            $pdf->loadView('checkListCilindroArribaGnv',$data);
             //return $pdf->stream($id.'-'.date('d-m-Y').'-cargo.pdf');
             return  $pdf->stream('CHKL_ARRIBA-'.$certificacion->Vehiculo->placa.'-'.$hoja->numSerie.'.pdf');
         }else{
@@ -113,26 +172,33 @@ class PdfController extends Controller
     public function generarCheckListAbajoGnv($idCert){
         if(Certificacion::findOrFail($idCert)){
             $certificacion=Certificacion::find($idCert);
-            //$hoja=$certificacion->Materiales->where('idTipoMaterial',1)->first();    
-            $hoja=$certificacion->Hoja;        
+            //$hoja=$certificacion->Materiales->where('idTipoMaterial',1)->first();
+            $hoja=$certificacion->Hoja;
             $data=[
                 'hoja'=>$hoja,
                 "vehiculo"=>$certificacion->Vehiculo,
                 "servicio"=>$certificacion->Servicio,
                 "inspector"=>$certificacion->Inspector,
                 "taller"=>$certificacion->taller,
-                "fecha"=>$certificacion->created_at->format('d/m/Y'), 
+                "fecha"=>$certificacion->created_at->format('d/m/Y'),
                 "reductor"=>$certificacion->Reductor,
                 "chip"=>$certificacion->Chip,
                 "cilindros"=>$certificacion->Cilindros,
-                "certificacion"=>$certificacion,               
+                "certificacion"=>$certificacion,
             ];
             $pdf = App::make('dompdf.wrapper');
-            $pdf->loadView('checkListCilindroAbajoGnv',$data);        
+            $pdf->loadView('checkListCilindroAbajoGnv',$data);
             //return $pdf->stream($id.'-'.date('d-m-Y').'-cargo.pdf');
             return  $pdf->stream('CHKL_ABAJO-'.$certificacion->Vehiculo->placa.'-'.$hoja->numSerie.'.pdf');
         }else{
             return abort(404);
+        }
+    }
+
+    public function calculaCargaUtil($pesoBruto,$pesoNeto){
+        if($pesoBruto && $pesoNeto){
+            $cu=$pesoBruto-$pesoNeto;
+            return ($pesoBruto-$pesoNeto);
         }
     }
 
@@ -145,21 +211,21 @@ class PdfController extends Controller
                 if($certificacion->Servicio->tipoServicio->id==2){
                     $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
                     $fechaCert=$certificacion->created_at;
-                    $fecha=$fechaCert->format('d').' días del mes de '.$meses[$fechaCert->format('m')-1].' del '.$fechaCert->format('Y').'.';  
-                    $hoja=$certificacion->Materiales->where('idTipoMaterial',1)->first();              
+                    $fecha=$fechaCert->format('d').' días del mes de '.$meses[$fechaCert->format('m')-1].' del '.$fechaCert->format('Y').'.';
+                    $hoja=$certificacion->Materiales->where('idTipoMaterial',1)->first();
                     $data=[
                     "fecha"=>$fecha,
                     "empresa"=>"MOTORGAS COMPANY S.A.",
                     "carro"=>$certificacion->Vehiculo,
-                    "taller"=>$certificacion->Taller, 
-                    "hoja"=>$hoja, 
+                    "taller"=>$certificacion->Taller,
+                    "hoja"=>$hoja,
                     "fechaCert"=>$fechaCert,
                     "largo"=>$this->devuelveDatoParseado($certificacion->Vehiculo->largo),
                     "ancho"=>$this->devuelveDatoParseado($certificacion->Vehiculo->ancho),
                     "altura"=>$this->devuelveDatoParseado($certificacion->Vehiculo->altura),
-                    ];                 
+                    ];
                     $pdf = App::make('dompdf.wrapper');
-                    $pdf->loadView('anualGnv',$data);        
+                    $pdf->loadView('anualGnv',$data);
                     return $pdf->stream($certificacion->Vehiculo->placa.'-'.$hoja->numSerie.'-anual.pdf');
                 }
                 return abort(404);
@@ -169,39 +235,192 @@ class PdfController extends Controller
         }
     }
 
+    function completarConCeros($numero, $longitudDeseada = 7) {
+        // Convierte el número a una cadena y completa con ceros a la izquierda
+        return str_pad((string)$numero, $longitudDeseada, '0', STR_PAD_LEFT);
+    }
+
+    //pdfs glp
+    public function generaPdfAnualGlp($id){
+        if(Certificacion::findOrFail($id)){
+            $certificacion=Certificacion::find($id);
+            if($certificacion->Servicio->tipoServicio->id){
+                if($certificacion->Servicio->tipoServicio->id==4){
+                    $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+                    $fechaCert=$certificacion->created_at;
+                    $fecha=$fechaCert->format('d').' días del mes de '.$meses[$fechaCert->format('m')-1].' del '.$fechaCert->format('Y').'.';
+                    $hoja=$certificacion->Materiales->where('idTipoMaterial',3)->first();
+                    $equipos=$certificacion->Vehiculo->Equipos->where("idTipoEquipo",">",3)->sortBy("idTipoEquipo");
+                    $cargaUtil=$this->calculaCargaUtil($certificacion->Vehiculo->pesoBruto,$certificacion->Vehiculo->pesoNeto);
+                    $data=[
+                    "fecha"=>$fecha,
+                    "cargaUtil"=>$cargaUtil,
+                    "empresa"=>"MOTORGAS COMPANY S.A.",
+                    "carro"=>$certificacion->Vehiculo,
+                    "taller"=>$certificacion->Taller,
+                    "hoja"=>$hoja,
+                    "numHoja"=>$this->completarConCeros($hoja->numSerie),
+                    "fechaCert"=>$fechaCert,
+                    "equipos"=>$equipos,
+                    "largo"=>$this->devuelveDatoParseado($certificacion->Vehiculo->largo),
+                    "ancho"=>$this->devuelveDatoParseado($certificacion->Vehiculo->ancho),
+                    "altura"=>$this->devuelveDatoParseado($certificacion->Vehiculo->altura),
+                    ];
+                    $pdf = App::make('dompdf.wrapper');
+                    $pdf->loadView('anualGlp',$data);
+                    return $pdf->stream($certificacion->Vehiculo->placa.'-'.$hoja->numSerie.'-anual-glp.pdf');
+                }
+                return abort(404);
+            }
+        }else{
+            return abort(404);
+        }
+    }
+
+    public function descargaPdfAnualGlp($id){
+        if(Certificacion::findOrFail($id)){
+            $certificacion=Certificacion::find($id);
+            if($certificacion->Servicio->tipoServicio->id){
+                if($certificacion->Servicio->tipoServicio->id==4){
+                    $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+                    $fechaCert=$certificacion->created_at;
+                    $fecha=$fechaCert->format('d').' días del mes de '.$meses[$fechaCert->format('m')-1].' del '.$fechaCert->format('Y').'.';
+                    $hoja=$certificacion->Materiales->where('idTipoMaterial',3)->first();
+                    $equipos=$certificacion->Vehiculo->Equipos->where("idTipoEquipo",">",3)->sortBy("idTipoEquipo");
+                    $cargaUtil=$this->calculaCargaUtil($certificacion->Vehiculo->pesoBruto,$certificacion->Vehiculo->pesoNeto);
+                    $data=[
+                    "fecha"=>$fecha,
+                    "empresa"=>"MOTORGAS COMPANY S.A.",
+                    "cargaUtil"=>$cargaUtil,
+                    "carro"=>$certificacion->Vehiculo,
+                    "taller"=>$certificacion->Taller,
+                    "hoja"=>$hoja,
+                    "numHoja"=>$this->completarConCeros($hoja->numSerie),
+                    "fechaCert"=>$fechaCert,
+                    "equipos"=>$equipos,
+                    "largo"=>$this->devuelveDatoParseado($certificacion->Vehiculo->largo),
+                    "ancho"=>$this->devuelveDatoParseado($certificacion->Vehiculo->ancho),
+                    "altura"=>$this->devuelveDatoParseado($certificacion->Vehiculo->altura),
+                    ];
+                    $pdf = App::make('dompdf.wrapper');
+                    $pdf->loadView('anualGlp',$data);
+                    return $pdf->download($certificacion->Vehiculo->placa.'-'.$hoja->numSerie.'-anual-glp.pdf');
+                }
+                return abort(404);
+            }
+        }else{
+            return abort(404);
+        }
+    }
+
+    public function generaPdfInicialGlp($id){
+        if(Certificacion::findOrFail($id)){
+            $certificacion=Certificacion::find($id);
+            if($certificacion->Servicio->tipoServicio->id){
+                if($certificacion->Servicio->tipoServicio->id==3){
+                    $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+                    $fechaCert=$certificacion->created_at;
+                    $fecha=$fechaCert->format('d').' días del mes de '.$meses[$fechaCert->format('m')-1].' del '.$fechaCert->format('Y').'.';
+                    $hoja=$certificacion->Materiales->where('idTipoMaterial',3)->first();
+                    $equipos=$certificacion->Vehiculo->Equipos->where("idTipoEquipo",">",3)->sortBy("idTipoEquipo");
+                    $cargaUtil=$this->calculaCargaUtil($certificacion->Vehiculo->pesoBruto,$certificacion->Vehiculo->pesoNeto);
+                    $data=[
+                    "fecha"=>$fecha,
+                    "cargaUtil"=>$cargaUtil,
+                    "empresa"=>"MOTORGAS COMPANY S.A.",
+                    "carro"=>$certificacion->Vehiculo,
+                    "taller"=>$certificacion->Taller,
+                    "hoja"=>$hoja,
+                    "numHoja"=>$this->completarConCeros($hoja->numSerie),
+                    "fechaCert"=>$fechaCert,
+                    "equipos"=>$equipos,
+                    "largo"=>$this->devuelveDatoParseado($certificacion->Vehiculo->largo),
+                    "ancho"=>$this->devuelveDatoParseado($certificacion->Vehiculo->ancho),
+                    "altura"=>$this->devuelveDatoParseado($certificacion->Vehiculo->altura),
+                    ];
+                    $pdf = App::make('dompdf.wrapper');
+                    $pdf->loadView('conversionGlp',$data);
+                    return $pdf->stream($certificacion->Vehiculo->placa.'-'.$hoja->numSerie.'-anual-glp.pdf');
+                }
+                return abort(404);
+            }
+        }else{
+            return abort(404);
+        }
+    }
+
+    public function descargaPdfInicialGlp($id){
+        if(Certificacion::findOrFail($id)){
+            $certificacion=Certificacion::find($id);
+            if($certificacion->Servicio->tipoServicio->id){
+                if($certificacion->Servicio->tipoServicio->id==4){
+                    $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+                    $fechaCert=$certificacion->created_at;
+                    $fecha=$fechaCert->format('d').' días del mes de '.$meses[$fechaCert->format('m')-1].' del '.$fechaCert->format('Y').'.';
+                    $hoja=$certificacion->Materiales->where('idTipoMaterial',3)->first();
+                    $equipos=$certificacion->Vehiculo->Equipos->where("idTipoEquipo",">",3)->sortBy("idTipoEquipo");
+                    $cargaUtil=$this->calculaCargaUtil($certificacion->Vehiculo->pesoBruto,$certificacion->Vehiculo->pesoNeto);
+                    $data=[
+                    "fecha"=>$fecha,
+                    "empresa"=>"MOTORGAS COMPANY S.A.",
+                    "cargaUtil"=>$cargaUtil,
+                    "carro"=>$certificacion->Vehiculo,
+                    "taller"=>$certificacion->Taller,
+                    "hoja"=>$hoja,
+                    "numHoja"=>$this->completarConCeros($hoja->numSerie),
+                    "fechaCert"=>$fechaCert,
+                    "equipos"=>$equipos,
+                    "largo"=>$this->devuelveDatoParseado($certificacion->Vehiculo->largo),
+                    "ancho"=>$this->devuelveDatoParseado($certificacion->Vehiculo->ancho),
+                    "altura"=>$this->devuelveDatoParseado($certificacion->Vehiculo->altura),
+                    ];
+                    $pdf = App::make('dompdf.wrapper');
+                    $pdf->loadView('conversionGlp',$data);
+                    return $pdf->download($certificacion->Vehiculo->placa.'-'.$hoja->numSerie.'-anual-glp.pdf');
+                }
+                return abort(404);
+            }
+        }else{
+            return abort(404);
+        }
+    }
+
+
+
+
     public function devuelveDatoParseado($num){
         $str=(string) $num;
         if(substr($num, -1) != 0){
             return rtrim($num);
         }else{
             return  bcdiv($num, '1', 2);
-        }        
-        
+        }
+
     }
 
     public function descargarPdfAnualGnv($id){
         if(Certificacion::findOrFail($id)){
             $certificacion=Certificacion::find($id);
-            
+
                     $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
                     $fechaCert=$certificacion->created_at;
-                    $fecha=$fechaCert->format('d').' días del mes de '.$meses[$fechaCert->format('m')-1].' del '.$fechaCert->format('Y').'.';  
-                    $hoja=$certificacion->Materiales->where('idTipoMaterial',1)->first();              
+                    $fecha=$fechaCert->format('d').' días del mes de '.$meses[$fechaCert->format('m')-1].' del '.$fechaCert->format('Y').'.';
+                    $hoja=$certificacion->Materiales->where('idTipoMaterial',1)->first();
                     $data=[
                     "fecha"=>$fecha,
                     "empresa"=>"MOTORGAS COMPANY S.A.",
                     "carro"=>$certificacion->Vehiculo,
-                    "taller"=>$certificacion->Taller, 
-                    "hoja"=>$hoja, 
+                    "taller"=>$certificacion->Taller,
+                    "hoja"=>$hoja,
                     "fechaCert"=>$fechaCert,
                     "largo"=>$this->devuelveDatoParseado($certificacion->Vehiculo->largo),
                     "ancho"=>$this->devuelveDatoParseado($certificacion->Vehiculo->ancho),
                     "altura"=>$this->devuelveDatoParseado($certificacion->Vehiculo->altura),
-                    ];                 
+                    ];
                     $pdf = App::make('dompdf.wrapper');
-                    $pdf->loadView('anualGnv',$data);        
+                    $pdf->loadView('anualGnv',$data);
                     return $pdf->download($certificacion->Vehiculo->placa.'-'.$hoja->numSerie.'-anual.pdf');
-                
+
         }else{
             return abort(404);
         }
@@ -216,17 +435,17 @@ class PdfController extends Controller
                 if($certificacion->Servicio->tipoServicio->id==1 || $certificacion->Servicio->tipoServicio->id==10){
                     $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
                     $fechaCert=$certificacion->created_at;
-                    $fecha=$fechaCert->format('d').' días del mes de '.$meses[$fechaCert->format('m')-1].' del '.$fechaCert->format('Y').'.';              
-                    $chip=$certificacion->Vehiculo->Equipos->where("idTipoEquipo",1)->first();           
-                    $equipos=$certificacion->Vehiculo->Equipos->where("idTipoEquipo","!=",1)->sortBy("idTipoEquipo");                     
-                    //dd($chip); 
+                    $fecha=$fechaCert->format('d').' días del mes de '.$meses[$fechaCert->format('m')-1].' del '.$fechaCert->format('Y').'.';
+                    $chip=$certificacion->Vehiculo->Equipos->where("idTipoEquipo",1)->first();
+                    $equipos=$certificacion->Vehiculo->Equipos->where("idTipoEquipo","!=",1)->sortBy("idTipoEquipo");
+                    //dd($chip);
                     $hoja=$certificacion->Materiales->where('idTipoMaterial',1)->first();
                     $data=[
                     "fecha"=>$fecha,
                     "empresa"=>"MOTORGAS COMPANY S.A.",
                     "carro"=>$certificacion->Vehiculo,
-                    "taller"=>$certificacion->Taller, 
-                    "hoja"=>$hoja, 
+                    "taller"=>$certificacion->Taller,
+                    "hoja"=>$hoja,
                     "equipos"=>$equipos,
                     "chip"=>$chip,
                     "fechaCert"=>$fechaCert,
@@ -234,9 +453,9 @@ class PdfController extends Controller
                     "largo"=>$this->devuelveDatoParseado($certificacion->Vehiculo->largo),
                     "ancho"=>$this->devuelveDatoParseado($certificacion->Vehiculo->ancho),
                     "altura"=>$this->devuelveDatoParseado($certificacion->Vehiculo->altura),
-                    ];                 
+                    ];
                     $pdf = App::make('dompdf.wrapper');
-                    $pdf->loadView('conversionGnv',$data);        
+                    $pdf->loadView('conversionGnv',$data);
                     //return $pdf->stream($id.'-'.date('d-m-Y').'-cargo.pdf');
                     return  $pdf->stream($certificacion->Vehiculo->placa.'-'.$hoja->numSerie.'-inicial.pdf');
                 }
@@ -246,23 +465,23 @@ class PdfController extends Controller
             return abort(404);
         }
     }
-  
+
 
     public function descargarPdfInicialGnv($id){
         if(Certificacion::findOrFail($id)){
-            $certificacion=Certificacion::find($id);           
+            $certificacion=Certificacion::find($id);
                     $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
                     $fechaCert=$certificacion->created_at;
-                    $fecha=$fechaCert->format('d').' días del mes de '.$meses[$fechaCert->format('m')-1].' del '.$fechaCert->format('Y').'.';              
-                    $chip=$certificacion->vehiculo->Equipos->where("idTipoEquipo",1)->first();           
-                    $equipos=$certificacion->vehiculo->Equipos->where("idTipoEquipo","!=",1)->sortBy("idTipoEquipo");                    
+                    $fecha=$fechaCert->format('d').' días del mes de '.$meses[$fechaCert->format('m')-1].' del '.$fechaCert->format('Y').'.';
+                    $chip=$certificacion->vehiculo->Equipos->where("idTipoEquipo",1)->first();
+                    $equipos=$certificacion->vehiculo->Equipos->where("idTipoEquipo","!=",1)->sortBy("idTipoEquipo");
                     $hoja=$certificacion->Materiales->where('idTipoMaterial',1)->first();
                     $data=[
                     "fecha"=>$fecha,
                     "empresa"=>"MOTORGAS COMPANY S.A.",
                     "carro"=>$certificacion->Vehiculo,
-                    "taller"=>$certificacion->Taller, 
-                    "hoja"=>$hoja, 
+                    "taller"=>$certificacion->Taller,
+                    "hoja"=>$hoja,
                     "equipos"=>$equipos,
                     "chip"=>$chip,
                     "fechaCert"=>$fechaCert,
@@ -270,10 +489,10 @@ class PdfController extends Controller
                     "largo"=>$this->devuelveDatoParseado($certificacion->Vehiculo->largo),
                     "ancho"=>$this->devuelveDatoParseado($certificacion->Vehiculo->ancho),
                     "altura"=>$this->devuelveDatoParseado($certificacion->Vehiculo->altura),
-                    ];                 
+                    ];
                     $pdf = App::make('dompdf.wrapper');
-                    $pdf->loadView('conversionGnv',$data);       
-                    return  $pdf->download($certificacion->Vehiculo->placa.'-'.$hoja->numSerie.'-inicial.pdf');               
+                    $pdf->loadView('conversionGnv',$data);
+                    return  $pdf->download($certificacion->Vehiculo->placa.'-'.$hoja->numSerie.'-inicial.pdf');
         }else{
             return abort(404);
         }
@@ -289,27 +508,28 @@ class PdfController extends Controller
                 if($certificacion->Servicio->tipoServicio->id==12){
                     $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
                     $fechaCert=$certificacion->created_at;
-                    $fecha=$fechaCert->format('d').' días del mes de '.$meses[$fechaCert->format('m')-1].' del '.$fechaCert->format('Y').'.';              
-                    $chip=$certificacion->Vehiculo->Equipos->where("idTipoEquipo",1)->first();           
-                    $equipos=$certificacion->Vehiculo->Equipos->where("idTipoEquipo","!=",1)->sortBy("idTipoEquipo");                     
-                    //dd($chip); 
+                    $fecha=$fechaCert->format('d').' días del mes de '.$meses[$fechaCert->format('m')-1].' del '.$fechaCert->format('Y').'.';
+                    $chip=$certificacion->Vehiculo->Equipos->where("idTipoEquipo",1)->first();
+                    $equipos=$certificacion->Vehiculo->Equipos->where("idTipoEquipo","!=",1)->sortBy("idTipoEquipo");
+                    $cargaUtil=$this->calculaCargaUtil($certificacion->Vehiculo->pesoBruto,$certificacion->Vehiculo->pesoNeto);
                     $hoja=$certificacion->Materiales->where('idTipoMaterial',1)->first();
                     $data=[
                     "fecha"=>$fecha,
                     "empresa"=>"MOTORGAS COMPANY S.A.",
                     "carro"=>$certificacion->Vehiculo,
-                    "taller"=>$certificacion->Taller, 
-                    "hoja"=>$hoja, 
+                    "taller"=>$certificacion->Taller,
+                    "hoja"=>$hoja,
                     "equipos"=>$equipos,
                     "chip"=>$chip,
                     "fechaCert"=>$fechaCert,
+                    "cargaUtil"=>$cargaUtil,
                     "pesos"=>$certificacion->calculaPesos,
                     "largo"=>$this->devuelveDatoParseado($certificacion->Vehiculo->largo),
                     "ancho"=>$this->devuelveDatoParseado($certificacion->Vehiculo->ancho),
                     "altura"=>$this->devuelveDatoParseado($certificacion->Vehiculo->altura),
-                    ];                 
+                    ];
                     $pdf = App::make('dompdf.wrapper');
-                    $pdf->loadView('preConverGnv',$data);        
+                    $pdf->loadView('preConverGnv',$data);
                     //return $pdf->stream($id.'-'.date('d-m-Y').'-cargo.pdf');
                     return  $pdf->stream('Pre-Conver'.$certificacion->Vehiculo->placa.'-'.$hoja->numSerie);
                 }
@@ -327,17 +547,17 @@ class PdfController extends Controller
                 if($certificacion->Servicio->tipoServicio->id==12){
                     $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
                     $fechaCert=$certificacion->created_at;
-                    $fecha=$fechaCert->format('d').' días del mes de '.$meses[$fechaCert->format('m')-1].' del '.$fechaCert->format('Y').'.';              
-                    $chip=$certificacion->Vehiculo->Equipos->where("idTipoEquipo",1)->first();           
-                    $equipos=$certificacion->Vehiculo->Equipos->where("idTipoEquipo","!=",1)->sortBy("idTipoEquipo");                     
-                    //dd($chip); 
+                    $fecha=$fechaCert->format('d').' días del mes de '.$meses[$fechaCert->format('m')-1].' del '.$fechaCert->format('Y').'.';
+                    $chip=$certificacion->Vehiculo->Equipos->where("idTipoEquipo",1)->first();
+                    $equipos=$certificacion->Vehiculo->Equipos->where("idTipoEquipo","!=",1)->sortBy("idTipoEquipo");
+                    //dd($chip);
                     $hoja=$certificacion->Materiales->where('idTipoMaterial',1)->first();
                     $data=[
                     "fecha"=>$fecha,
                     "empresa"=>"MOTORGAS COMPANY S.A.",
                     "carro"=>$certificacion->Vehiculo,
-                    "taller"=>$certificacion->Taller, 
-                    "hoja"=>$hoja, 
+                    "taller"=>$certificacion->Taller,
+                    "hoja"=>$hoja,
                     "equipos"=>$equipos,
                     "chip"=>$chip,
                     "fechaCert"=>$fechaCert,
@@ -345,9 +565,9 @@ class PdfController extends Controller
                     "largo"=>$this->devuelveDatoParseado($certificacion->Vehiculo->largo),
                     "ancho"=>$this->devuelveDatoParseado($certificacion->Vehiculo->ancho),
                     "altura"=>$this->devuelveDatoParseado($certificacion->Vehiculo->altura),
-                    ];                 
+                    ];
                     $pdf = App::make('dompdf.wrapper');
-                    $pdf->loadView('preConverGnv',$data);        
+                    $pdf->loadView('preConverGnv',$data);
                     //return $pdf->stream($id.'-'.date('d-m-Y').'-cargo.pdf');
                     return  $pdf->download('Pre-Conver'.$certificacion->Vehiculo->placa.'-'.$hoja->numSerie);
                 }
@@ -370,21 +590,21 @@ class PdfController extends Controller
                     $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
                     $fechaCert=$duplicado->created_at;
                     $fechaAntiguo=$antiguo->created_at;
-                    $fecha=$fechaCert->format('d').' días del mes de '.$meses[$fechaCert->format('m')-1].' del '.$fechaCert->format('Y').'.';  
-                    $hoja=$duplicado->Hoja;        
-                    $hojaAntiguo=$antiguo->Hoja; 
+                    $fecha=$fechaCert->format('d').' días del mes de '.$meses[$fechaCert->format('m')-1].' del '.$fechaCert->format('Y').'.';
+                    $hoja=$duplicado->Hoja;
+                    $hojaAntiguo=$antiguo->Hoja;
                     $data=[
                     "fecha"=>$fecha,
                     "empresa"=>"MOTORGAS COMPANY S.A.",
                     "carro"=>$duplicado->Vehiculo,
-                    "taller"=>$antiguo->Taller, 
-                    "hoja"=>$hoja, 
+                    "taller"=>$antiguo->Taller,
+                    "hoja"=>$hoja,
                     "fechaCert"=>$fechaCert,
                     "fechaAntiguo"=>$fechaAntiguo,
                     "hojaAntiguo"=>$hojaAntiguo,
-                    ];                 
+                    ];
                     $pdf = App::make('dompdf.wrapper');
-                    $pdf->loadView('duplicadoAnualGnv',$data);        
+                    $pdf->loadView('duplicadoAnualGnv',$data);
                     return $pdf->stream($duplicado->Vehiculo->placa.'-'.$hoja->numSerie.'-duplicado-anual.pdf');
                 }
                 return abort(404);
@@ -404,21 +624,21 @@ class PdfController extends Controller
                     $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
                     $fechaCert=$duplicado->created_at;
                     $fechaAntiguo=$antiguo->created_at;
-                    $fecha=$fechaCert->format('d').' días del mes de '.$meses[$fechaCert->format('m')-1].' del '.$fechaCert->format('Y').'.';  
-                    $hoja=$duplicado->Hoja;        
-                    $hojaAntiguo=$antiguo->Hoja; 
+                    $fecha=$fechaCert->format('d').' días del mes de '.$meses[$fechaCert->format('m')-1].' del '.$fechaCert->format('Y').'.';
+                    $hoja=$duplicado->Hoja;
+                    $hojaAntiguo=$antiguo->Hoja;
                     $data=[
                     "fecha"=>$fecha,
                     "empresa"=>"MOTORGAS COMPANY S.A.",
                     "carro"=>$duplicado->Vehiculo,
-                    "taller"=>$antiguo->Taller, 
-                    "hoja"=>$hoja, 
+                    "taller"=>$antiguo->Taller,
+                    "hoja"=>$hoja,
                     "fechaCert"=>$fechaCert,
                     "fechaAntiguo"=>$fechaAntiguo,
                     "hojaAntiguo"=>$hojaAntiguo,
-                    ];                 
+                    ];
                     $pdf = App::make('dompdf.wrapper');
-                    $pdf->loadView('duplicadoAnualGnv',$data);        
+                    $pdf->loadView('duplicadoAnualGnv',$data);
                     return $pdf->download($duplicado->Vehiculo->placa.'-'.$hoja->numSerie.'-duplicado-anual.pdf');
                 }
                 return abort(404);
@@ -439,27 +659,27 @@ class PdfController extends Controller
                     $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
                     $fechaCert=$duplicado->created_at;
                     $fechaAntiguo=$antiguo->created_at;
-                    $fecha=$fechaCert->format('d').' días del mes de '.$meses[$fechaCert->format('m')-1].' del '.$fechaCert->format('Y').'.';              
-                    $chip=$duplicado->vehiculo->Equipos->where("idTipoEquipo",1)->first();           
-                    $equipos=$duplicado->vehiculo->Equipos->where("idTipoEquipo","!=",1)->sortBy("idTipoEquipo");                     
-                    //dd($equipos); 
+                    $fecha=$fechaCert->format('d').' días del mes de '.$meses[$fechaCert->format('m')-1].' del '.$fechaCert->format('Y').'.';
+                    $chip=$duplicado->vehiculo->Equipos->where("idTipoEquipo",1)->first();
+                    $equipos=$duplicado->vehiculo->Equipos->where("idTipoEquipo","!=",1)->sortBy("idTipoEquipo");
+                    //dd($equipos);
                     $hoja=$duplicado->Hoja;
                     $hojaAntiguo=$antiguo->Hoja;
- 
+
                     $data=[
                     "fecha"=>$fecha,
                     "empresa"=>"MOTORGAS COMPANY S.A.",
                     "carro"=>$duplicado->Vehiculo,
-                    "taller"=>$duplicado->Taller, 
-                    "hoja"=>$hoja, 
+                    "taller"=>$duplicado->Taller,
+                    "hoja"=>$hoja,
                     "equipos"=>$equipos,
                     "chip"=>$chip,
                     "fechaAntiguo"=>$fechaAntiguo,
                     "hojaAntiguo"=>$hojaAntiguo,
                     "pesos"=>$antiguo->calculaPesos,
-                    ];                 
+                    ];
                     $pdf = App::make('dompdf.wrapper');
-                    $pdf->loadView('duplicadoInicialGnv',$data);        
+                    $pdf->loadView('duplicadoInicialGnv',$data);
                     //return $pdf->stream($id.'-'.date('d-m-Y').'-cargo.pdf');
                     return  $pdf->stream($duplicado->Vehiculo->placa.'-'.$hoja->numSerie.'-duplicado-inicial.pdf');
                 }
@@ -479,27 +699,27 @@ class PdfController extends Controller
                     $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
                     $fechaCert=$duplicado->created_at;
                     $fechaAntiguo=$antiguo->created_at;
-                    $fecha=$fechaCert->format('d').' días del mes de '.$meses[$fechaCert->format('m')-1].' del '.$fechaCert->format('Y').'.';              
-                    $chip=$duplicado->vehiculo->Equipos->where("idTipoEquipo",1)->first();           
-                    $equipos=$duplicado->vehiculo->Equipos->where("idTipoEquipo","!=",1)->sortBy("idTipoEquipo");                     
-                    //dd($equipos); 
+                    $fecha=$fechaCert->format('d').' días del mes de '.$meses[$fechaCert->format('m')-1].' del '.$fechaCert->format('Y').'.';
+                    $chip=$duplicado->vehiculo->Equipos->where("idTipoEquipo",1)->first();
+                    $equipos=$duplicado->vehiculo->Equipos->where("idTipoEquipo","!=",1)->sortBy("idTipoEquipo");
+                    //dd($equipos);
                     $hoja=$duplicado->Hoja;
                     $hojaAntiguo=$antiguo->Hoja;
- 
+
                     $data=[
                     "fecha"=>$fecha,
                     "empresa"=>"MOTORGAS COMPANY S.A.",
                     "carro"=>$duplicado->Vehiculo,
-                    "taller"=>$duplicado->Taller, 
-                    "hoja"=>$hoja, 
+                    "taller"=>$duplicado->Taller,
+                    "hoja"=>$hoja,
                     "equipos"=>$equipos,
                     "chip"=>$chip,
                     "fechaAntiguo"=>$fechaAntiguo,
                     "hojaAntiguo"=>$hojaAntiguo,
                     "pesos"=>$antiguo->calculaPesos,
-                    ];                 
+                    ];
                     $pdf = App::make('dompdf.wrapper');
-                    $pdf->loadView('duplicadoInicialGnv',$data);        
+                    $pdf->loadView('duplicadoInicialGnv',$data);
                     //return $pdf->stream($id.'-'.date('d-m-Y').'-cargo.pdf');
                     return  $pdf->download($duplicado->Vehiculo->placa.'-'.$hoja->numSerie.'-duplicado-inicial.pdf');
                 }
@@ -517,35 +737,35 @@ class PdfController extends Controller
             $duplicado=Certificacion::find($id);
             $dupli=Duplicado::find($duplicado->idDuplicado);
            // $fec=$dupli->fecha;
-            //$hojaAntiguo=$antiguo->Hoja; 
+            //$hojaAntiguo=$antiguo->Hoja;
            // dd($dupli->fecha->format("d/m/Y"));
             //dd($duplicado);
-            //$antiguo=Certificacion::find($duplicado->Duplicado->idAnterior);            
+            //$antiguo=Certificacion::find($duplicado->Duplicado->idAnterior);
                 if($dupli->servicio==2){
                     $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
                     $fechaCert=$duplicado->created_at;
                     //$fechaAntiguo=$antiguo->created_at;
-                    $fecha=$fechaCert->format('d').' días del mes de '.$meses[$fechaCert->format('m')-1].' del '.$fechaCert->format('Y').'.';  
-                    $hoja=$duplicado->Hoja;     
+                    $fecha=$fechaCert->format('d').' días del mes de '.$meses[$fechaCert->format('m')-1].' del '.$fechaCert->format('Y').'.';
+                    $hoja=$duplicado->Hoja;
                     //$fec=$dupli->fecha;
-                    //$hojaAntiguo=$antiguo->Hoja; 
-                    
+                    //$hojaAntiguo=$antiguo->Hoja;
+
                     $data=[
                     "fecha"=>$fecha,
                     "empresa"=>"MOTORGAS COMPANY S.A.",
                     "carro"=>$duplicado->Vehiculo,
-                    "taller"=>$duplicado->Duplicado->taller, 
-                    "hoja"=>$hoja, 
+                    "taller"=>$duplicado->Duplicado->taller,
+                    "hoja"=>$hoja,
                     "fechaCert"=>$fechaCert,
                     "fechaAntiguo"=>Carbon::parse($dupli->fecha),
                     //"hojaAntiguo"=>$hojaAntiguo,
-                    ];                 
+                    ];
                     $pdf = App::make('dompdf.wrapper');
-                    $pdf->loadView('duplicadoExternoAnualGnv',$data);        
+                    $pdf->loadView('duplicadoExternoAnualGnv',$data);
                     return $pdf->stream($duplicado->Vehiculo->placa.'-'.$hoja->numSerie.'-duplicadoEx-anual.pdf');
                 }
                 return abort(404);
-            
+
         }else{
             return abort(404);
         }
@@ -556,35 +776,35 @@ class PdfController extends Controller
             $duplicado=Certificacion::find($id);
             $dupli=Duplicado::find($duplicado->idDuplicado);
            // $fec=$dupli->fecha;
-            //$hojaAntiguo=$antiguo->Hoja; 
+            //$hojaAntiguo=$antiguo->Hoja;
            // dd($dupli->fecha->format("d/m/Y"));
             //dd($duplicado);
-            //$antiguo=Certificacion::find($duplicado->Duplicado->idAnterior);            
+            //$antiguo=Certificacion::find($duplicado->Duplicado->idAnterior);
                 if($dupli->servicio==2){
                     $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
                     $fechaCert=$duplicado->created_at;
                     //$fechaAntiguo=$antiguo->created_at;
-                    $fecha=$fechaCert->format('d').' días del mes de '.$meses[$fechaCert->format('m')-1].' del '.$fechaCert->format('Y').'.';  
-                    $hoja=$duplicado->Hoja;     
+                    $fecha=$fechaCert->format('d').' días del mes de '.$meses[$fechaCert->format('m')-1].' del '.$fechaCert->format('Y').'.';
+                    $hoja=$duplicado->Hoja;
                     //$fec=$dupli->fecha;
-                    //$hojaAntiguo=$antiguo->Hoja; 
-                    
+                    //$hojaAntiguo=$antiguo->Hoja;
+
                     $data=[
                     "fecha"=>$fecha,
                     "empresa"=>"MOTORGAS COMPANY S.A.",
                     "carro"=>$duplicado->Vehiculo,
-                    "taller"=>$duplicado->Duplicado->taller, 
-                    "hoja"=>$hoja, 
+                    "taller"=>$duplicado->Duplicado->taller,
+                    "hoja"=>$hoja,
                     "fechaCert"=>$fechaCert,
                     "fechaAntiguo"=>Carbon::parse($dupli->fecha),
                     //"hojaAntiguo"=>$hojaAntiguo,
-                    ];                 
+                    ];
                     $pdf = App::make('dompdf.wrapper');
-                    $pdf->loadView('duplicadoExternoAnualGnv',$data);        
+                    $pdf->loadView('duplicadoExternoAnualGnv',$data);
                     return $pdf->download($duplicado->Vehiculo->placa.'-'.$hoja->numSerie.'-duplicadoEx-anual.pdf');
                 }
                 return abort(404);
-            
+
         }else{
             return abort(404);
         }
@@ -594,36 +814,36 @@ class PdfController extends Controller
     public function generaDuplicadoExternoInicialGnv($id){
         if(Certificacion::findOrFail($id)){
             $duplicado=Certificacion::find($id);
-            $dupli=Duplicado::find($duplicado->idDuplicado);           
+            $dupli=Duplicado::find($duplicado->idDuplicado);
                 if($dupli->servicio==1){
                     $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
                     $fechaCert=$duplicado->created_at;
                     //$fechaAntiguo=$antiguo->created_at;
-                    $fecha=$fechaCert->format('d').' días del mes de '.$meses[$fechaCert->format('m')-1].' del '.$fechaCert->format('Y').'.';              
-                    $chip=$duplicado->vehiculo->Equipos->where("idTipoEquipo",1)->first();           
-                    $equipos=$duplicado->vehiculo->Equipos->where("idTipoEquipo","!=",1)->sortBy("idTipoEquipo");                     
-                    //dd($equipos); 
+                    $fecha=$fechaCert->format('d').' días del mes de '.$meses[$fechaCert->format('m')-1].' del '.$fechaCert->format('Y').'.';
+                    $chip=$duplicado->vehiculo->Equipos->where("idTipoEquipo",1)->first();
+                    $equipos=$duplicado->vehiculo->Equipos->where("idTipoEquipo","!=",1)->sortBy("idTipoEquipo");
+                    //dd($equipos);
                     $hoja=$duplicado->Hoja;
                    // $hojaAntiguo=$antiguo->Hoja;
- 
+
                     $data=[
                     "fecha"=>$fecha,
                     "empresa"=>"MOTORGAS COMPANY S.A.",
                     "carro"=>$duplicado->Vehiculo,
-                    "taller"=>$duplicado->Duplicado->taller, 
-                    "hoja"=>$hoja, 
+                    "taller"=>$duplicado->Duplicado->taller,
+                    "hoja"=>$hoja,
                     "equipos"=>$equipos,
                     "chip"=>$chip,
                     "fechaAntiguo"=>Carbon::parse($dupli->fecha),
                     "pesos"=>$duplicado->calculaPesos,
-                    ];                 
+                    ];
                     $pdf = App::make('dompdf.wrapper');
-                    $pdf->loadView('duplicadoExternoInicialGnv',$data);        
+                    $pdf->loadView('duplicadoExternoInicialGnv',$data);
                     //return $pdf->stream($id.'-'.date('d-m-Y').'-cargo.pdf');
                     return  $pdf->stream($duplicado->Vehiculo->placa.'-'.$hoja->numSerie.'-duplicado-inicial.pdf');
                 }
                 return abort(404);
-            
+
         }else{
             return abort(404);
         }
@@ -632,36 +852,36 @@ class PdfController extends Controller
     public function descargarDuplicadoExternoInicialGnv($id){
         if(Certificacion::findOrFail($id)){
             $duplicado=Certificacion::find($id);
-            $dupli=Duplicado::find($duplicado->idDuplicado);           
+            $dupli=Duplicado::find($duplicado->idDuplicado);
                 if($dupli->servicio==1){
                     $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
                     $fechaCert=$duplicado->created_at;
                     //$fechaAntiguo=$antiguo->created_at;
-                    $fecha=$fechaCert->format('d').' días del mes de '.$meses[$fechaCert->format('m')-1].' del '.$fechaCert->format('Y').'.';              
-                    $chip=$duplicado->vehiculo->Equipos->where("idTipoEquipo",1)->first();           
-                    $equipos=$duplicado->vehiculo->Equipos->where("idTipoEquipo","!=",1)->sortBy("idTipoEquipo");                     
-                    //dd($equipos); 
+                    $fecha=$fechaCert->format('d').' días del mes de '.$meses[$fechaCert->format('m')-1].' del '.$fechaCert->format('Y').'.';
+                    $chip=$duplicado->vehiculo->Equipos->where("idTipoEquipo",1)->first();
+                    $equipos=$duplicado->vehiculo->Equipos->where("idTipoEquipo","!=",1)->sortBy("idTipoEquipo");
+                    //dd($equipos);
                     $hoja=$duplicado->Hoja;
                    // $hojaAntiguo=$antiguo->Hoja;
- 
+
                     $data=[
                     "fecha"=>$fecha,
                     "empresa"=>"MOTORGAS COMPANY S.A.",
                     "carro"=>$duplicado->Vehiculo,
-                    "taller"=>$duplicado->Duplicado->taller, 
-                    "hoja"=>$hoja, 
+                    "taller"=>$duplicado->Duplicado->taller,
+                    "hoja"=>$hoja,
                     "equipos"=>$equipos,
                     "chip"=>$chip,
                     "fechaAntiguo"=>Carbon::parse($dupli->fecha),
                     "pesos"=>$duplicado->calculaPesos,
-                    ];                 
+                    ];
                     $pdf = App::make('dompdf.wrapper');
-                    $pdf->loadView('duplicadoExternoInicialGnv',$data);        
+                    $pdf->loadView('duplicadoExternoInicialGnv',$data);
                     //return $pdf->stream($id.'-'.date('d-m-Y').'-cargo.pdf');
                     return  $pdf->download($duplicado->Vehiculo->placa.'-'.$hoja->numSerie.'-duplicado-inicial.pdf');
                 }
                 return abort(404);
-            
+
         }else{
             return abort(404);
         }
@@ -672,10 +892,10 @@ class PdfController extends Controller
         if(Certificacion::findOrFail($id)){
             $certificacion=Certificacion::find($id);
             if($certificacion->Servicio->tipoServicio->id){
-                if($certificacion->Servicio->tipoServicio->id==1||$certificacion->Servicio->tipoServicio->id==10){                    
-                    $chip=$certificacion->vehiculo->Equipos->where("idTipoEquipo",1)->first();           
-                    $equipos=$certificacion->vehiculo->Equipos->where("idTipoEquipo","!=",1)->sortBy("idTipoEquipo");                     
-                    //dd($equipos); 
+                if($certificacion->Servicio->tipoServicio->id==1||$certificacion->Servicio->tipoServicio->id==10){
+                    $chip=$certificacion->vehiculo->Equipos->where("idTipoEquipo",1)->first();
+                    $equipos=$certificacion->vehiculo->Equipos->where("idTipoEquipo","!=",1)->sortBy("idTipoEquipo");
+                    //dd($equipos);
                     $hoja=$certificacion->Materiales->where('idTipoMaterial',1)->first();
                     $fechaCert=$certificacion->created_at;
                     $fec=$fechaCert->format("d/m/Y");
@@ -684,14 +904,14 @@ class PdfController extends Controller
                     "empresa"=>"MOTORGAS COMPANY S.A.",
                     "carro"=>$certificacion->Vehiculo,
                     "taller"=>$certificacion->Taller,
-                    "servicio"=>$certificacion->Servicio, 
-                    "hoja"=>$hoja, 
+                    "servicio"=>$certificacion->Servicio,
+                    "hoja"=>$hoja,
                     "equipos"=>$equipos,
                     "chip"=>$chip,
                     "cilindros"=>$this->estadoCilindrosMotor($certificacion->Vehiculo->cilindros),
-                    ];                 
+                    ];
                     $pdf = App::make('dompdf.wrapper');
-                    $pdf->loadView('preConversion',$data);        
+                    $pdf->loadView('preConversion',$data);
                     //return $pdf->stream($id.'-'.date('d-m-Y').'-cargo.pdf');
                     return  $pdf->stream("PreConver-".$certificacion->Vehiculo->placa.'-'.$hoja->numSerie.'.pdf');
                 }
@@ -705,10 +925,10 @@ class PdfController extends Controller
         if(Certificacion::findOrFail($id)){
             $certificacion=Certificacion::find($id);
             if($certificacion->Servicio->tipoServicio->id){
-                if($certificacion->Servicio->tipoServicio->id==1||$certificacion->Servicio->tipoServicio->id==10){                    
-                    $chip=$certificacion->vehiculo->Equipos->where("idTipoEquipo",1)->first();           
-                    $equipos=$certificacion->vehiculo->Equipos->where("idTipoEquipo","!=",1)->sortBy("idTipoEquipo");                     
-                    //dd($equipos); 
+                if($certificacion->Servicio->tipoServicio->id==1||$certificacion->Servicio->tipoServicio->id==10){
+                    $chip=$certificacion->vehiculo->Equipos->where("idTipoEquipo",1)->first();
+                    $equipos=$certificacion->vehiculo->Equipos->where("idTipoEquipo","!=",1)->sortBy("idTipoEquipo");
+                    //dd($equipos);
                     $hoja=$certificacion->Materiales->where('idTipoMaterial',1)->first();
                     $fechaCert=$certificacion->created_at;
                     $fec=$fechaCert->format("d/m/Y");
@@ -717,14 +937,14 @@ class PdfController extends Controller
                     "empresa"=>"MOTORGAS COMPANY S.A.",
                     "carro"=>$certificacion->Vehiculo,
                     "taller"=>$certificacion->Taller,
-                    "servicio"=>$certificacion->Servicio, 
-                    "hoja"=>$hoja, 
+                    "servicio"=>$certificacion->Servicio,
+                    "hoja"=>$hoja,
                     "equipos"=>$equipos,
                     "chip"=>$chip,
                     "cilindros"=>$this->estadoCilindrosMotor($certificacion->Vehiculo->cilindros),
-                    ];                 
+                    ];
                     $pdf = App::make('dompdf.wrapper');
-                    $pdf->loadView('preConversion',$data);        
+                    $pdf->loadView('preConversion',$data);
                     //return $pdf->stream($id.'-'.date('d-m-Y').'-cargo.pdf');
                     return  $pdf->download("PreConver-".$certificacion->Vehiculo->placa.'-'.$hoja->numSerie.'.pdf');
                 }
@@ -761,7 +981,7 @@ class PdfController extends Controller
         $inspector=$sal->usuarioAsignado;
         $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
         $fecSal=$sal->created_at;
-        $fecha=$fecSal->format('d').' de '.$meses[$fecSal->format('m')-1].' del '.$fecSal->format('Y').'.';               
+        $fecha=$fecSal->format('d').' de '.$meses[$fecSal->format('m')-1].' del '.$fecSal->format('Y').'.';
         $data=[
         "date"=>$fecha,
         "empresa"=>"MOTORGAS COMPANY S.A.",
@@ -770,9 +990,9 @@ class PdfController extends Controller
         "cambios"=>$cambios,
         "prestamos"=>$prestamos,
         "salida"=>$sal,
-        ];                 
+        ];
         $pdf = App::make('dompdf.wrapper');
-        $pdf->loadView('cargoPDF',$data);        
+        $pdf->loadView('cargoPDF',$data);
         return $pdf->stream(date('d-m-Y').'_'.$inspector->name.'-cargo.pdf');
     }
 
@@ -781,11 +1001,11 @@ class PdfController extends Controller
         $gnvs=$salida->porAsignacion->where("idTipoMaterial",1);
         $glps=$salida->porAsignacion->where("idTipoMaterial",3);
         $chips=$salida->porAsignacion->where("idTipoMaterial",2);
-        
+
         //dd($gnvs->get()->pluck("numSerie")->all());
         if($gnvs->count()>0){
             $materiales->push(["series"=>$this->encuentraSeries($gnvs->get()->sortBy("numSerie")->all()),"tipo"=>$gnvs->first()->tipo->descripcion,"cantidad"=>$gnvs->count(),"motivo"=>$gnvs->first()->detalle->motivo]);
-        }       
+        }
         if($glps->count()>0){
             $materiales->push(["series"=>$this->encuentraSeries($glps->get()->all()),"tipo"=>$glps->first()->tipo->descripcion,"cantidad"=>$glps->count(),"motivo"=>$glps->first()->detalle->motivo]);
         }
@@ -808,7 +1028,7 @@ class PdfController extends Controller
         //dd($gnvOrdenado);
         if($gnvs->count()>0){
             $materiales->push(["series"=>$this->encuentraSeries($gnvs->get()->sortBy("numSerie")->all()),"tipo"=>$gnvs->first()->tipo->descripcion,"cantidad"=>$gnvs->count(),"motivo"=>$gnvs->first()->detalle->motivo]);
-        }       
+        }
         if($glps->count()>0){
             $materiales->push(["series"=>$this->encuentraSeries($glps->get()->all()),"tipo"=>$glps->first()->tipo->descripcion,"cantidad"=>$glps->count(),"motivo"=>$glps->first()->detalle->motivo]);
         }
@@ -832,7 +1052,7 @@ class PdfController extends Controller
         //dd($gnvOrdenado);
         if($gnvs->count()>0){
             $materiales->push(["series"=>$this->encuentraSeries($gnvs->get()->sortBy("numSerie")->all()),"tipo"=>$gnvs->first()->tipo->descripcion,"cantidad"=>$gnvs->count(),"motivo"=>$gnvs->first()->detalle->motivo]);
-        }       
+        }
         if($glps->count()>0){
             $materiales->push(["series"=>$this->encuentraSeries($glps->get()->all()),"tipo"=>$glps->first()->tipo->descripcion,"cantidad"=>$glps->count(),"motivo"=>$glps->first()->detalle->motivo]);
         }
@@ -848,9 +1068,9 @@ class PdfController extends Controller
         $inicio = $arreglo[0]["numSerie"];
         $final = $arreglo[0]["numSerie"];
         $nuevos=[];
-        
+
         foreach($arreglo as $key=>$rec){
-            if($key+1 < count($arreglo) ){            
+            if($key+1 < count($arreglo) ){
                 if($arreglo[$key+1]["numSerie"] - $rec["numSerie"]==1){
                 //if($rec["numSerie"]+1 == next($arreglo)['numSerie']){
                         //$final=next($arreglo)["numSerie"];
@@ -858,25 +1078,25 @@ class PdfController extends Controller
                 }else{
                     array_push($nuevos,["inicio"=>$inicio,"final"=>$final]);
                     $inicio=$arreglo[$key+1]["numSerie"];
-                    $final=$arreglo[$key+1]["numSerie"];                    
+                    $final=$arreglo[$key+1]["numSerie"];
                 }
             }else{
                 $final=$arreglo[$key]["numSerie"];
                 array_push($nuevos,["inicio"=>$inicio,"final"=>$final]);
             }
         }
-        return $nuevos;        
+        return $nuevos;
     }
 
-    
-    
+
+
 
 
     public function generaBoletoDeAnalizador($id){
         $archivo=fopen("storage/voucherTalleres/plantilla_JR.txt", "r+");
          /*
         fwrite($archivo, "HOLAAAAAAAAAAAAAAAAAAAAAAAAAAAA".$id);
-       
+
         fclose($archivo);
         echo("todo oK");
         */
@@ -888,4 +1108,3 @@ class PdfController extends Controller
     }
 
 }
- 

@@ -21,6 +21,7 @@ use App\Http\Livewire\AdministracionCertificaciones;
 use App\Http\Livewire\AdminPermisos;
 use App\Http\Livewire\AdminRoles;
 use App\Http\Livewire\Arreglando;
+use App\Http\Livewire\ConsultarHoja;
 use App\Http\Livewire\EditarTaller;
 use App\Http\Livewire\FinalizarPreConversion;
 use App\Http\Livewire\ImportarAnuales;
@@ -28,10 +29,13 @@ use App\Http\Livewire\ImportarConversiones;
 use App\Http\Livewire\ImportarDesmontes;
 use App\Http\Livewire\ListaCertificaciones;
 use App\Http\Livewire\ListaCertificacionesPendientes;
+use App\Http\Livewire\NotificacionesPendientes;
 use App\Http\Livewire\PrestamoMateriales;
 use App\Http\Livewire\Prueba;
 use App\Http\Livewire\PruebaExcel;
 use App\Http\Livewire\Reportes\AdministracionDeServiciosImportados;
+use App\Http\Livewire\Reportes\ReporteDocumentosTaller;
+use App\Http\Livewire\Reportes\ReporteFotosPorInspector;
 use App\Http\Livewire\Reportes\ReporteGeneralGnv;
 use App\Http\Livewire\Reportes\ReporteMateriales;
 use App\Http\Livewire\Reportes\ReporteServiciosPorInspector;
@@ -39,6 +43,8 @@ use App\Http\Livewire\RevisionInventario;
 use App\Http\Livewire\TallerRevision;
 use App\Http\Livewire\Tablas\Tiposservicios;
 use App\Http\Livewire\Usuarios;
+use App\Http\Livewire\VistaEliminacion;
+use App\Http\Livewire\VistaSolicitudAnul;
 
 /*
 |--------------------------------------------------------------------------
@@ -83,6 +89,11 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified'])
     Route::get('/certificados-pendientes',ListaCertificacionesPendientes::class)->middleware('can:certificaciones.pendientes')->name('certificaciones.pendientes');
 
     Route::get('/Solicitud/{soliId}',VistaSolicitud::class)->name('vistaSolicitud');
+    Route::get('/SolicitudAnu/{anuId}/{cerId}/{userId}',VistaSolicitudAnul::class)->name('vistaSolicitudAnul');
+    Route::get('/SolicitudEli/{eliId}/{cerId}/{userId}',VistaEliminacion::class)->name('vistaSolicitudEli');
+    Route::get('/Notificaciones',NotificacionesPendientes::class)->name('Notificaciones');
+    Route::get('/ConsultarHoja',ConsultarHoja::class)->middleware('can:ConsultarHoja')->name('ConsultarHoja');
+    //Route::get('/Recepcion-de-materiales',RecepcionMateriales::class)->middleware('can:recepcion')->name('recepcion');
 
     Route::get('/Servicio',Prueba::class)->middleware('can:servicio')->name('servicio');
 
@@ -116,6 +127,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified'])
     Route::get('/Reporte-general-gnv',ReporteGeneralGnv::class)->name('reportes.reporteGeneralGnv');
     Route::get('/Reporte-de-materiales',ReporteMateriales::class)->name('reportes.reporteMateriales');
     Route::get('/Reporte-de-servicios-por-inspector',ReporteServiciosPorInspector::class)->name('reportes.reporteServiciosPorInspector');
+    Route::get('/Reporte-de-fotos-por-inspector',ReporteFotosPorInspector::class)->name('reportes.reporteFotosPorInspector');
+    Route::get('/Reporte-de-documentos-a-vencer',ReporteDocumentosTaller::class)->name('reportes.reporteDocumentosTaller');
 
     //Ruta para adminsitracion de tablas
     Route::get('/Tablas/TiposDeServicios',Tiposservicios::class)->name('table.tiposServicio');
@@ -128,32 +141,58 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified'])
 
     //RUTAS PARA STREAM Y DESCARGA DE PDFS
     Route::controller(PdfController::class)->group(function () {
+
+        //Rutas para ver certificado anual GNV
         Route::get('/certificado-anual/{id}', 'generaPdfAnualGnv')->name("certificadoAnualGnv");
         Route::get('/duplicado-anual/{id}', 'generaDuplicadoAnualGnv')->name("duplicadoAnualGnv");
         Route::get('/duplicado-anual-ex/{id}', 'generaDuplicadoExternoAnualGnv')->name("duplicadoExternoAnualGnv");
 
+        //Rutas para descargar certificado anual GNV
         Route::get('/certificado-anual/{id}/descargar', 'descargarPdfAnualGnv')->name("descargarCertificadoAnualGnv");
         Route::get('/duplicado-anual/{id}/descargar', 'descargarDuplicadoAnualGnv')->name("descargarDuplicadoAnualGnv");
         Route::get('/duplicado-anual-ex/{id}/descargar', 'descargarDuplicadoExternoAnualGnv')->name("descargarDuplicadoExternoAnualGnv");
 
-
+        //Rutas para ver certificado inicial GNV
         Route::get('/certificado-inicial/{id}', 'generaPdfInicialGnv')->name("certificadoInicialGnv");
         Route::get('/duplicado-inicial/{id}', 'generaDuplicadoInicialGnv')->name("duplicadoInicialGnv");
         Route::get('/duplicado-inicial-ex/{id}', 'generaDuplicadoExternoInicialGnv')->name("duplicadoExternoInicialGnv");
 
+        //Rutas para descargar certificado inicial GNV
         Route::get('/certificado-inicial/{id}/descargar', 'descargarPdfInicialGnv')->name("descargarCertificadoInicialGnv");
         Route::get('/duplicado-inicial/{id}/descargar', 'descargarDuplicadoInicialGnv')->name("descargarDuplicadoInicialGnv");
         Route::get('/duplicado-inicial-ex/{id}/descargar', 'descargarDuplicadoExternoInicialGnv')->name("descargarDuplicadoExternoInicialGnv");
+
+        //Rutas para descargar certificado preconversion GNV
         Route::get('/preConver/{id}', 'generaPdfPreGnv')->name("generaPreGnvPdf");
         Route::get('/preConver/{id}/descargar', 'generaDescargaPreGnv')->name("descargarPreGnvPdf");
 
-        Route::get('/cargo/{id}','generaCargo')->name('generaCargo');
 
+        //Rutas para descargar y ver documentos complementarios de GNV
         Route::get('/fichaTecnicaGnv/{idCert}', 'generarFichaTecnica')->name("fichaTecnicaGnv");
         Route::get('/fichaTecnicaGnv/{idCert}/download', 'descargarFichaTecnica')->name("descargarFichaTecnicaGnv");
         Route::get('/preConversionGnv/{idCert}', 'generarPreConversionGnv')->name("preConversionGnv");
         Route::get('/checkListArriba/{idCert}', 'generarCheckListArribaGnv')->name("checkListArribaGnv");
         Route::get('/checkListAbajo/{idCert}', 'generarCheckListAbajoGnv')->name("checkListAbajoGnv");
+
+
+        //Rutas para ver certificado anual GLP
+        Route::get('/certificado-anual-glp/{id}', 'generaPdfAnualGlp')->name("certificadoAnualGlp");
+
+        //Rutas para ver certificado inicial GLP
+        Route::get('/certificado-inicial-glp/{id}', 'generaPdfInicialGlp')->name("certificadoInicialGlp");
+
+        //Rutas para descargar certificado anual GLP
+        Route::get('/certificado-anual-glp/{id}/descargar', 'descargaPdfAnualGlp')->name("descargarCertificadoAnualGlp");
+
+        //Rutas para descargar certificado inicial GLP
+        Route::get('/certificado-inicial-glp/{id}/descargar', 'generaPdfInicialGlp')->name("descargarCertificadoInicialGlp");
+
+        //Rutas para descargar y ver documentos complementarios de GNV
+        Route::get('/fichaTecnicaGlp/{idCert}','generarFichaTecnicaGlp')->name("fichaTecnicaGlp");
+        Route::get('/fichaTecnicaGlp/{idCert}/descargar','descargarFichaTecnicaGlp')->name("descargarFichaTecnicaGlp");
+
+         //Rutas para generar cargo de materiales
+        Route::get('/cargo/{id}','generaCargo')->name('generaCargo');
 
         Route::get('/boletoAnalizadorDeGases/{id}', 'generaBoletoDeAnalizador')->name("analizadorGnv");
     });
@@ -163,6 +202,9 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified'])
 
     Route::get("expediente-fotos/{id}/download","App\Http\Controllers\ZipController@descargaFotosExpediente")->name("descargaFotosExp");
     Route::get("Notification/{idNoti}/{idSoli}","App\Http\Controllers\NotificationController@marcarUnaNotificación")->name("leerNotificacion");
+    Route::get("Notification/{idNoti}anular","App\Http\Controllers\AnulacionController@marcarAnulacion")->name("leerAnular");
+    Route::get("Notification/{idNoti}eliminar","App\Http\Controllers\EliminacionController@marcarEliminacion")->name("leerEliminar");
+
     Route::get('download/{path}', function($path) { return Illuminate\Support\Facades\Storage::download($path);})->where('path','.*');
     Route::get('/CargoPdf/{id}', function ($id) {
         $am= new AsignacionMateriales();

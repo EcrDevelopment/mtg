@@ -15,6 +15,7 @@ class ReporteCumplimentoExport implements FromCollection,WithHeadings,WithMappin
     use Exportable;
 
     public $data;
+    
     public function __construct($data) {
         $this->data=$data;
     }

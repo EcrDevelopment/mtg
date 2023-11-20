@@ -2,25 +2,32 @@
 
 namespace App\Notifications;
 
-use App\Models\Solicitud;
-use App\Models\User;
+use App\Http\Livewire\Usuarios;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use App\Models\Anulacion;
+use App\Models\Certificacion;
+use App\Models\User;
 
-class CreateSolicitud extends Notification
+
+class AnulacionSolicitud extends Notification
 {
     use Queueable;
-    public $solicitud;
+
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(Solicitud $solicitud)
+    public $anulacion, $servicio, $usuario;
+
+    public function __construct(Anulacion $anulacion, Certificacion $servicio, User $usuario)
     {
-        $this->solicitud = $solicitud;
+        $this->anulacion = $anulacion;
+        $this->servicio = $servicio;
+        $this->usuario = $usuario;
     }
 
     /**
@@ -40,12 +47,14 @@ class CreateSolicitud extends Notification
      * @param  mixed  $notifiable
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
+    
+
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->line('The introduction to the notification.')
-            ->action('Notification Action', url('/'))
-            ->line('Thank you for using our application!');
+            ->line('Se ha recibido una nueva solicitud de anulación:')
+            ->action('Ver solicitud', url('/'))
+            ->line('Gracias por usar nuestra aplicación.');
     }
 
     /**
@@ -56,12 +65,13 @@ class CreateSolicitud extends Notification
      */
     public function toArray($notifiable)
     {
-        $inspector = User::find($this->solicitud->idInspector)->name;
+        
         return [
-            "inspector" => $inspector,
-            "data" => $this->solicitud->data,
-            "fecha" => $this->solicitud->created_at,
-            "idSoli" => $this->solicitud->id,
+            'motivo' => $this->anulacion->motivo,
+            'idAnulacion' => $this->anulacion->id,
+            'idInspector' => $this->usuario->id,
+            'idServicio' =>$this->servicio->id,            
         ];
     }
+
 }

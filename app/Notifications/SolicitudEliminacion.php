@@ -2,26 +2,32 @@
 
 namespace App\Notifications;
 
-use App\Models\Solicitud;
-use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use App\Http\Livewire\Usuarios;
+use App\Models\Certificacion;
+use App\Models\Eliminacion;
+use App\Models\User;
 
-class CreateSolicitud extends Notification
+class SolicitudEliminacion extends Notification
 {
     use Queueable;
-    public $solicitud;
+
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(Solicitud $solicitud)
-    {
-        $this->solicitud = $solicitud;
-    }
+
+    public $eliminacion, $servicio, $usuario;
+     public function __construct(Eliminacion $eliminacion, Certificacion $servicio, User $usuario)
+     {
+        $this->eliminacion = $eliminacion;
+         $this->servicio = $servicio;
+         $this->usuario = $usuario;
+     }
 
     /**
      * Get the notification's delivery channels.
@@ -43,9 +49,9 @@ class CreateSolicitud extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->line('The introduction to the notification.')
-            ->action('Notification Action', url('/'))
-            ->line('Thank you for using our application!');
+            ->line('Se ha recibido una nueva solicitud de eliminacion:')
+            ->action('Ver Eliminacion', url('/'))
+            ->line('Gracias por usar nuestra aplicación.');
     }
 
     /**
@@ -56,12 +62,10 @@ class CreateSolicitud extends Notification
      */
     public function toArray($notifiable)
     {
-        $inspector = User::find($this->solicitud->idInspector)->name;
         return [
-            "inspector" => $inspector,
-            "data" => $this->solicitud->data,
-            "fecha" => $this->solicitud->created_at,
-            "idSoli" => $this->solicitud->id,
+            'idEliminacion' => $this->eliminacion->id,
+            'idInspector' => $this->usuario->id,
+            'idServicio' =>$this->servicio->id,
         ];
     }
 }

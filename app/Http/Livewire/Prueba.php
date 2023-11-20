@@ -382,7 +382,7 @@ class Prueba extends Component
 
         if ($hoja != null) {
             if (isset($this->vehiculo)) {
-                if ($this->vehiculo->esCertificableGnv) {
+                if (!$this->vehiculo->esCertificableGnv) {
                     $certi = Certificacion::certificarGnvPre($taller, $servicio, $hoja, $this->vehiculo, Auth::user());
                     if ($certi) {
                         $this->estado = "certificado";
@@ -416,7 +416,7 @@ class Prueba extends Component
         if ($hoja != null) {
             if ($chip != null) {
                 if (isset($this->vehiculo)) {
-                    if ($this->vehiculo->esCertificableGnv) {
+                    if (!$this->vehiculo->esCertificableGnv) {
                         $certi = Certificacion::certificarGnvConChip($taller, $servicio, $hoja, $this->vehiculo, Auth::user(), $chip);
                         if ($certi) {
                             $this->estado = "certificado";
@@ -484,7 +484,7 @@ class Prueba extends Component
         if ($hoja != null) {
             if ($this->externo) {
                 if (isset($this->vehiculo)) {
-                    if ($this->vehiculo->esCertificable) {
+                    if (!$this->vehiculo->esCertificableGnv) {
                         $servicio = Servicio::find($this->servicio);
 
                         $duplicado = $this->creaDuplicadoExterno();

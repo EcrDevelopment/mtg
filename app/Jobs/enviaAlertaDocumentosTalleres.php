@@ -38,7 +38,7 @@ class enviaAlertaDocumentosTalleres implements ShouldQueue
      */
     public function handle()
     {
-        $user=User::where('taller',$this->taller->id)->pluck('email');
+        $user=User::where('taller',$this->taller->id);
         $fecha=now()->format("d-m-Y");
         if(!empty($user)){
             Mail::to($user->email)->send( new CustomMail($user));

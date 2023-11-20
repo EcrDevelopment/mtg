@@ -69,7 +69,7 @@ class Certificacion extends Model
         return $this->belongsToMany(Material::class, 'serviciomaterial', 'idCertificacion', 'idMaterial');
     }
 
-    //scopes para busquedas    
+    //scopes para busquedas
 
 
 
@@ -151,15 +151,15 @@ class Certificacion extends Model
         //$hoja=Certificacion::find($this->attributes['id'])->Materiales->where('idTipoMaterial',1)->first();
         //return $hoja;
         $serie=null;
-        
+
             $numero=$this->Materiales->where('idTipoMaterial',1)->first()->numSerie;
-       
-        
+
+
         if($numero){
             $serie=$numero;
         }
         return $serie;
-        
+
     }*/
 
     public function getserieFormatoAttribute()
@@ -175,14 +175,19 @@ class Certificacion extends Model
         return $serie;
     }
 
-
-
     public function getHojaAttribute()
     {
-        $hoja = Certificacion::find($this->attributes['id'])->Materiales->where('idTipoMaterial', 1)->first();
-        return $hoja;
-        //return $this->Materiales;
-
+        $idServicio=$this->Servicio->tipoServicio->id;
+        $hoja=null;
+        if (in_array($idServicio, [1, 2, 7, 8, 10, 12])) {
+            $hoja = Certificacion::find($this->attributes['id'])->Materiales->where('idTipoMaterial', 1)->first();
+            return $hoja;
+        } elseif (in_array($idServicio, [3, 4, 9])) {
+            $hoja = Certificacion::find($this->attributes['id'])->Materiales->where('idTipoMaterial', 3)->first();
+            return $hoja;
+        }else{
+            return $hoja;
+        }
     }
 
     public function getChipMaterialAttribute()
@@ -205,7 +210,6 @@ class Certificacion extends Model
         return $this->Vehiculo->Equipos->where('idTipoEquipo', 3);
     }
 
-
     public function getRutaVistaCertificadoAttribute()
     {
         $ruta = null;
@@ -215,6 +219,12 @@ class Certificacion extends Model
                 break;
             case 2: //tipo servicio = anual gnv
                 $ruta = route('certificadoAnualGnv', ['id' => $this->attributes['id']]);
+                break;
+            case 3: //tipo servicio = inicial gnv
+                $ruta = route('certificadoInicialGlp', ['id' => $this->attributes['id']]);
+                break;
+            case 4: //tipo servicio = anual gnv
+                $ruta = route('certificadoAnualGlp', ['id' => $this->attributes['id']]);
                 break;
 
             case 8: //tipo servicio = anual gnv
@@ -250,6 +260,12 @@ class Certificacion extends Model
                 break;
             case 2: //tipo servicio = anual gnv
                 $ruta = route('descargarCertificadoAnualGnv', ['id' => $this->attributes['id']]);
+                break;
+            case 3: //tipo servicio = anual glp
+                $ruta = route('descargarCertificadoInicialGlp', ['id' => $this->attributes['id']]);
+                break;
+            case 4: //tipo servicio = anual glp
+                $ruta = route('descargarCertificadoAnualGlp', ['id' => $this->attributes['id']]);
                 break;
 
             case 8: //tipo servicio = anual gnv
@@ -350,8 +366,6 @@ class Certificacion extends Model
         return $ruta;
     }
 
-
-
     public function getRutaVistaFtAttribute()
     {
         $ruta = null;
@@ -361,6 +375,12 @@ class Certificacion extends Model
                 break;
             case 2:
                 $ruta = route('fichaTecnicaGnv', ['idCert' => $this->attributes['id']]);
+                break;
+            case 3:
+                $ruta = route('fichaTecnicaGlp', ['idCert' => $this->attributes['id']]);
+                break;
+            case 4:
+                $ruta = route('fichaTecnicaGlp', ['idCert' => $this->attributes['id']]);
                 break;
             case 10:
                 $ruta = route('fichaTecnicaGnv', ['idCert' => $this->attributes['id']]);
@@ -385,6 +405,12 @@ class Certificacion extends Model
                 break;
             case 2:
                 $ruta = route('descargarFichaTecnicaGnv', ['idCert' => $this->attributes['id']]);
+                break;
+            case 3:
+                $ruta = route('descargarFichaTecnicaGlp', ['idCert' => $this->attributes['id']]);
+                break;
+            case 4:
+                $ruta = route('descargarFichaTecnicaGlp', ['idCert' => $this->attributes['id']]);
                 break;
             case 10:
                 $ruta = route('descargarFichaTecnicaGnv', ['idCert' => $this->attributes['id']]);
@@ -426,7 +452,33 @@ class Certificacion extends Model
         if ($cert) {
             //cambia el estado de la hoja a consumido
             $hoja->update(["estado" => 4, "ubicacion" => "En poder del cliente"]);
-            //crea y guarda el servicio y material usado en esta certificacion 
+            //crea y guarda el servicio y material usado en esta certificacion
+            $servM = ServicioMaterial::create([
+                "idMaterial" => $hoja->id,
+                "idCertificacion" => $cert->id
+            ]);
+            //retorna el certificado
+            return $cert;
+        } else {
+            return null;
+        }
+    }
+
+    public static function certificarGlp(Taller $taller, Servicio $servicio, Material $hoja, vehiculo $vehiculo, User $inspector)
+    {
+        $cert = Certificacion::create([
+            "idVehiculo" => $vehiculo->id,
+            "idTaller" => $taller->id,
+            "idInspector" => $inspector->id,
+            "idServicio" => $servicio->id,
+            "estado" => 1,
+            "precio" => $servicio->precio,
+            "pagado" => 0,
+        ]);
+        if ($cert) {
+            //cambia el estado de la hoja a consumido
+            $hoja->update(["estado" => 4, "ubicacion" => "En poder del cliente"]);
+            //crea y guarda el servicio y material usado en esta certificacion
             $servM = ServicioMaterial::create([
                 "idMaterial" => $hoja->id,
                 "idCertificacion" => $cert->id
@@ -452,7 +504,7 @@ class Certificacion extends Model
         if ($cert) {
             //cambia el estado de la hoja a consumido
             $hoja->update(["estado" => 4, "ubicacion" => "En poder del cliente"]);
-            //crea y guarda el servicio y material usado en esta certificacion 
+            //crea y guarda el servicio y material usado en esta certificacion
             $servM = ServicioMaterial::create([
                 "idMaterial" => $hoja->id,
                 "idCertificacion" => $cert->id
@@ -477,7 +529,7 @@ class Certificacion extends Model
         if ($cert) {
             //cambia el estado de la hoja a consumido
             $hoja->update(["estado" => 4, "ubicacion" => "En poder del cliente"]);
-            //crea y guarda el servicio y material usado en esta certificacion 
+            //crea y guarda el servicio y material usado en esta certificacion
             $servM = ServicioMaterial::create([
                 "idMaterial" => $hoja->id,
                 "idCertificacion" => $cert->id
@@ -507,7 +559,7 @@ class Certificacion extends Model
             $chip->update(["estado" => 4, "ubicacion" => "En poder del cliente"]);
 
             //dd($chip);
-            //crea y guarda el servicio y material usado en esta certificacion 
+            //crea y guarda el servicio y material usado en esta certificacion
             $servM = ServicioMaterial::create([
                 "idMaterial" => $hoja->id,
                 "idCertificacion" => $cert->id
@@ -538,7 +590,7 @@ class Certificacion extends Model
         if ($cert) {
             //cambia el estado de la hoja a consumido
             $hoja->update(["estado" => 4, "ubicacion" => "En poder del cliente"]);
-            //crea y guarda el servicio y material usado en esta certificacion 
+            //crea y guarda el servicio y material usado en esta certificacion
             $servM = ServicioMaterial::create([
                 "idMaterial" => $hoja->id,
                 "idCertificacion" => $cert->id
@@ -567,7 +619,7 @@ class Certificacion extends Model
         if ($cert) {
             //cambia el estado de la hoja a consumido
             $hoja->update(["estado" => 4, "ubicacion" => "En poder del cliente"]);
-            //crea y guarda el servicio y material usado en esta certificacion 
+            //crea y guarda el servicio y material usado en esta certificacion
             $servM = ServicioMaterial::create([
                 "idMaterial" => $hoja->id,
                 "idCertificacion" => $cert->id

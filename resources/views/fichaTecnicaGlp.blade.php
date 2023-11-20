@@ -80,7 +80,7 @@
 <body>
     <header>
         <article>
-            <img style="float:left; padding-left: 3cm; margin-top: 20px" src="{{$taller->rutaLogo ? '.'.Storage::url($taller->rutaLogo) : ''}}" width="130" height="130"/>
+            <img style="float:left; padding-left: 3cm; margin-top: 20px" src="{{ $taller->rutaLogo ? '.'.Storage::url($taller->rutaLogo) : ''}}" width="130" height="130"/>
             <h2 style="margin-top: 40px">{{$taller->nombre}}</h2>
             <p>{{$taller->direccion}}</p>
         </article>
@@ -92,110 +92,112 @@
         <p><strong>Nombre del taller: </strong> {{$taller->nombre}} </p>
         <p><strong>Fecha: </strong> {{$fecha}}</p>
         <p><strong>Servicio: </strong>{{'Certificado de '.$servicio->tipoServicio->descripcion.'.'}}</p>
-        <p><strong>N° de Certificado: </strong>{{$hoja->numSerie}}</p>
+        <p><strong>N° de Certificado: </strong>{{$numHoja}}</p>
+
         <!-- DATOS VEHICULO -->
         <h5 style="background-color:goldenrod;">DATOS DEL VEHICULO</h5>
         <table>
             <tr>
-                <td style="padding: 0 5px 0 5px; text-align:center;">1</td>
+                <td style="padding: 0 5px 0 5px; text-align:center;">2</td>
                 <td>Placa de rodaje</td>
                 <td>{{$carro->placa}}</td>
-                <td style="padding: 0 5px 0 5px; text-align:center;">9</td>
+                <td style="padding: 0 5px 0 5px; text-align:center;">10</td>
                 <td>Cilindros / Cilindrada</td>
                 <td>{{ (isset($carro->cilindros)? $carro->cilindros : 'NE').' / '. (isset($carro->cilindrada)? $carro->cilindrada : 'NE')}}</td>
             </tr>
             <tr>
-                <td style="padding: 0 5px 0 5px; text-align:center;">2</td>
+                <td style="padding: 0 5px 0 5px; text-align:center;">3</td>
                 <td>Categoria</td>
                 <td>{{$carro->categoria}}</td>
-                <td style="padding: 0 5px 0 5px; text-align:center;">10</td>
+                <td style="padding: 0 5px 0 5px; text-align:center;">11</td>
                 <td>Combustible</td>
                 <td>{{$carro->combustible}}</td>
             </tr>
             <tr>
-                <td style="padding: 0 5px 0 5px; text-align:center;">3</td>
+                <td style="padding: 0 5px 0 5px; text-align:center;">4</td>
                 <td>Marca</td>
                 <td>{{(isset($carro->marca)? $carro->marca : 'NE')}}</td>
-                <td style="padding: 0 5px 0 5px; text-align:center;">11</td>
+                <td style="padding: 0 5px 0 5px; text-align:center;">12</td>
                 <td>N° Ejes / N° Ruedas</td>
                 <td>{{(isset($carro->ejes)? $carro->ejes : 'NE').' / '.(isset($carro->ruedas)? $carro->ruedas : 'NE')}}</td>
             </tr>
             <tr>
-                <td style="padding: 0 5px 0 5px; text-align:center;">4</td>
+                <td style="padding: 0 5px 0 5px; text-align:center;">5</td>
                 <td>Modelo</td>
                 <td>{{(isset($carro->modelo)? $carro->modelo : 'NE')}}</td>
-                <td style="padding: 0 5px 0 5px; text-align:center;">12</td>
+                <td style="padding: 0 5px 0 5px; text-align:center;">13</td>
                 <td>N° Asientos / N° Pasajeros</td>
                 <td>{{(isset($carro->asientos)? $carro->asientos : 'NE').' / '.(isset($carro->pasajeros)? $carro->pasajeros : 'NE')}}</td>
             </tr>
             <tr>
-                <td style="padding: 0 5px 0 5px; text-align:center;">5</td>
+                <td style="padding: 0 5px 0 5px; text-align:center;">6</td>
                 <td>Versión</td>
                 <td>{{$carro->version}}</td>
-                <td style="padding: 0 5px 0 5px; text-align:center;">13</td>
-                <td>Largo / Ancho / Alto(m)</td>
-                <td>{{(isset($carro->largo)?  bcdiv($carro->largo, '1', 2) : 'NE').' / '.(isset($carro->ancho)? bcdiv($carro->ancho, '1', 2) : 'NE').' / '.(isset($carro->altura)? bcdiv($carro->altura, '1', 2) : 'NE')}}</td>
-            </tr>
-            <tr>
-                <td style="padding: 0 5px 0 5px; text-align:center;">6</td>
-                <td>Año fabricación</td>
-                <td>{{(isset($carro->anioFab)? $carro->anioFab : 'NE')}}</td>
                 <td style="padding: 0 5px 0 5px; text-align:center;">14</td>
-                <td>Color(es)</td>
-                <td>{{$carro->color}}</td>
+                <td>Largo / Ancho / Alto(m)</td>
+                <td>{{(isset($carro->largo)? rtrim($carro->largo,'0') : 'NE').' / '.(isset($carro->ancho)? rtrim($carro->ancho,'0') : 'NE').' / '.(isset($carro->altura)? rtrim($carro->altura,'0') : 'NE')}}</td>
             </tr>
             <tr>
                 <td style="padding: 0 5px 0 5px; text-align:center;">7</td>
-                <td>VIN / N° Serie</td>
-                <td>{{(isset($carro->numSerie)? $carro->numSerie : 'NE')}}</td>
+                <td>Año fabricación</td>
+                <td>{{(isset($carro->anioFab)? $carro->anioFab : 'NE')}}</td>
                 <td style="padding: 0 5px 0 5px; text-align:center;">15</td>
                 <td>Peso neto(kg)</td>
-                <td>{{(isset($carro->pesoNeto)? $carro->pesoNeto : '0.00')}}</td>
+                <td>{{(isset($carro->pesoNeto)? $carro->pesoNeto : '0')}}</td>
             </tr>
             <tr>
                 <td style="padding: 0 5px 0 5px; text-align:center;">8</td>
-                <td>N° Motor</td>
-                <td>{{(isset($carro->numMotor)? $carro->numMotor : 'NE')}}</td>
+                <td>VIN / N° Serie</td>
+                <td>{{(isset($carro->numSerie)? $carro->numSerie : 'NE')}}</td>
                 <td style="padding: 0 5px 0 5px; text-align:center;">16</td>
                 <td>Peso bruto(kg)</td>
-                <td>{{(isset($carro->pesoBruto)? $carro->pesoBruto : '0.00')}}</td>
+                <td>{{(isset($carro->pesoBruto)? $carro->pesoBruto : '0')}}</td>
+            </tr>
+            <tr>
+                <td style="padding: 0 5px 0 5px; text-align:center;">9</td>
+                <td>N° Motor</td>
+                <td>{{(isset($carro->numMotor)? $carro->numMotor : 'NE')}}</td>
+                <td style="padding: 0 5px 0 5px; text-align:center;">17</td>
+                <td>Carga útil(kg)</td>
+                <td>{{(isset($cargaUtil)? $cargaUtil : 'NE')}}</td>
             </tr>
         </table>
         <h5 style="background-color:goldenrod;">DATOS DE LOS EQUIPOS DE GNV</h5>
         <!-- DATOS DE LOS EQUIPOS -->
-        <p><strong>Chip de identificacion: </strong>{{$chip->numSerie}}</p>
             <table>
                 <tr>
                     <th style="text-align:center;">Componente</th>
                     <th style="text-align:center;">Marca</th>
-                    <th style="text-align:center;">N°Serie</th>
                     <th style="text-align:center;">Modelo</th>
-                    <th style="text-align:center;">Capacidad (LT)</th>
+                    <th style="text-align:center;">N°Serie</th>
+
+
                 </tr>
                 @foreach ($equipos as $key=>$item)
                     @switch($item->idTipoEquipo)
-                        @case(2)
+                        @case(4)
                             <tr>
                                 <td style="text-align:center;">{{$item->tipo->nombre}}</td>
                                 <td style="text-align:center;">{{$item->marca}}</td>
-                                <td style="text-align:center;">{{$item->numSerie}}</td>
                                 <td style="text-align:center;">{{$item->modelo}}</td>
-                                <td style="text-align:center;">N/A</td>
+                                <td style="text-align:center;">{{$item->numSerie}}</td>
                             </tr>
                         @break
-                        @case(3)
+                        @case(5)
                             <tr>
                                 <td style="text-align:center;">{{$item->tipo->nombre}}</td>
                                 <td style="text-align:center;">{{$item->marca}}</td>
+                                <td style="text-align:center;">{{$item->modelo}}</td>
                                 <td style="text-align:center;">{{$item->numSerie}}</td>
-                                <td style="text-align:center;">N/A</td>
-                                <td style="text-align:center;">{{$item->capacidad}}</td>
                             </tr>
                         @break
                         @default
                     @endswitch
                 @endforeach
             </table>
+            <p>
+                (*): En caso del cilindro de almacenamiento de GLP, indicar su capacidad en litros y año de fabricación a GLP.
+            </p>
             <br>
             <br>
             <br>

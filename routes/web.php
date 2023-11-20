@@ -141,32 +141,58 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified'])
 
     //RUTAS PARA STREAM Y DESCARGA DE PDFS
     Route::controller(PdfController::class)->group(function () {
+
+        //Rutas para ver certificado anual GNV
         Route::get('/certificado-anual/{id}', 'generaPdfAnualGnv')->name("certificadoAnualGnv");
         Route::get('/duplicado-anual/{id}', 'generaDuplicadoAnualGnv')->name("duplicadoAnualGnv");
         Route::get('/duplicado-anual-ex/{id}', 'generaDuplicadoExternoAnualGnv')->name("duplicadoExternoAnualGnv");
 
+        //Rutas para descargar certificado anual GNV
         Route::get('/certificado-anual/{id}/descargar', 'descargarPdfAnualGnv')->name("descargarCertificadoAnualGnv");
         Route::get('/duplicado-anual/{id}/descargar', 'descargarDuplicadoAnualGnv')->name("descargarDuplicadoAnualGnv");
         Route::get('/duplicado-anual-ex/{id}/descargar', 'descargarDuplicadoExternoAnualGnv')->name("descargarDuplicadoExternoAnualGnv");
 
-
+        //Rutas para ver certificado inicial GNV
         Route::get('/certificado-inicial/{id}', 'generaPdfInicialGnv')->name("certificadoInicialGnv");
         Route::get('/duplicado-inicial/{id}', 'generaDuplicadoInicialGnv')->name("duplicadoInicialGnv");
         Route::get('/duplicado-inicial-ex/{id}', 'generaDuplicadoExternoInicialGnv')->name("duplicadoExternoInicialGnv");
 
+        //Rutas para descargar certificado inicial GNV
         Route::get('/certificado-inicial/{id}/descargar', 'descargarPdfInicialGnv')->name("descargarCertificadoInicialGnv");
         Route::get('/duplicado-inicial/{id}/descargar', 'descargarDuplicadoInicialGnv')->name("descargarDuplicadoInicialGnv");
         Route::get('/duplicado-inicial-ex/{id}/descargar', 'descargarDuplicadoExternoInicialGnv')->name("descargarDuplicadoExternoInicialGnv");
+
+        //Rutas para descargar certificado preconversion GNV
         Route::get('/preConver/{id}', 'generaPdfPreGnv')->name("generaPreGnvPdf");
         Route::get('/preConver/{id}/descargar', 'generaDescargaPreGnv')->name("descargarPreGnvPdf");
 
-        Route::get('/cargo/{id}','generaCargo')->name('generaCargo');
 
+        //Rutas para descargar y ver documentos complementarios de GNV
         Route::get('/fichaTecnicaGnv/{idCert}', 'generarFichaTecnica')->name("fichaTecnicaGnv");
         Route::get('/fichaTecnicaGnv/{idCert}/download', 'descargarFichaTecnica')->name("descargarFichaTecnicaGnv");
         Route::get('/preConversionGnv/{idCert}', 'generarPreConversionGnv')->name("preConversionGnv");
         Route::get('/checkListArriba/{idCert}', 'generarCheckListArribaGnv')->name("checkListArribaGnv");
         Route::get('/checkListAbajo/{idCert}', 'generarCheckListAbajoGnv')->name("checkListAbajoGnv");
+
+
+        //Rutas para ver certificado anual GLP
+        Route::get('/certificado-anual-glp/{id}', 'generaPdfAnualGlp')->name("certificadoAnualGlp");
+
+        //Rutas para ver certificado inicial GLP
+        Route::get('/certificado-inicial-glp/{id}', 'generaPdfInicialGlp')->name("certificadoInicialGlp");
+
+        //Rutas para descargar certificado anual GLP
+        Route::get('/certificado-anual-glp/{id}/descargar', 'descargaPdfAnualGlp')->name("descargarCertificadoAnualGlp");
+
+        //Rutas para descargar certificado inicial GLP
+        Route::get('/certificado-inicial-glp/{id}/descargar', 'generaPdfInicialGlp')->name("descargarCertificadoInicialGlp");
+
+        //Rutas para descargar y ver documentos complementarios de GNV
+        Route::get('/fichaTecnicaGlp/{idCert}','generarFichaTecnicaGlp')->name("fichaTecnicaGlp");
+        Route::get('/fichaTecnicaGlp/{idCert}/descargar','descargarFichaTecnicaGlp')->name("descargarFichaTecnicaGlp");
+
+         //Rutas para generar cargo de materiales
+        Route::get('/cargo/{id}','generaCargo')->name('generaCargo');
 
         Route::get('/boletoAnalizadorDeGases/{id}', 'generaBoletoDeAnalizador')->name("analizadorGnv");
     });

@@ -159,13 +159,13 @@
                 @if ($estado)
                     @switch($estado)
                         @case('esperando')
-                        <div class="max-w-5xl m-auto  bg-white rounded-lg shadow-md dark:bg-gray-300 p-4 mt-4">
-                            <x-jet-label value="Fotos reglamentarias:" class="font-bold text-xl py-4" />
-                            <x-file-pond name="imagenes" id="imagenes" wire:model="imagenes" acceptedFileTypes="['image/*',]"
-                                aceptaVarios="true">
-                            </x-file-pond>
-                            <x-jet-input-error for="imagenes" />
-                        </div>
+                            <div class="max-w-5xl m-auto  bg-white rounded-lg shadow-md dark:bg-gray-300 p-4 mt-4">
+                                <x-jet-label value="Fotos reglamentarias:" class="font-bold text-xl py-4" />
+                                <x-file-pond name="imagenes" id="imagenes" wire:model="imagenes" acceptedFileTypes="['image/*',]"
+                                    aceptaVarios="true">
+                                </x-file-pond>
+                                <x-jet-input-error for="imagenes" />
+                            </div>
 
                             <div class="max-w-5xl m-auto bg-white rounded-lg shadow-md my-4 py-4">
                                 <div class="my-2 flex flex-row justify-evenly items-center">
@@ -235,8 +235,8 @@
                                                         <i class="fas fa-download"></i>
                                                         <span>desc. Ficha Tec.</span>
                                                     </a>
-                                                    <a href="{{ route('checkListArribaGnv', [$certificacion->id]) }}" target="__blank"
-                                                        rel="noopener noreferrer"
+                                                    <a href="{{ route('checkListArribaGnv', [$certificacion->id]) }}"
+                                                        target="__blank" rel="noopener noreferrer"
                                                         class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center hover:cursor-pointer">
                                                         <i class="fas fa-eye"></i>
                                                         <span>CheckList Arriba</span>
@@ -268,9 +268,238 @@
             @break
 
             @case(3)
-                {{--
-                @livewire('form-vehiculo', ['tipoServicio' => $tipoServicio])
-                --}}
+                <x-formato-sugerido />
+                @livewire('vehiculo.create-vehiculo-glp', ['tipoServicio' => $tipoServicio])
+
+                @if ($estado)
+                    @switch($estado)
+                        @case('esperando')
+                            <div class="max-w-5xl m-auto  bg-white rounded-lg shadow-md dark:bg-gray-300 p-4 mt-4">
+                                <x-jet-label value="Fotos reglamentarias:" class="font-bold text-xl py-4" />
+                                <x-file-pond name="imagenes" id="imagenes" wire:model="imagenes" acceptedFileTypes="['image/*',]"
+                                    aceptaVarios="true">
+
+                                </x-file-pond>
+                                <x-jet-input-error for="imagenes" />
+                            </div>
+
+                            <div class="max-w-5xl m-auto bg-white rounded-lg shadow-md my-4 py-4">
+                                <div class="my-2 flex flex-row justify-evenly items-center">
+                                    <button wire:click="certificarGlp" wire:loading.attr="disabled" wire.target="certificar"
+                                        class="hover:cursor-pointer border border-indigo-500 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 sm:mt-0 inline-flex items-center justify-center px-6 py-3 bg-indigo-400 hover:bg-indigo-500 focus:outline-none rounded">
+                                        <p class="text-sm font-medium leading-none text-white">
+                                            <span wire:loading wire:target="certificarGlp">
+                                                <i class="fas fa-spinner animate-spin"></i>
+                                                &nbsp;
+                                            </span>
+                                            &nbsp;Certificar
+                                        </p>
+                                    </button>
+                                </div>
+                            </div>
+                        @break
+
+                        @case('certificado')
+                            @if ($certificacion)
+                                <div class="max-w-5xl m-auto bg-white rounded-lg shadow-md my-4 py-4">
+                                    <div class="my-2 flex flex-row justify-evenly items-center" x-data="{ menu: false }">
+                                        <button type="button" x-on:click="menu = ! menu" id="menu-button" aria-expanded="true"
+                                            aria-haspopup="true" data-te-ripple-init data-te-ripple-color="light"
+                                            class="hover:cursor-pointer border border-indigo-500 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 sm:mt-0 inline-flex items-center justify-center px-6 py-2 bg-indigo-400 text-white hover:bg-indigo-500 focus:outline-none rounded">
+                                            Documentos &nbsp; <i class="fas fa-angle-down"></i>
+                                        </button>
+                                        <div x-show="menu" x-on:click.away="menu = false"
+                                            class="dropdown-menu transition-all duration-300 transform origin-top-right -translate-y-2 scale-95 absolute  dropdown-content bg-white shadow w-56 z-30 mt-6 border border-slate-800 rounded-md"
+                                            role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+                                            <div class="" role="none">
+                                                <a href="{{ $certificacion->rutaVistaCertificado }}" target="__blank"
+                                                    rel="noopener noreferrer"
+                                                    class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center rounded-t-md hover:cursor-pointer">
+                                                    <i class="fas fa-eye"></i>
+                                                    <span>Ver Certificado.</span>
+                                                </a>
+                                                @if ($certificacion->Servicio->tipoServicio->id != 8)
+                                                    <a href="{{ $certificacion->rutaDescargaCertificado }}" target="__blank"
+                                                        rel="noopener noreferrer"
+                                                        class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center hover:cursor-pointer">
+                                                    @else
+                                                        <a href="{{ $certificacion->rutaDescargaCertificado }}" target="__blank"
+                                                            rel="noopener noreferrer"
+                                                            class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between rounded-b-md items-center hover:cursor-pointer">
+                                                @endif
+                                                <i class="fas fa-download"></i>
+                                                <span>desc. Certificado</span>
+                                                </a>
+                                                @if ($certificacion->Servicio->tipoServicio->id == 1)
+                                                    <a href="{{ route('preConversionGnv', [$certificacion->id]) }}" target="__blank"
+                                                        rel="noopener noreferrer"
+                                                        class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center hover:cursor-pointer">
+                                                        <i class="fas fa-eye"></i>
+                                                        <span>Ver Preconversion.</span>
+                                                    </a>
+                                                @endif
+                                                @if ($certificacion->Servicio->tipoServicio->id != 8)
+                                                    <a href="{{ $certificacion->rutaVistaFt }}" target="__blank"
+                                                        rel="noopener noreferrer"
+                                                        class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center hover:cursor-pointer">
+                                                        <i class="fas fa-eye"></i>
+                                                        <span>Ver Ficha Tec.</span>
+                                                    </a>
+                                                    <a href="{{ $certificacion->rutaDescargaFt }}" target="__blank"
+                                                        rel="noopener noreferrer"
+                                                        class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center hover:cursor-pointer">
+                                                        <i class="fas fa-download"></i>
+                                                        <span>desc. Ficha Tec.</span>
+                                                    </a>
+                                                    <a href="{{ route('checkListArribaGnv', [$certificacion->id]) }}"
+                                                        target="__blank" rel="noopener noreferrer"
+                                                        class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center hover:cursor-pointer">
+                                                        <i class="fas fa-eye"></i>
+                                                        <span>CheckList Arriba</span>
+                                                    </a>
+                                                    <a href="{{ route('checkListAbajoGnv', [$certificacion->id]) }}" target="__blank"
+                                                        rel="noopener noreferrer"
+                                                        class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white rounded-b-md justify-between items-center hover:cursor-pointer">
+                                                        <i class="fas fa-eye"></i>
+                                                        <span>CheckList Abajo</span>
+                                                    </a>
+                                                @endif
+                                            </div>
+                                        </div>
+
+                                        <a href="{{ route('servicio') }}"
+                                            class="hover:cursor-pointer focus:ring-2 focus:ring-offset-2 focus:ring-amber-600 sm:mt-0 inline-flex items-center justify-center px-6 py-3 bg-red-400 hover:bg-red-500 focus:outline-none rounded">
+                                            <p class="text-sm font-medium leading-none text-white">
+                                                <i class="fas fa-archive"></i>&nbsp;Finalizar
+                                            </p>
+                                        </a>
+                                    </div>
+                                </div>
+                            @endif
+                        @break
+
+                        @default
+                    @endswitch
+                @endif
+            @break
+
+            @case(4)
+                <x-formato-sugerido />
+                @livewire('vehiculo.create-vehiculo-glp', ['tipoServicio' => $tipoServicio])
+
+                @if ($estado)
+                    @switch($estado)
+                        @case('esperando')
+                            <div class="max-w-5xl m-auto  bg-white rounded-lg shadow-md dark:bg-gray-300 p-4 mt-4">
+                                <x-jet-label value="Fotos reglamentarias:" class="font-bold text-xl py-4" />
+                                <x-file-pond name="imagenes" id="imagenes" wire:model="imagenes" acceptedFileTypes="['image/*',]"
+                                    aceptaVarios="true">
+
+                                </x-file-pond>
+                                <x-jet-input-error for="imagenes" />
+                            </div>
+
+                            <div class="max-w-5xl m-auto bg-white rounded-lg shadow-md my-4 py-4">
+                                <div class="my-2 flex flex-row justify-evenly items-center">
+                                    <button wire:click="certificarGlp" wire:loading.attr="disabled" wire.target="certificar"
+                                        class="hover:cursor-pointer border border-indigo-500 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 sm:mt-0 inline-flex items-center justify-center px-6 py-3 bg-indigo-400 hover:bg-indigo-500 focus:outline-none rounded">
+                                        <p class="text-sm font-medium leading-none text-white">
+                                            <span wire:loading wire:target="certificarGlp">
+                                                <i class="fas fa-spinner animate-spin"></i>
+                                                &nbsp;
+                                            </span>
+                                            &nbsp;Certificar
+                                        </p>
+                                    </button>
+                                </div>
+                            </div>
+                        @break
+
+                        @case('certificado')
+                            @if ($certificacion)
+                                <div class="max-w-5xl m-auto bg-white rounded-lg shadow-md my-4 py-4">
+                                    <div class="my-2 flex flex-row justify-evenly items-center" x-data="{ menu: false }">
+                                        <button type="button" x-on:click="menu = ! menu" id="menu-button" aria-expanded="true"
+                                            aria-haspopup="true" data-te-ripple-init data-te-ripple-color="light"
+                                            class="hover:cursor-pointer border border-indigo-500 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 sm:mt-0 inline-flex items-center justify-center px-6 py-2 bg-indigo-400 text-white hover:bg-indigo-500 focus:outline-none rounded">
+                                            Documentos &nbsp; <i class="fas fa-angle-down"></i>
+                                        </button>
+                                        <div x-show="menu" x-on:click.away="menu = false"
+                                            class="dropdown-menu transition-all duration-300 transform origin-top-right -translate-y-2 scale-95 absolute  dropdown-content bg-white shadow w-56 z-30 mt-6 border border-slate-800 rounded-md"
+                                            role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+                                            <div class="" role="none">
+                                                <a href="{{ $certificacion->rutaVistaCertificado }}" target="__blank"
+                                                    rel="noopener noreferrer"
+                                                    class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center rounded-t-md hover:cursor-pointer">
+                                                    <i class="fas fa-eye"></i>
+                                                    <span>Ver Certificado.</span>
+                                                </a>
+                                                @if ($certificacion->Servicio->tipoServicio->id != 8)
+                                                    <a href="{{ $certificacion->rutaDescargaCertificado }}" target="__blank"
+                                                        rel="noopener noreferrer"
+                                                        class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center hover:cursor-pointer">
+                                                    @else
+                                                        <a href="{{ $certificacion->rutaDescargaCertificado }}" target="__blank"
+                                                            rel="noopener noreferrer"
+                                                            class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between rounded-b-md items-center hover:cursor-pointer">
+                                                @endif
+                                                <i class="fas fa-download"></i>
+                                                <span>desc. Certificado</span>
+                                                </a>
+                                                @if ($certificacion->Servicio->tipoServicio->id == 1)
+                                                    <a href="{{ route('preConversionGnv', [$certificacion->id]) }}" target="__blank"
+                                                        rel="noopener noreferrer"
+                                                        class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center hover:cursor-pointer">
+                                                        <i class="fas fa-eye"></i>
+                                                        <span>Ver Preconversion.</span>
+                                                    </a>
+                                                @endif
+                                                @if ($certificacion->Servicio->tipoServicio->id != 8)
+                                                    <a href="{{ $certificacion->rutaVistaFt }}" target="__blank"
+                                                        rel="noopener noreferrer"
+                                                        class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center hover:cursor-pointer">
+                                                        <i class="fas fa-eye"></i>
+                                                        <span>Ver Ficha Tec.</span>
+                                                    </a>
+                                                    <a href="{{ $certificacion->rutaDescargaFt }}" target="__blank"
+                                                        rel="noopener noreferrer"
+                                                        class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center hover:cursor-pointer">
+                                                        <i class="fas fa-download"></i>
+                                                        <span>desc. Ficha Tec.</span>
+                                                    </a>
+                                                    <a href="{{ route('checkListArribaGnv', [$certificacion->id]) }}"
+                                                        target="__blank" rel="noopener noreferrer"
+                                                        class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center hover:cursor-pointer">
+                                                        <i class="fas fa-eye"></i>
+                                                        <span>CheckList Arriba</span>
+                                                    </a>
+                                                    <a href="{{ route('checkListAbajoGnv', [$certificacion->id]) }}" target="__blank"
+                                                        rel="noopener noreferrer"
+                                                        class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white rounded-b-md justify-between items-center hover:cursor-pointer">
+                                                        <i class="fas fa-eye"></i>
+                                                        <span>CheckList Abajo</span>
+                                                    </a>
+                                                @endif
+                                            </div>
+                                        </div>
+
+                                        <a href="{{ route('servicio') }}"
+                                            class="hover:cursor-pointer focus:ring-2 focus:ring-offset-2 focus:ring-amber-600 sm:mt-0 inline-flex items-center justify-center px-6 py-3 bg-red-400 hover:bg-red-500 focus:outline-none rounded">
+                                            <p class="text-sm font-medium leading-none text-white">
+                                                <i class="fas fa-archive"></i>&nbsp;Finalizar
+                                            </p>
+                                        </a>
+                                    </div>
+                                </div>
+                            @endif
+                        @break
+
+                        @default
+                    @endswitch
+                @endif
+            @break
+
+            @case(5)
                 <div class="max-w-5xl m-auto bg-indigo-300 rounded-lg shadow-md my-4 py-4 px-8 flex flex-row justify-center items-center">
                     <div class="items-center">
                         <h1 class="font-bold">Este servicio aún no esta disponible pero estamos trabajando en ello. 🤝</h1>
@@ -278,36 +507,26 @@
                 </div>
             @break
 
-            @case(4)
-                {{--
-                @livewire('form-vehiculo', ['tipoServicio' => $tipoServicio])
-                --}}
-                <div
-                    class="max-w-5xl m-auto bg-indigo-300 rounded-lg shadow-md my-4 py-4 px-8 flex flex-row justify-center items-center">
-                    <div class="items-center">
-                        <h1 class="font-bold">Este servicio aún no esta disponible pero estamos trabajando en ello. 🤝</h1>
-                    </div>
-                </div>
-            @break
-
             @case(7)
-            @livewire('activacion-de-chips', ['tipoServicio' => $tipoServicio,'idTaller'=>$this->taller])
-
+                @livewire('activacion-de-chips', ['tipoServicio' => $tipoServicio, 'idTaller' => $this->taller])
             @break
 
             @case(8)
-            <x-formato-sugerido />
+                <x-formato-sugerido />
                 @if (!$certificado)
-                    <div class="max-w-5xl m-auto bg-white rounded-lg shadow-md my-4 py-4 px-8 flex flex-row justify-center items-center" id="1215488">
+                    <div class="max-w-5xl m-auto bg-white rounded-lg shadow-md my-4 py-4 px-8 flex flex-row justify-center items-center"
+                        id="1215488">
                         <div class="w-4/6 block justify-center items-center space-x-2 md:flex">
                             @if (!$externo)
                                 <div class="flex items-center justify-center space-x-2 ">
                                     <x-jet-label value="Placa:" for="placa" />
-                                    <x-jet-input type="text" maxlength="7" wire:model="placa" wire:keydown.enter="buscarCertificacion" />
+                                    <x-jet-input type="text" maxlength="7" wire:model="placa"
+                                        wire:keydown.enter="buscarCertificacion" />
                                     <x-jet-input-error for="placa" />
                                 </div>
                                 <div class="pt-2 md:pt-0 flex m-auto w-full justify-center">
-                                    <button wire:click="buscarCertificacion" wire:loading.attr="disabled"  wire:target="externo"
+                                    <button wire:click="buscarCertificacion" wire:loading.attr="disabled"
+                                        wire:target="externo"
                                         class="p-2 bg-indigo-400 rounded-lg border m-auto border-indigo-300 hover:bg-indigo-500 text-white hover:text-gray-200 shadow-lg">
                                         <i class="fas fa-search"></i> Buscar
                                     </button>
@@ -315,11 +534,10 @@
                                 <div class="md:pt-2 w-full">
                                     <x-jet-input-error for="placa" />
                                 </div>
-
                             @endif
                             <div class="flex items-center">
                                 <input id="checkbox-2" wire:model="externo" type="checkbox"
-                                    class="accent-pink-300 border-indigo-300 focus:ring-3 focus:ring-indigo-300 h-4 w-4 rounded"/>
+                                    class="accent-pink-300 border-indigo-300 focus:ring-3 focus:ring-indigo-300 h-4 w-4 rounded" />
                                 <label for="checkbox-2" class="text-sm ml-3 font-medium text-gray-900">Externo</label>
                             </div>
                         </div>
@@ -526,7 +744,7 @@
                                                 <i class="fas fa-download"></i>
                                                 <span>desc. Certificado</span>
                                                 </a>
-                                                @if ($certificacion->Servicio->tipoServicio->id == 1||$certificacion->Servicio->tipoServicio->id == 10)
+                                                @if ($certificacion->Servicio->tipoServicio->id == 1 || $certificacion->Servicio->tipoServicio->id == 10)
                                                     <a href="{{ route('preConversionGnv', [$certificacion->id]) }}" target="__blank"
                                                         rel="noopener noreferrer"
                                                         class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center hover:cursor-pointer">
@@ -547,8 +765,8 @@
                                                         <i class="fas fa-download"></i>
                                                         <span>desc. Ficha Tec.</span>
                                                     </a>
-                                                    <a href="{{ route('checkListArribaGnv', [$certificacion->id]) }}" target="__blank"
-                                                        rel="noopener noreferrer"
+                                                    <a href="{{ route('checkListArribaGnv', [$certificacion->id]) }}"
+                                                        target="__blank" rel="noopener noreferrer"
                                                         class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center hover:cursor-pointer">
                                                         <i class="fas fa-eye"></i>
                                                         <span>CheckList Arriba</span>
@@ -587,107 +805,107 @@
                 <x-formato-sugerido />
                 @livewire('vehiculo.create-vehiculo', ['tipoServicio' => $tipoServicio])
                 @if ($estado)
-                @switch($estado)
-                    @case('esperando')
-                        <div class="max-w-5xl m-auto bg-white rounded-lg shadow-md my-4 py-4">
-                            <div class="my-2 flex flex-row justify-evenly items-center">
-                                <button wire:click="certificarPreconver" wire:loading.attr="disabled" wire.target="certificarPreconver"
-                                    class="hover:cursor-pointer border border-indigo-500 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 sm:mt-0 inline-flex items-center justify-center px-6 py-3 bg-indigo-400 hover:bg-indigo-500 focus:outline-none rounded">
-                                    <p class="text-sm font-medium leading-none text-white">
-                                        <span wire:loading wire:target="certificar">
-                                            <i class="fas fa-spinner animate-spin"></i>
-                                            &nbsp;
-                                        </span>
-                                        &nbsp;Certificar
-                                    </p>
-                                </button>
-                            </div>
-                        </div>
-                    @break
-
-                    @case('certificado')
-                        @if ($certificacion)
+                    @switch($estado)
+                        @case('esperando')
                             <div class="max-w-5xl m-auto bg-white rounded-lg shadow-md my-4 py-4">
-                                <div class="my-2 flex flex-row justify-evenly items-center" x-data="{ menu: false }">
-                                    <button type="button" x-on:click="menu = ! menu" id="menu-button" aria-expanded="true"
-                                        aria-haspopup="true" data-te-ripple-init data-te-ripple-color="light"
-                                        class="hover:cursor-pointer border border-indigo-500 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 sm:mt-0 inline-flex items-center justify-center px-6 py-2 bg-indigo-400 text-white hover:bg-indigo-500 focus:outline-none rounded">
-                                        Documentos &nbsp; <i class="fas fa-angle-down"></i>
-                                    </button>
-                                    <div x-show="menu" x-on:click.away="menu = false"
-                                        class="dropdown-menu transition-all duration-300 transform origin-top-right -translate-y-2 scale-95 absolute  dropdown-content bg-white shadow w-56 z-30 mt-6 border border-slate-800 rounded-md"
-                                        role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
-                                        <div class="" role="none">
-                                            <a href="{{ $certificacion->rutaVistaCertificado }}" target="__blank"
-                                                rel="noopener noreferrer"
-                                                class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center rounded-t-md hover:cursor-pointer">
-                                                <i class="fas fa-eye"></i>
-                                                <span>Ver Certificado.</span>
-                                            </a>
-                                            @if ($certificacion->Servicio->tipoServicio->id != 8)
-                                                <a href="{{ $certificacion->rutaDescargaCertificado }}" target="__blank"
-                                                    rel="noopener noreferrer"
-                                                    class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center hover:cursor-pointer">
-                                             @else
-                                                 <a href="{{ $certificacion->rutaDescargaCertificado }}" target="__blank"
-                                                        rel="noopener noreferrer"
-                                                        class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between rounded-b-md items-center hover:cursor-pointer">
-                                            @endif
-                                            <i class="fas fa-download"></i>
-                                            <span>desc. Certificado</span>
-                                            </a>
-                                            @if ($certificacion->Servicio->tipoServicio->id == 1)
-                                                <a href="{{ route('preConversionGnv', [$certificacion->id]) }}" target="__blank"
-                                                    rel="noopener noreferrer"
-                                                    class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center hover:cursor-pointer">
-                                                    <i class="fas fa-eye"></i>
-                                                    <span>Ver Preconversion.</span>
-                                                </a>
-                                            @endif
-                                            @if ($certificacion->Servicio->tipoServicio->id != 8)
-                                                <a href="{{ $certificacion->rutaVistaFt }}" target="__blank"
-                                                    rel="noopener noreferrer"
-                                                    class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center hover:cursor-pointer">
-                                                    <i class="fas fa-eye"></i>
-                                                    <span>Ver Ficha Tec.</span>
-                                                </a>
-                                                <a href="{{ $certificacion->rutaDescargaFt }}" target="__blank"
-                                                    rel="noopener noreferrer"
-                                                    class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center hover:cursor-pointer">
-                                                    <i class="fas fa-download"></i>
-                                                    <span>desc. Ficha Tec.</span>
-                                                </a>
-                                                <a href="{{ route('checkListArribaGnv', [$certificacion->id]) }}" target="__blank"
-                                                    rel="noopener noreferrer"
-                                                    class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center hover:cursor-pointer">
-                                                    <i class="fas fa-eye"></i>
-                                                    <span>CheckList Arriba</span>
-                                                </a>
-                                                <a href="{{ route('checkListAbajoGnv', [$certificacion->id]) }}" target="__blank"
-                                                    rel="noopener noreferrer"
-                                                    class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white rounded-b-md justify-between items-center hover:cursor-pointer">
-                                                    <i class="fas fa-eye"></i>
-                                                    <span>CheckList Abajo</span>
-                                                </a>
-                                            @endif
-                                        </div>
-                                    </div>
-
-                                    <a href="{{ route('servicio') }}"
-                                        class="hover:cursor-pointer focus:ring-2 focus:ring-offset-2 focus:ring-amber-600 sm:mt-0 inline-flex items-center justify-center px-6 py-3 bg-red-400 hover:bg-red-500 focus:outline-none rounded">
+                                <div class="my-2 flex flex-row justify-evenly items-center">
+                                    <button wire:click="certificarPreconver" wire:loading.attr="disabled"
+                                        wire.target="certificarPreconver"
+                                        class="hover:cursor-pointer border border-indigo-500 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 sm:mt-0 inline-flex items-center justify-center px-6 py-3 bg-indigo-400 hover:bg-indigo-500 focus:outline-none rounded">
                                         <p class="text-sm font-medium leading-none text-white">
-                                            <i class="fas fa-archive"></i>&nbsp;Finalizar
+                                            <span wire:loading wire:target="certificar">
+                                                <i class="fas fa-spinner animate-spin"></i>
+                                                &nbsp;
+                                            </span>
+                                            &nbsp;Certificar
                                         </p>
-                                    </a>
+                                    </button>
                                 </div>
                             </div>
-                        @endif
-                    @break
+                        @break
 
-                    @default
-                @endswitch
-            @endif
+                        @case('certificado')
+                            @if ($certificacion)
+                                <div class="max-w-5xl m-auto bg-white rounded-lg shadow-md my-4 py-4">
+                                    <div class="my-2 flex flex-row justify-evenly items-center" x-data="{ menu: false }">
+                                        <button type="button" x-on:click="menu = ! menu" id="menu-button" aria-expanded="true"
+                                            aria-haspopup="true" data-te-ripple-init data-te-ripple-color="light"
+                                            class="hover:cursor-pointer border border-indigo-500 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 sm:mt-0 inline-flex items-center justify-center px-6 py-2 bg-indigo-400 text-white hover:bg-indigo-500 focus:outline-none rounded">
+                                            Documentos &nbsp; <i class="fas fa-angle-down"></i>
+                                        </button>
+                                        <div x-show="menu" x-on:click.away="menu = false"
+                                            class="dropdown-menu transition-all duration-300 transform origin-top-right -translate-y-2 scale-95 absolute  dropdown-content bg-white shadow w-56 z-30 mt-6 border border-slate-800 rounded-md"
+                                            role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+                                            <div class="" role="none">
+                                                <a href="{{ $certificacion->rutaVistaCertificado }}" target="__blank"
+                                                    rel="noopener noreferrer"
+                                                    class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center rounded-t-md hover:cursor-pointer">
+                                                    <i class="fas fa-eye"></i>
+                                                    <span>Ver Certificado.</span>
+                                                </a>
+                                                @if ($certificacion->Servicio->tipoServicio->id != 8)
+                                                    <a href="{{ $certificacion->rutaDescargaCertificado }}" target="__blank"
+                                                        rel="noopener noreferrer"
+                                                        class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center hover:cursor-pointer">
+                                                    @else
+                                                        <a href="{{ $certificacion->rutaDescargaCertificado }}" target="__blank"
+                                                            rel="noopener noreferrer"
+                                                            class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between rounded-b-md items-center hover:cursor-pointer">
+                                                @endif
+                                                <i class="fas fa-download"></i>
+                                                <span>desc. Certificado</span>
+                                                </a>
+                                                @if ($certificacion->Servicio->tipoServicio->id == 1)
+                                                    <a href="{{ route('preConversionGnv', [$certificacion->id]) }}" target="__blank"
+                                                        rel="noopener noreferrer"
+                                                        class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center hover:cursor-pointer">
+                                                        <i class="fas fa-eye"></i>
+                                                        <span>Ver Preconversion.</span>
+                                                    </a>
+                                                @endif
+                                                @if ($certificacion->Servicio->tipoServicio->id != 8)
+                                                    <a href="{{ $certificacion->rutaVistaFt }}" target="__blank"
+                                                        rel="noopener noreferrer"
+                                                        class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center hover:cursor-pointer">
+                                                        <i class="fas fa-eye"></i>
+                                                        <span>Ver Ficha Tec.</span>
+                                                    </a>
+                                                    <a href="{{ $certificacion->rutaDescargaFt }}" target="__blank"
+                                                        rel="noopener noreferrer"
+                                                        class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center hover:cursor-pointer">
+                                                        <i class="fas fa-download"></i>
+                                                        <span>desc. Ficha Tec.</span>
+                                                    </a>
+                                                    <a href="{{ route('checkListArribaGnv', [$certificacion->id]) }}"
+                                                        target="__blank" rel="noopener noreferrer"
+                                                        class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center hover:cursor-pointer">
+                                                        <i class="fas fa-eye"></i>
+                                                        <span>CheckList Arriba</span>
+                                                    </a>
+                                                    <a href="{{ route('checkListAbajoGnv', [$certificacion->id]) }}" target="__blank"
+                                                        rel="noopener noreferrer"
+                                                        class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white rounded-b-md justify-between items-center hover:cursor-pointer">
+                                                        <i class="fas fa-eye"></i>
+                                                        <span>CheckList Abajo</span>
+                                                    </a>
+                                                @endif
+                                            </div>
+                                        </div>
 
+                                        <a href="{{ route('servicio') }}"
+                                            class="hover:cursor-pointer focus:ring-2 focus:ring-offset-2 focus:ring-amber-600 sm:mt-0 inline-flex items-center justify-center px-6 py-3 bg-red-400 hover:bg-red-500 focus:outline-none rounded">
+                                            <p class="text-sm font-medium leading-none text-white">
+                                                <i class="fas fa-archive"></i>&nbsp;Finalizar
+                                            </p>
+                                        </a>
+                                    </div>
+                                </div>
+                            @endif
+                        @break
+
+                        @default
+                    @endswitch
+                @endif
             @break
 
             @default
@@ -698,7 +916,7 @@
 
 
     {{-- Modal Busqueda de Certificaciones --}}
-    <x-jet-dialog-modal wire:model="busquedaCert" >
+    <x-jet-dialog-modal wire:model="busquedaCert">
         <x-slot name="title">
             <h1 class="text-3xl font-medium">Certificaciones</h1>
         </x-slot>

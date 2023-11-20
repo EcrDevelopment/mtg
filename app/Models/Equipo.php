@@ -20,6 +20,7 @@ class Equipo extends Model
         "capacidad",
         "fechaFab",
         "peso",
+        "combustible",
         "created_at",
         "updated_at"
     ];

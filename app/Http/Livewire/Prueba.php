@@ -28,12 +28,12 @@ class Prueba extends Component
 
     //VARIABLES DEL SERVICIO
     public $talleres, $servicios, $taller, $servicio, $tipoServicio, $numSugerido,
-    $estado, $busquedaCert, $placa, $certificaciones, $fechaCerti, $certificado, $chip;
+        $estado="esperando", $busquedaCert, $placa, $certificaciones, $fechaCerti, $certificado, $chip;
 
 
     public $externo = false;
 
-    public $imagenes=[];
+    public $imagenes = [];
 
     public $servicioExterno, $tallerExterno, $fechaExterno;
 
@@ -42,12 +42,12 @@ class Prueba extends Component
     //variables del certi
     public $vehiculo;
 
-    protected $rules=["placa"=>"required|min:3|max:7"];
+    protected $rules = ["placa" => "required|min:3|max:7"];
 
     public function mount()
     {
         $this->talleres = Taller::all()->sortBy('nombre');
-        $this->estado = "esperando";
+        //$this->estado = "esperando";
         //$this->certificacion=new Certificacion();
     }
 
@@ -64,7 +64,7 @@ class Prueba extends Component
         if ($this->certificado) {
             $this->certificado = null;
         }
-        $this->reset(["tallerExterno","fechaExterno","servicioExterno"]);
+        $this->reset(["tallerExterno", "fechaExterno", "servicioExterno"]);
     }
 
     public function carga($id)
@@ -82,22 +82,19 @@ class Prueba extends Component
         }
     }
 
-
-    public function updatedServicio($val){
+    public function updatedServicio($val)
+    {
         if ($val) {
             $this->tipoServicio = Servicio::find($val)->tipoServicio;
             $this->sugeridoSegunTipo($this->tipoServicio->id);
-           if($this->tipoServicio->id==10){
-            $this->chip=$this->obtieneChip();
-           }
-           $this->reset(["externo"]);
+            if ($this->tipoServicio->id == 10) {
+                $this->chip = $this->obtieneChip();
+            }
+            $this->reset(["externo","estado"]);
         } else {
             $this->tipoServicio = null;
         }
-
-
     }
-
 
     public function sugeridoSegunTipo($tipoServ)
     {
@@ -124,11 +121,11 @@ class Prueba extends Component
                     $this->numSugerido = $this->obtieneFormato($formatoGlp);
                     break;
                 case 10:
-                        $this->numSugerido = $this->obtieneFormato($formatoGnv);
-                        break;
+                    $this->numSugerido = $this->obtieneFormato($formatoGnv);
+                    break;
                 case 12:
-                        $this->numSugerido = $this->obtieneFormato($formatoGnv);
-                        break;
+                    $this->numSugerido = $this->obtieneFormato($formatoGnv);
+                    break;
                 default:
                     $this->numSugerido = 0;
                     break;
@@ -183,13 +180,13 @@ class Prueba extends Component
                 break;
 
             case 10:
-                    $hoja = Material::where([['numSerie', $serie], ['idTipoMaterial', 1], ['estado', 3], ['idUsuario', Auth::id()]])->first();
-                    return $hoja;
-                    break;
+                $hoja = Material::where([['numSerie', $serie], ['idTipoMaterial', 1], ['estado', 3], ['idUsuario', Auth::id()]])->first();
+                return $hoja;
+                break;
             case 12:
-                    $hoja = Material::where([['numSerie', $serie], ['idTipoMaterial', 1], ['estado', 3], ['idUsuario', Auth::id()]])->first();
-                    return $hoja;
-                    break;
+                $hoja = Material::where([['numSerie', $serie], ['idTipoMaterial', 1], ['estado', 3], ['idUsuario', Auth::id()]])->first();
+                return $hoja;
+                break;
             default:
                 return $hoja;
                 break;
@@ -265,34 +262,115 @@ class Prueba extends Component
         $servicio = Servicio::findOrFail($this->servicio);
         $hoja = $this->procesaFormato($this->numSugerido, $servicio->tipoServicio->id);
 
-        if ($hoja != null) {
-            if (isset($this->vehiculo)) {
-                if ($this->vehiculo->esCertificable) {
-                    $certi = Certificacion::certificarGnv($taller, $servicio, $hoja, $this->vehiculo, Auth::user());
-                    if ($certi) {
-                        $this->estado = "certificado";
-                        $this->certificacion = $certi;
-                        $expe=Expediente::create([
-                            "placa"=>$this->vehiculo->placa,
-                            "certificado"=>$hoja->numSerie,
-                            "estado"=>1,
-                            "idTaller"=>$taller->id,
-                            'usuario_idusuario'=>Auth::id(),
-                            'servicio_idservicio'=>$servicio->id,
-                        ]);
-                        $this->guardarFotos($expe);
-                        guardarArchivosEnExpediente::dispatch($expe,$certi);
-                        $certEx=CertifiacionExpediente::create(["idCertificacion"=>$certi->id,"idExpediente"=>$expe->id]);
-                        $this->emit("minAlert", ["titulo" => "¡EXCELENTE TRABAJO!", "mensaje" => "Tu certificado N°: " . $certi->Hoja->numSerie . " esta listo.", "icono" => "success"]);
-                    } else {
-                        $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "No fue posible certificar", "icono" => "warning"]);
-                    }
-                } else {
-                    $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "Debes completar los datos de los equipos para poder certificar", "icono" => "warning"]);
-                }
-            } else {
-                $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "Debes ingresar un vehículo valido para poder certificar", "icono" => "warning"]);
+        if (!$hoja) {
+            $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "No fue posible certificar", "icono" => "warning"]);
+            return;
+        }
+
+        if (!isset($this->vehiculo)) {
+            $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "Debes ingresar un vehículo válido para poder certificar", "icono" => "warning"]);
+            return;
+        }
+
+        $idTipoServicio = $servicio->tipoServicio->id;
+        // Condición para verificar el servicio y llamar a la función correspondiente
+        if (in_array($idTipoServicio, [1, 2, 7, 8, 10, 12])) {
+            if (!$this->vehiculo->esCertificableGnv) {
+                $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "Debes completar los datos de los equipos para poder certificar", "icono" => "warning"]);
+                return;
             }
+        } elseif (in_array($idTipoServicio, [3, 4, 9])) {
+            if (!$this->vehiculo->esCertificableGlp) {
+                $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "Debes completar los datos de los equipos para poder certificar", "icono" => "warning"]);
+                return;
+            }
+        } else {
+            $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "El Vehículo no es válido para la certificación, complete los datos de equipos para continuar", "icono" => "warning"]);
+            return;
+        }
+
+        $certi = Certificacion::certificarGnv($taller, $servicio, $hoja, $this->vehiculo, Auth::user());
+
+        if ($certi) {
+            $this->estado = "certificado";
+            $this->certificacion = $certi;
+
+            $expe = Expediente::create([
+                "placa" => $this->vehiculo->placa,
+                "certificado" => $hoja->numSerie,
+                "estado" => 1,
+                "idTaller" => $taller->id,
+                'usuario_idusuario' => Auth::id(),
+                'servicio_idservicio' => $servicio->id,
+            ]);
+
+            $this->guardarFotos($expe);
+            guardarArchivosEnExpediente::dispatch($expe, $certi);
+
+            $certEx = CertifiacionExpediente::create(["idCertificacion" => $certi->id, "idExpediente" => $expe->id]);
+
+            $this->emit("minAlert", ["titulo" => "¡EXCELENTE TRABAJO!", "mensaje" => "Tu certificado N°: " . $certi->Hoja->numSerie . " está listo.", "icono" => "success"]);
+        } else {
+            $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "No fue posible certificar", "icono" => "warning"]);
+        }
+    }
+
+    public function certificarGlp()
+    {
+        $taller = Taller::findOrFail($this->taller);
+        $servicio = Servicio::findOrFail($this->servicio);
+        $hoja = $this->procesaFormato($this->numSugerido, $servicio->tipoServicio->id);
+
+        if (!$hoja) {
+            $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "El número de formato no es valido.", "icono" => "warning"]);
+            return;
+        }
+
+        if (!isset($this->vehiculo)) {
+            $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "Debes ingresar un vehículo válido para poder certificar", "icono" => "warning"]);
+            return;
+        }
+
+        $idTipoServicio = $servicio->tipoServicio->id;
+        // Condición para verificar el servicio y llamar a la función correspondiente
+        if (in_array($idTipoServicio, [1, 2, 7, 8, 10, 12])) {
+            if (!$this->vehiculo->esCertificableGnv) {
+                $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "Debes completar los datos de los equipos para poder certificar", "icono" => "warning"]);
+                return;
+            }
+        } elseif (in_array($idTipoServicio, [3, 4, 9])) {
+            if (!$this->vehiculo->esCertificableGlp) {
+                $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "Debes completar los datos de los equipos para poder certificar", "icono" => "warning"]);
+                return;
+            }
+        } else {
+            $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "El Vehículo no es válido para la certificación, complete los datos de equipos para continuar", "icono" => "warning"]);
+            return;
+        }
+
+        $certi = Certificacion::certificarGlp($taller, $servicio, $hoja, $this->vehiculo, Auth::user());
+
+        if ($certi) {
+            $this->estado = "certificado";
+            $this->certificacion = $certi;
+
+            $expe = Expediente::create([
+                "placa" => $this->vehiculo->placa,
+                "certificado" => $hoja->numSerie,
+                "estado" => 1,
+                "idTaller" => $taller->id,
+                'usuario_idusuario' => Auth::id(),
+                'servicio_idservicio' => $servicio->id,
+            ]);
+
+            $this->guardarFotos($expe);
+            guardarArchivosEnExpediente::dispatch($expe, $certi);
+
+            $certEx = CertifiacionExpediente::create(["idCertificacion" => $certi->id, "idExpediente" => $expe->id]);
+
+            $this->emit("minAlert", ["titulo" => "¡EXCELENTE TRABAJO!", "mensaje" => "Tu certificado N°: " . $certi->Hoja->numSerie . " está listo.", "icono" => "success"]);
+        } else {
+            $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "No fue posible certificar", "icono" => "warning"]);
         }
     }
 
@@ -322,9 +400,9 @@ class Prueba extends Component
         }
     }
 
-
-    public function obtieneChip(){
-        $chip=Material::where([["idUsuario",Auth::id()],["estado",3],["idTipoMaterial",2]])->first();
+    public function obtieneChip()
+    {
+        $chip = Material::where([["idUsuario", Auth::id()], ["estado", 3], ["idTipoMaterial", 2]])->first();
         return $chip;
     }
 
@@ -333,27 +411,27 @@ class Prueba extends Component
         $taller = Taller::findOrFail($this->taller);
         $servicio = Servicio::findOrFail($this->servicio);
         $hoja = $this->procesaFormato($this->numSugerido, $servicio->tipoServicio->id);
-        $chip=$this->chip;
+        $chip = $this->chip;
 
         if ($hoja != null) {
-            if($chip != null){
+            if ($chip != null) {
                 if (isset($this->vehiculo)) {
                     if ($this->vehiculo->esCertificable) {
-                        $certi = Certificacion::certificarGnvConChip($taller, $servicio, $hoja, $this->vehiculo, Auth::user(),$chip);
+                        $certi = Certificacion::certificarGnvConChip($taller, $servicio, $hoja, $this->vehiculo, Auth::user(), $chip);
                         if ($certi) {
                             $this->estado = "certificado";
                             $this->certificacion = $certi;
-                            $expe=Expediente::create([
-                                "placa"=>$this->vehiculo->placa,
-                                "certificado"=>$hoja->numSerie,
-                                "estado"=>1,
-                                "idTaller"=>$taller->id,
-                                'usuario_idusuario'=>Auth::id(),
-                                'servicio_idservicio'=>$servicio->id,
+                            $expe = Expediente::create([
+                                "placa" => $this->vehiculo->placa,
+                                "certificado" => $hoja->numSerie,
+                                "estado" => 1,
+                                "idTaller" => $taller->id,
+                                'usuario_idusuario' => Auth::id(),
+                                'servicio_idservicio' => $servicio->id,
                             ]);
                             $this->guardarFotos($expe);
-                            guardarArchivosEnExpediente::dispatch($expe,$certi);
-                            $certEx=CertifiacionExpediente::create(["idCertificacion"=>$certi->id,"idExpediente"=>$expe->id]);
+                            guardarArchivosEnExpediente::dispatch($expe, $certi);
+                            $certEx = CertifiacionExpediente::create(["idCertificacion" => $certi->id, "idExpediente" => $expe->id]);
                             $this->emit("minAlert", ["titulo" => "¡EXCELENTE TRABAJO!", "mensaje" => "Tu certificado N°: " . $certi->Hoja->numSerie . " esta listo.", "icono" => "success"]);
                         } else {
                             $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "No fue posible certificar", "icono" => "warning"]);
@@ -364,39 +442,37 @@ class Prueba extends Component
                 } else {
                     $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "Debes ingresar un vehículo valido para poder certificar", "icono" => "warning"]);
                 }
-            }else{
+            } else {
                 $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "No cuentas con chips disponibles para realizar este servicio", "icono" => "warning"]);
             }
         }
     }
 
-
-    public function guardarFotos(Expediente $expe){
-        $this->validate(["imagenes"=>"nullable|array","imagenes.*"=>"image"]);
-        if(count($this->imagenes)){
-            foreach($this->imagenes as $key => $file){
-                $nombre=$expe->placa.'-foto'.($key+1).'-'.$expe->certificado;
-                $file_save=Imagen::create([
-                    'nombre'=>$nombre,
-                    'ruta'=>$file->storeAs('public/expedientes',$nombre.'.'.$file->extension()),
-                    'extension'=>$file->extension(),
-                    'Expediente_idExpediente'=>$expe->id,
+    public function guardarFotos(Expediente $expe)
+    {
+        $this->validate(["imagenes" => "nullable|array", "imagenes.*" => "image"]);
+        if (count($this->imagenes)) {
+            foreach ($this->imagenes as $key => $file) {
+                $nombre = $expe->placa . '-foto' . ($key + 1) . '-' . $expe->certificado;
+                $file_save = Imagen::create([
+                    'nombre' => $nombre,
+                    'ruta' => $file->storeAs('public/expedientes', $nombre . '.' . $file->extension()),
+                    'extension' => $file->extension(),
+                    'Expediente_idExpediente' => $expe->id,
                 ]);
             }
         }
-       $this->reset(["imagenes"]);
+        $this->reset(["imagenes"]);
     }
 
-
-    public function guardaDocumentos(){
+    public function guardaDocumentos()
+    {
     }
 
     public function refrescaVe()
     {
         $this->vehiculo->refresh();
     }
-
-
 
     public function duplicarCertificado()
     {
@@ -426,7 +502,7 @@ class Prueba extends Component
 
                 if ($this->certificado && $servicio) {
                     $dupli = $this->creaDuplicado($this->certificado);
-                    $certi = Certificacion::duplicarCertificadoGnv($dupli,$taller,Auth::user(),$servicio,$hoja);
+                    $certi = Certificacion::duplicarCertificadoGnv($dupli, $taller, Auth::user(), $servicio, $hoja);
                     $this->estado = "certificado";
                     $this->certificacion = $certi;
                     $this->emit("minAlert", ["titulo" => "¡EXCELENTE TRABAJO!", "mensaje" => "Tu certificado N°: " . $certi->Hoja->numSerie . " esta listo.", "icono" => "success"]);
@@ -436,7 +512,6 @@ class Prueba extends Component
             }
         }
     }
-
 
     public function creaDuplicadoExterno()
     {
@@ -472,4 +547,5 @@ class Prueba extends Component
 
         return $dupli;
     }
+
 }

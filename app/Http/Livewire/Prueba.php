@@ -536,7 +536,7 @@ class Prueba extends Component
         if ($hoja != null) {
             if ($this->externo) {
                 if (isset($this->vehiculo)) {
-                    if (!$this->vehiculo->esCertificableGnv) {
+                    if ($this->vehiculo->esCertificableGnv) {
                         $servicio = Servicio::find($this->servicio);
 
                         $duplicado = $this->creaDuplicadoExterno();

@@ -93,8 +93,6 @@
             margin-left: auto;
             text-align: center;
         }
-
-        
     </style>
 </head>
 
@@ -221,12 +219,12 @@
         <p>Inspeccion realizada en el taller: {{ $taller->nombre }} </p>
         <p>Se expide el presente en la ciudad de Lima, a los {{ $fecha }}</p>
 
-
+        <!-- Agrega esto donde quieras mostrar el código QR 
         <div class="qr-code">
-            <!-- Agrega esto donde quieras mostrar el código QR -->
+
             <img src="data:image/png;base64, {!! base64_encode($qrCode) !!}" alt="Código QR">
         </div>
-
+        -->
 
     </main>
 

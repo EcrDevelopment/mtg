@@ -40,7 +40,7 @@ class ActivacionDeChips extends Component
 
     public function guardar(){
         if (isset($this->vehiculo)) {
-            if ($this->vehiculo->esCertificable) {
+            if ($this->vehiculo->esCertificableGnv) {
                 $serv=Servicio::where([["taller_idtaller",$this->idTaller],["tipoServicio_idtipoServicio",2]])->first();
                if($serv!=null){
                     $certi=CertificacionPendiente::create([
@@ -50,11 +50,11 @@ class ActivacionDeChips extends Component
                         "idVehiculo"=>$this->vehiculo->id,
                         "estado"=>1,
                         "pagado"=>0,
-                        "precio"=>$serv->precio,                        
+                        "precio"=>$serv->precio,
                     ]);
                     $expe=$this->crearExpediente($certi,$this->vehiculo);
                     $certi->update(["idExpediente"=>$expe->id]);
-                    $this->guardarFotos($expe);                    
+                    $this->guardarFotos($expe);
                     $this->estado="realizado";
                     $this->emit("minAlert", ["titulo" => "¡BUEN TRABAJO!", "mensaje" => "Se agrego correctamente una certificacion pendiente para este vehículo", "icono" => "success"]);
                }else{
@@ -81,24 +81,24 @@ class ActivacionDeChips extends Component
                                 ]);
         return $ex;
     }
-    
+
 
     public function guardarFotos(Expediente $expe){
         $this->validate(["imagenes"=>"nullable|array","imagenes.*"=>"image"]);
         if(count($this->imagenes)){
-            foreach($this->imagenes as $key => $file){          
+            foreach($this->imagenes as $key => $file){
                 $nombre=$expe->placa.'-foto'.($key+1).(rand()).'-'.$expe->certificado;
-                $file_save=Imagen::create([                
+                $file_save=Imagen::create([
                     'nombre'=>$nombre,
                     'ruta'=>$file->storeAs('public/expedientes',$nombre.'.'.$file->extension()),
                     'extension'=>$file->extension(),
                     'Expediente_idExpediente'=>$expe->id,
-                ]);            
+                ]);
             }
         }
-       $this->reset(["imagenes"]);      
+       $this->reset(["imagenes"]);
     }
 
-        
+
 
 }

@@ -157,13 +157,15 @@ trait pdfTrait
 
     public function guardarPdfInicialGnv(Certificacion $certificacion, Expediente $expe)
     {
-
+        //para que no te hagas tanto problema para pruebas ponte con tu vista comenta es otro mano y ya
         $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
         $fechaCert = $certificacion->created_at;
         $fecha = $fechaCert->format('d') . ' días del mes de ' . $meses[$fechaCert->format('m') - 1] . ' del ' . $fechaCert->format('Y') . '.';
         $chip = $certificacion->vehiculo->Equipos->where("idTipoEquipo", 1)->first();
         $equipos = $certificacion->vehiculo->Equipos->where("idTipoEquipo", "!=", 1)->sortBy("idTipoEquipo");
         $hoja = $certificacion->Materiales->where('idTipoMaterial', 1)->first();
+        $urlDelDocumento = 'www.motorgasperu.com'.route('verPdf', $certificacion->id, false);
+        $qrCode = QrCode::size(70)->generate($urlDelDocumento);
         $data = [
             "fecha" => $fecha,
             "empresa" => "MOTORGAS COMPANY S.A.",
@@ -177,6 +179,7 @@ trait pdfTrait
             "largo" => $this->devuelveDatoParseado($certificacion->Vehiculo->largo),
             "ancho" => $this->devuelveDatoParseado($certificacion->Vehiculo->ancho),
             "altura" => $this->devuelveDatoParseado($certificacion->Vehiculo->altura),
+            "qrCode"=> $qrCode,
         ];
         $pdf = App::make('dompdf.wrapper');
         $pdf->loadView('conversionGnv', $data);

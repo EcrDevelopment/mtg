@@ -13,6 +13,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\App;
 use Nette\Utils\Json;
 use Spatie\FlareClient\Http\Exceptions\NotFound;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class PdfController extends Controller
 {
@@ -226,7 +227,9 @@ class PdfController extends Controller
                     $fechaCert = $certificacion->created_at;
                     $fecha = $fechaCert->format('d') . ' días del mes de ' . $meses[$fechaCert->format('m') - 1] . ' del ' . $fechaCert->format('Y') . '.';
                     $hoja = $certificacion->Materiales->where('idTipoMaterial', 1)->first();
-                                    
+                    // Genera el código QR
+                    $urlDelDocumento = 'www.motorgasperu.com'.route('verPdf', $id, false); // Reemplaza 'certificadoAnualGnv' con el nombre correcto de tu ruta
+                    $qrCode = QrCode::size(70)->generate($urlDelDocumento);         
 
 
                     $data = [
@@ -241,6 +244,7 @@ class PdfController extends Controller
                         "altura" => $this->devuelveDatoParseado($certificacion->Vehiculo->altura),
                     ];
 
+                    $data['qrCode'] = $qrCode;
                     $pdf = App::make('dompdf.wrapper');
                     $pdf->loadView('anualGnv', $data);
                     return $pdf->stream($certificacion->Vehiculo->placa . '-' . $hoja->numSerie . '-anual.pdf');

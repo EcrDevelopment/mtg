@@ -78,15 +78,13 @@ Route::get('contact', function () {
     return view('contact'); 
 });
 
-//Route::get("/certificado-anual/{id}/temp","App\Http\Controllers\pdfController@generaPdfAnualGnv")->name("vistaAnual");
+Route::get("/certificado-anual/{id}/temp","App\Http\Controllers\pdfController@generaPdfAnualGnv")->name("verPdf");
 
-//Route::get('/certificado-anual/{id}', [PdfController::class, 'generaPdfAnualGnv'])->name("certificadoAnualGnv");
-
-/*Route::get('/certificado-anual/{id}', [PdfController::class, 'generaPdfAnualGnv'])
+//Route::get('/certificado-anual/{id}/temp', [PdfController::class, 'generaPdfAnualGnv'])->name("certificadoAnualGnv");
+/*
+Route::get('/ver-pdf/{id}', 'pdfController@generaPdfAnualGnv')
     ->middleware('allow.unauthenticated')
-    ->name("certificadoAnualGnv");*/
-
-
+    ->name('verPdf');*/
 
 Route::get('phpmyinfo', function () {
     phpinfo();

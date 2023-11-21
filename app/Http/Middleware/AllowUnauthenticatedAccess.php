@@ -16,12 +16,12 @@ class AllowUnauthenticatedAccess
      */
     public function handle(Request $request, Closure $next)
     {
-        // Permitir el acceso sin autenticación solo para la ruta de generación de PDF
-        if ($request->is('certificado-anual/*')) {
+        // Permitir el acceso sin autenticación solo para la ruta de visualización de PDF
+        if ($request->is('ver-pdf/*')) {
             return $next($request);
         }
 
-        // En caso contrario, redirigir a la página de inicio de sesión
+        // En caso contrario, redirigir a la página de inicio de sesión o manejar según tus necesidades
         return redirect('/login');
     }
 }

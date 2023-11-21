@@ -224,7 +224,7 @@
                 <tr>
                     <td style="text-align:center;">17</td>
                     <td style="text-align:center;">Carga útil(kg)</td>
-                    <td style="text-align:center;">{{$carro->pesoNeto+23}}</td>
+                    <td style="text-align:center;">{{$carro->pesoNeto+30}}</td>
                 </tr>
             </table>
 

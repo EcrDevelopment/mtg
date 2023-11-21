@@ -57,9 +57,37 @@ use App\Http\Livewire\VistaSolicitudAnul;
 |
 */
 
+/*
 Route::get('/', function () {
     return redirect()->to('/login');
+});*/
+
+Route::get('/', function () {
+    return view('index'); 
 });
+Route::get('index', function () {
+    return view('index'); 
+});
+Route::get('about', function () {
+    return view('about'); 
+});
+Route::get('services', function () {
+    return view('services'); 
+});
+Route::get('contact', function () {
+    return view('contact'); 
+});
+
+//Route::get("/certificado-anual/{id}/temp","App\Http\Controllers\pdfController@generaPdfAnualGnv")->name("vistaAnual");
+
+//Route::get('/certificado-anual/{id}', [PdfController::class, 'generaPdfAnualGnv'])->name("certificadoAnualGnv");
+
+/*Route::get('/certificado-anual/{id}', [PdfController::class, 'generaPdfAnualGnv'])
+    ->middleware('allow.unauthenticated')
+    ->name("certificadoAnualGnv");*/
+
+
+
 Route::get('phpmyinfo', function () {
     phpinfo();
 })->name('phpmyinfo');

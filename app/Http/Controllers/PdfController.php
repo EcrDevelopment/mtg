@@ -13,7 +13,6 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\App;
 use Nette\Utils\Json;
 use Spatie\FlareClient\Http\Exceptions\NotFound;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class PdfController extends Controller
 {
@@ -227,9 +226,8 @@ class PdfController extends Controller
                     $fechaCert = $certificacion->created_at;
                     $fecha = $fechaCert->format('d') . ' días del mes de ' . $meses[$fechaCert->format('m') - 1] . ' del ' . $fechaCert->format('Y') . '.';
                     $hoja = $certificacion->Materiales->where('idTipoMaterial', 1)->first();
-                    // Genera el código QR
-                    $urlDelDocumento = route('certificadoAnualGnv', $id, false); // Reemplaza 'certificadoAnualGnv' con el nombre correcto de tu ruta
-                    $qrCode = QrCode::size(60)->generate($urlDelDocumento);
+                                    
+
 
                     $data = [
                         "fecha" => $fecha,
@@ -242,7 +240,6 @@ class PdfController extends Controller
                         "ancho" => $this->devuelveDatoParseado($certificacion->Vehiculo->ancho),
                         "altura" => $this->devuelveDatoParseado($certificacion->Vehiculo->altura),
                     ];
-                    $data['qrCode'] = $qrCode;
 
                     $pdf = App::make('dompdf.wrapper');
                     $pdf->loadView('anualGnv', $data);

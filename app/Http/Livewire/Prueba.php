@@ -382,7 +382,7 @@ class Prueba extends Component
 
         if ($hoja != null) {
             if (isset($this->vehiculo)) {
-                if (!$this->vehiculo->esCertificableGnv) {
+                if ($this->vehiculo->esCertificableGnv) {
                     $certi = Certificacion::certificarGnvPre($taller, $servicio, $hoja, $this->vehiculo, Auth::user());
                     if ($certi) {
                         $this->estado = "certificado";

@@ -228,7 +228,7 @@ class PdfController extends Controller
                     $fecha = $fechaCert->format('d') . ' días del mes de ' . $meses[$fechaCert->format('m') - 1] . ' del ' . $fechaCert->format('Y') . '.';
                     $hoja = $certificacion->Materiales->where('idTipoMaterial', 1)->first();
                     // Genera el código QR
-                    $urlDelDocumento = route('certificadoAnualGnv', $id, false); // Reemplaza 'certificadoAnualGnv' con el nombre correcto de tu ruta
+                    $urlDelDocumento = 'www.motorgasperu.com'.route('certificadoAnualGnv', $id, false); // Reemplaza 'certificadoAnualGnv' con el nombre correcto de tu ruta
                     $qrCode = QrCode::size(70)->generate($urlDelDocumento);
 
                     $data = [

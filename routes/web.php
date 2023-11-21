@@ -79,8 +79,8 @@ Route::get('contact', function () {
 });
 
 
-
-//Route::get('/certificado-anual-gnv/{id}/temp', [PdfController::class, 'generaPdfAnualGnv'])->name("verPdf");
+// ya manda tu pu
+Route::get('/certificado-anual-gnv/{id}/temp', [PdfController::class, 'generaPdfAnualGnv'])->name("verPdf");
 
 
 Route::get('phpmyinfo', function () {

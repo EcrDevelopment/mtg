@@ -8,6 +8,7 @@ use App\Models\Expediente;
 use App\Models\Imagen;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Storage;
+use SimpleSoftwareIO\QrCode\Facades\QrCode; //te falto esto
 
 trait pdfTrait
 {

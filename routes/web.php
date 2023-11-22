@@ -92,6 +92,11 @@ Route::get('/duplicado-inicial-ex-gnv/{id}/temp', [PdfController::class, 'genera
 //Rutas para QR preconversion GNV
 Route::get('/preConver-gnv/{id}/temp', [PdfController::class, 'generaPdfPreGnv'])->name("verPdfPreGnvPdf");
 
+// Rutas para QR (ver PDF) Anual-GLP
+Route::get('/certificado-anual-glp/{id}/temp', [PdfController::class, 'generaPdfAnualGlp'])->name("verPdfAnualGlp");
+
+// Rutas para QR (ver PDF) Inicial-GLP
+Route::get('/certificado-inicial-glp/{id}/temp', [PdfController::class, 'generaPdfInicialGlp'])->name("verPdfInicialGlp");;
 
 
 Route::get('phpmyinfo', function () {

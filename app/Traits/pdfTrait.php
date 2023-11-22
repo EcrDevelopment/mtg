@@ -165,7 +165,7 @@ trait pdfTrait
         $chip = $certificacion->vehiculo->Equipos->where("idTipoEquipo", 1)->first();
         $equipos = $certificacion->vehiculo->Equipos->where("idTipoEquipo", "!=", 1)->sortBy("idTipoEquipo");
         $hoja = $certificacion->Materiales->where('idTipoMaterial', 1)->first();
-        $urlDelDocumento = 'www.motorgasperu.com'.route('verPdf', $certificacion->id, false);
+        $urlDelDocumento = 'www.motorgasperu.com'.route('verPdfAnual', $certificacion->id, false);
         $qrCode = QrCode::size(70)->generate($urlDelDocumento);
         $data = [
             "fecha" => $fecha,

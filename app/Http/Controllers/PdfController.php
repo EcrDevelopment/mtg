@@ -228,7 +228,7 @@ class PdfController extends Controller
                     $fecha = $fechaCert->format('d') . ' días del mes de ' . $meses[$fechaCert->format('m') - 1] . ' del ' . $fechaCert->format('Y') . '.';
                     $hoja = $certificacion->Materiales->where('idTipoMaterial', 1)->first();
                     // Genera el código QR                    
-                    $urlDelDocumento = 'www.motorgasperu.com'.route('verPdf', $id, false); // Reemplaza 'certificadoAnualGnv' con el nombre correcto de tu ruta
+                    $urlDelDocumento = 'www.motorgasperu.com'.route('verPdfAnual', $id, false); // Reemplaza 'certificadoAnualGnv' con el nombre correcto de tu ruta
                     $qrCode = QrCode::size(70)->generate($urlDelDocumento);
                     $data = [
                         "fecha" => $fecha,
@@ -429,7 +429,7 @@ class PdfController extends Controller
             $fecha = $fechaCert->format('d') . ' días del mes de ' . $meses[$fechaCert->format('m') - 1] . ' del ' . $fechaCert->format('Y') . '.';
             $hoja = $certificacion->Materiales->where('idTipoMaterial', 1)->first();
             // Genera el código QR                    
-            $urlDelDocumento = 'www.motorgasperu.com'.route('verPdf', $id, false); 
+            $urlDelDocumento = 'www.motorgasperu.com'.route('verPdfAnual', $id, false); 
             $qrCode = QrCode::size(70)->generate($urlDelDocumento);
             $data = [
                 "fecha" => $fecha,
@@ -467,7 +467,7 @@ class PdfController extends Controller
                     //dd($chip);
                     $hoja = $certificacion->Materiales->where('idTipoMaterial', 1)->first();
                     // Genera el código QR                    
-                    $urlDelDocumento = 'www.motorgasperu.com'.route('verPdf', $id, false); // Reemplaza 'certificadoAnualGnv' con el nombre correcto de tu ruta
+                    $urlDelDocumento = 'www.motorgasperu.com'.route('verPdfInicial', $id, false); // Reemplaza 'certificadoAnualGnv' con el nombre correcto de tu ruta
                     $qrCode = QrCode::size(70)->generate($urlDelDocumento);
                     $data = [
                         "fecha" => $fecha,
@@ -508,7 +508,7 @@ class PdfController extends Controller
             $equipos = $certificacion->vehiculo->Equipos->where("idTipoEquipo", "!=", 1)->sortBy("idTipoEquipo");
             $hoja = $certificacion->Materiales->where('idTipoMaterial', 1)->first();
             // Genera el código QR                    
-            $urlDelDocumento = 'www.motorgasperu.com'.route('verPdf', $id, false); 
+            $urlDelDocumento = 'www.motorgasperu.com'.route('verPdfInicial', $id, false); 
             $qrCode = QrCode::size(70)->generate($urlDelDocumento);
             $data = [
                 "fecha" => $fecha,

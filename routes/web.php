@@ -80,8 +80,8 @@ Route::get('contact', function () {
 
 
 // Rutas para QR (ver PDF)
-Route::get('/certificado-anual-gnv/{id}/temp', [PdfController::class, 'generaPdfAnualGnv'])->name("verPdf");
-Route::get('/certificado-inicial-gnv/{id}/temp', [PdfController::class, 'generaPdfInicialGnv'])->name("verPdf");
+Route::get('/certificado-anual-gnv/{id}/temp', [PdfController::class, 'generaPdfAnualGnv'])->name("verPdfAnual");
+Route::get('/certificado-inicial-gnv/{id}/temp', [PdfController::class, 'generaPdfInicialGnv'])->name("verPdfInicial");
 
 
 Route::get('phpmyinfo', function () {

@@ -230,8 +230,6 @@ class PdfController extends Controller
                     // Genera el código QR                    
                     $urlDelDocumento = 'www.motorgasperu.com'.route('verPdf', $id, false); // Reemplaza 'certificadoAnualGnv' con el nombre correcto de tu ruta
                     $qrCode = QrCode::size(70)->generate($urlDelDocumento);
-
-
                     $data = [
                         "fecha" => $fecha,
                         "empresa" => "MOTORGAS COMPANY S.A.",
@@ -244,7 +242,6 @@ class PdfController extends Controller
                         "altura" => $this->devuelveDatoParseado($certificacion->Vehiculo->altura),
                         "qrCode"=> $qrCode,
                     ];
-
                     //$data['qrCode'] = $qrCode;
                     $pdf = App::make('dompdf.wrapper');
                     $pdf->loadView('anualGnv', $data);
@@ -412,9 +409,6 @@ class PdfController extends Controller
         }
     }
 
-
-
-
     public function devuelveDatoParseado($num)
     {
         $str = (string) $num;
@@ -472,6 +466,9 @@ class PdfController extends Controller
                     $equipos = $certificacion->Vehiculo->Equipos->where("idTipoEquipo", "!=", 1)->sortBy("idTipoEquipo");
                     //dd($chip);
                     $hoja = $certificacion->Materiales->where('idTipoMaterial', 1)->first();
+                    // Genera el código QR                    
+                    $urlDelDocumento = 'www.motorgasperu.com'.route('verPdf', $id, false); // Reemplaza 'certificadoAnualGnv' con el nombre correcto de tu ruta
+                    $qrCode = QrCode::size(70)->generate($urlDelDocumento);
                     $data = [
                         "fecha" => $fecha,
                         "empresa" => "MOTORGAS COMPANY S.A.",
@@ -485,6 +482,7 @@ class PdfController extends Controller
                         "largo" => $this->devuelveDatoParseado($certificacion->Vehiculo->largo),
                         "ancho" => $this->devuelveDatoParseado($certificacion->Vehiculo->ancho),
                         "altura" => $this->devuelveDatoParseado($certificacion->Vehiculo->altura),
+                        "qrCode"=> $qrCode,
                     ];
                     $pdf = App::make('dompdf.wrapper');
                     $pdf->loadView('conversionGnv', $data);
@@ -509,6 +507,9 @@ class PdfController extends Controller
             $chip = $certificacion->vehiculo->Equipos->where("idTipoEquipo", 1)->first();
             $equipos = $certificacion->vehiculo->Equipos->where("idTipoEquipo", "!=", 1)->sortBy("idTipoEquipo");
             $hoja = $certificacion->Materiales->where('idTipoMaterial', 1)->first();
+            // Genera el código QR                    
+            $urlDelDocumento = 'www.motorgasperu.com'.route('verPdf', $id, false); 
+            $qrCode = QrCode::size(70)->generate($urlDelDocumento);
             $data = [
                 "fecha" => $fecha,
                 "empresa" => "MOTORGAS COMPANY S.A.",
@@ -522,6 +523,7 @@ class PdfController extends Controller
                 "largo" => $this->devuelveDatoParseado($certificacion->Vehiculo->largo),
                 "ancho" => $this->devuelveDatoParseado($certificacion->Vehiculo->ancho),
                 "altura" => $this->devuelveDatoParseado($certificacion->Vehiculo->altura),
+                "qrCode"=> $qrCode,
             ];
             $pdf = App::make('dompdf.wrapper');
             $pdf->loadView('conversionGnv', $data);

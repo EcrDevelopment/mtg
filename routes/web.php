@@ -79,8 +79,9 @@ Route::get('contact', function () {
 });
 
 
-// ya manda tu pu
+// Rutas para QR (ver PDF)
 Route::get('/certificado-anual-gnv/{id}/temp', [PdfController::class, 'generaPdfAnualGnv'])->name("verPdf");
+Route::get('/certificado-inicial-gnv/{id}/temp', [PdfController::class, 'generaPdfInicialGnv'])->name("verPdf");
 
 
 Route::get('phpmyinfo', function () {

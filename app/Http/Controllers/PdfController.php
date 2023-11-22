@@ -228,7 +228,7 @@ class PdfController extends Controller
                     $fecha = $fechaCert->format('d') . ' días del mes de ' . $meses[$fechaCert->format('m') - 1] . ' del ' . $fechaCert->format('Y') . '.';
                     $hoja = $certificacion->Materiales->where('idTipoMaterial', 1)->first();
                     // Genera el código QR                    
-                    $urlDelDocumento = 'www.motorgasperu.com'.route('verPdfAnual', $id, false); // Reemplaza 'certificadoAnualGnv' con el nombre correcto de tu ruta
+                    $urlDelDocumento = 'www.motorgasperu.com' . route('verPdfAnual', $id, false); // Reemplaza 'certificadoAnualGnv' con el nombre correcto de tu ruta
                     $qrCode = QrCode::size(70)->generate($urlDelDocumento);
                     $data = [
                         "fecha" => $fecha,
@@ -240,7 +240,7 @@ class PdfController extends Controller
                         "largo" => $this->devuelveDatoParseado($certificacion->Vehiculo->largo),
                         "ancho" => $this->devuelveDatoParseado($certificacion->Vehiculo->ancho),
                         "altura" => $this->devuelveDatoParseado($certificacion->Vehiculo->altura),
-                        "qrCode"=> $qrCode,
+                        "qrCode" => $qrCode,
                     ];
                     //$data['qrCode'] = $qrCode;
                     $pdf = App::make('dompdf.wrapper');
@@ -429,7 +429,7 @@ class PdfController extends Controller
             $fecha = $fechaCert->format('d') . ' días del mes de ' . $meses[$fechaCert->format('m') - 1] . ' del ' . $fechaCert->format('Y') . '.';
             $hoja = $certificacion->Materiales->where('idTipoMaterial', 1)->first();
             // Genera el código QR                    
-            $urlDelDocumento = 'www.motorgasperu.com'.route('verPdfAnual', $id, false); 
+            $urlDelDocumento = 'www.motorgasperu.com' . route('verPdfAnual', $id, false);
             $qrCode = QrCode::size(70)->generate($urlDelDocumento);
             $data = [
                 "fecha" => $fecha,
@@ -441,7 +441,7 @@ class PdfController extends Controller
                 "largo" => $this->devuelveDatoParseado($certificacion->Vehiculo->largo),
                 "ancho" => $this->devuelveDatoParseado($certificacion->Vehiculo->ancho),
                 "altura" => $this->devuelveDatoParseado($certificacion->Vehiculo->altura),
-                "qrCode"=> $qrCode,
+                "qrCode" => $qrCode,
             ];
             $pdf = App::make('dompdf.wrapper');
             $pdf->loadView('anualGnv', $data);
@@ -467,7 +467,7 @@ class PdfController extends Controller
                     //dd($chip);
                     $hoja = $certificacion->Materiales->where('idTipoMaterial', 1)->first();
                     // Genera el código QR                    
-                    $urlDelDocumento = 'www.motorgasperu.com'.route('verPdfInicial', $id, false); // Reemplaza 'certificadoAnualGnv' con el nombre correcto de tu ruta
+                    $urlDelDocumento = 'www.motorgasperu.com' . route('verPdfInicial', $id, false); // Reemplaza 'certificadoAnualGnv' con el nombre correcto de tu ruta
                     $qrCode = QrCode::size(70)->generate($urlDelDocumento);
                     $data = [
                         "fecha" => $fecha,
@@ -482,7 +482,7 @@ class PdfController extends Controller
                         "largo" => $this->devuelveDatoParseado($certificacion->Vehiculo->largo),
                         "ancho" => $this->devuelveDatoParseado($certificacion->Vehiculo->ancho),
                         "altura" => $this->devuelveDatoParseado($certificacion->Vehiculo->altura),
-                        "qrCode"=> $qrCode,
+                        "qrCode" => $qrCode,
                     ];
                     $pdf = App::make('dompdf.wrapper');
                     $pdf->loadView('conversionGnv', $data);
@@ -508,7 +508,7 @@ class PdfController extends Controller
             $equipos = $certificacion->vehiculo->Equipos->where("idTipoEquipo", "!=", 1)->sortBy("idTipoEquipo");
             $hoja = $certificacion->Materiales->where('idTipoMaterial', 1)->first();
             // Genera el código QR                    
-            $urlDelDocumento = 'www.motorgasperu.com'.route('verPdfInicial', $id, false); 
+            $urlDelDocumento = 'www.motorgasperu.com' . route('verPdfInicial', $id, false);
             $qrCode = QrCode::size(70)->generate($urlDelDocumento);
             $data = [
                 "fecha" => $fecha,
@@ -523,7 +523,7 @@ class PdfController extends Controller
                 "largo" => $this->devuelveDatoParseado($certificacion->Vehiculo->largo),
                 "ancho" => $this->devuelveDatoParseado($certificacion->Vehiculo->ancho),
                 "altura" => $this->devuelveDatoParseado($certificacion->Vehiculo->altura),
-                "qrCode"=> $qrCode,
+                "qrCode" => $qrCode,
             ];
             $pdf = App::make('dompdf.wrapper');
             $pdf->loadView('conversionGnv', $data);
@@ -549,6 +549,9 @@ class PdfController extends Controller
                     $equipos = $certificacion->Vehiculo->Equipos->where("idTipoEquipo", "!=", 1)->sortBy("idTipoEquipo");
                     $cargaUtil = $this->calculaCargaUtil($certificacion->Vehiculo->pesoBruto, $certificacion->Vehiculo->pesoNeto);
                     $hoja = $certificacion->Materiales->where('idTipoMaterial', 1)->first();
+                    // Genera el código QR                    
+                    $urlDelDocumento = 'www.motorgasperu.com' . route('verPdfPreGnvPdf', $id, false);
+                    $qrCode = QrCode::size(70)->generate($urlDelDocumento);
                     $data = [
                         "fecha" => $fecha,
                         "empresa" => "MOTORGAS COMPANY S.A.",
@@ -563,6 +566,7 @@ class PdfController extends Controller
                         "largo" => $this->devuelveDatoParseado($certificacion->Vehiculo->largo),
                         "ancho" => $this->devuelveDatoParseado($certificacion->Vehiculo->ancho),
                         "altura" => $this->devuelveDatoParseado($certificacion->Vehiculo->altura),
+                        "qrCode" => $qrCode,
                     ];
                     $pdf = App::make('dompdf.wrapper');
                     $pdf->loadView('preConverGnv', $data);
@@ -589,6 +593,8 @@ class PdfController extends Controller
                     $equipos = $certificacion->Vehiculo->Equipos->where("idTipoEquipo", "!=", 1)->sortBy("idTipoEquipo");
                     //dd($chip);
                     $hoja = $certificacion->Materiales->where('idTipoMaterial', 1)->first();
+                    $urlDelDocumento = 'www.motorgasperu.com' . route('verPdfPreGnvPdf', $id, false);
+                    $qrCode = QrCode::size(70)->generate($urlDelDocumento);
                     $data = [
                         "fecha" => $fecha,
                         "empresa" => "MOTORGAS COMPANY S.A.",
@@ -602,6 +608,7 @@ class PdfController extends Controller
                         "largo" => $this->devuelveDatoParseado($certificacion->Vehiculo->largo),
                         "ancho" => $this->devuelveDatoParseado($certificacion->Vehiculo->ancho),
                         "altura" => $this->devuelveDatoParseado($certificacion->Vehiculo->altura),
+                        "qrCode" => $qrCode,
                     ];
                     $pdf = App::make('dompdf.wrapper');
                     $pdf->loadView('preConverGnv', $data);
@@ -631,6 +638,9 @@ class PdfController extends Controller
                     $fecha = $fechaCert->format('d') . ' días del mes de ' . $meses[$fechaCert->format('m') - 1] . ' del ' . $fechaCert->format('Y') . '.';
                     $hoja = $duplicado->Hoja;
                     $hojaAntiguo = $antiguo->Hoja;
+                    // Genera el código QR                    
+                    $urlDelDocumento = 'www.motorgasperu.com' . route('verPdfAnualDupli', $id, false);
+                    $qrCode = QrCode::size(70)->generate($urlDelDocumento);
                     $data = [
                         "fecha" => $fecha,
                         "empresa" => "MOTORGAS COMPANY S.A.",
@@ -640,6 +650,7 @@ class PdfController extends Controller
                         "fechaCert" => $fechaCert,
                         "fechaAntiguo" => $fechaAntiguo,
                         "hojaAntiguo" => $hojaAntiguo,
+                        "qrCode" => $qrCode,
                     ];
                     $pdf = App::make('dompdf.wrapper');
                     $pdf->loadView('duplicadoAnualGnv', $data);
@@ -666,6 +677,9 @@ class PdfController extends Controller
                     $fecha = $fechaCert->format('d') . ' días del mes de ' . $meses[$fechaCert->format('m') - 1] . ' del ' . $fechaCert->format('Y') . '.';
                     $hoja = $duplicado->Hoja;
                     $hojaAntiguo = $antiguo->Hoja;
+                    // Genera el código QR                    
+                    $urlDelDocumento = 'www.motorgasperu.com' . route('verPdfAnualDupli', $id, false);
+                    $qrCode = QrCode::size(70)->generate($urlDelDocumento);
                     $data = [
                         "fecha" => $fecha,
                         "empresa" => "MOTORGAS COMPANY S.A.",
@@ -675,6 +689,7 @@ class PdfController extends Controller
                         "fechaCert" => $fechaCert,
                         "fechaAntiguo" => $fechaAntiguo,
                         "hojaAntiguo" => $hojaAntiguo,
+                        "qrCode" => $qrCode,
                     ];
                     $pdf = App::make('dompdf.wrapper');
                     $pdf->loadView('duplicadoAnualGnv', $data);
@@ -705,6 +720,9 @@ class PdfController extends Controller
                     //dd($equipos);
                     $hoja = $duplicado->Hoja;
                     $hojaAntiguo = $antiguo->Hoja;
+                    // Genera el código QR                    
+                    $urlDelDocumento = 'www.motorgasperu.com' . route('verPdfInicialDupli', $id, false);
+                    $qrCode = QrCode::size(70)->generate($urlDelDocumento);
 
                     $data = [
                         "fecha" => $fecha,
@@ -717,6 +735,7 @@ class PdfController extends Controller
                         "fechaAntiguo" => $fechaAntiguo,
                         "hojaAntiguo" => $hojaAntiguo,
                         "pesos" => $antiguo->calculaPesos,
+                        "qrCode" => $qrCode,
                     ];
                     $pdf = App::make('dompdf.wrapper');
                     $pdf->loadView('duplicadoInicialGnv', $data);
@@ -746,6 +765,9 @@ class PdfController extends Controller
                     //dd($equipos);
                     $hoja = $duplicado->Hoja;
                     $hojaAntiguo = $antiguo->Hoja;
+                    // Genera el código QR                    
+                    $urlDelDocumento = 'www.motorgasperu.com' . route('verPdfInicialDupli', $id, false);
+                    $qrCode = QrCode::size(70)->generate($urlDelDocumento);
 
                     $data = [
                         "fecha" => $fecha,
@@ -758,6 +780,7 @@ class PdfController extends Controller
                         "fechaAntiguo" => $fechaAntiguo,
                         "hojaAntiguo" => $hojaAntiguo,
                         "pesos" => $antiguo->calculaPesos,
+                        "qrCode" => $qrCode,
                     ];
                     $pdf = App::make('dompdf.wrapper');
                     $pdf->loadView('duplicadoInicialGnv', $data);
@@ -791,6 +814,9 @@ class PdfController extends Controller
                 $hoja = $duplicado->Hoja;
                 //$fec=$dupli->fecha;
                 //$hojaAntiguo=$antiguo->Hoja;
+                // Genera el código QR                    
+                $urlDelDocumento = 'www.motorgasperu.com' . route('verPdfAnualDupliExt', $id, false);
+                $qrCode = QrCode::size(70)->generate($urlDelDocumento);
 
                 $data = [
                     "fecha" => $fecha,
@@ -801,6 +827,7 @@ class PdfController extends Controller
                     "fechaCert" => $fechaCert,
                     "fechaAntiguo" => Carbon::parse($dupli->fecha),
                     //"hojaAntiguo"=>$hojaAntiguo,
+                    "qrCode" => $qrCode,
                 ];
                 $pdf = App::make('dompdf.wrapper');
                 $pdf->loadView('duplicadoExternoAnualGnv', $data);
@@ -830,6 +857,9 @@ class PdfController extends Controller
                 $hoja = $duplicado->Hoja;
                 //$fec=$dupli->fecha;
                 //$hojaAntiguo=$antiguo->Hoja;
+                // Genera el código QR                    
+                $urlDelDocumento = 'www.motorgasperu.com' . route('verPdfAnualDupliExt', $id, false);
+                $qrCode = QrCode::size(70)->generate($urlDelDocumento);
 
                 $data = [
                     "fecha" => $fecha,
@@ -840,6 +870,7 @@ class PdfController extends Controller
                     "fechaCert" => $fechaCert,
                     "fechaAntiguo" => Carbon::parse($dupli->fecha),
                     //"hojaAntiguo"=>$hojaAntiguo,
+                    "qrCode" => $qrCode,
                 ];
                 $pdf = App::make('dompdf.wrapper');
                 $pdf->loadView('duplicadoExternoAnualGnv', $data);
@@ -867,6 +898,9 @@ class PdfController extends Controller
                 //dd($equipos);
                 $hoja = $duplicado->Hoja;
                 // $hojaAntiguo=$antiguo->Hoja;
+                // Genera el código QR                    
+                $urlDelDocumento = 'www.motorgasperu.com' . route('verPdfInicialDupliExt', $id, false);
+                $qrCode = QrCode::size(70)->generate($urlDelDocumento);
 
                 $data = [
                     "fecha" => $fecha,
@@ -878,6 +912,7 @@ class PdfController extends Controller
                     "chip" => $chip,
                     "fechaAntiguo" => Carbon::parse($dupli->fecha),
                     "pesos" => $duplicado->calculaPesos,
+                    "qrCode" => $qrCode,
                 ];
                 $pdf = App::make('dompdf.wrapper');
                 $pdf->loadView('duplicadoExternoInicialGnv', $data);
@@ -905,6 +940,9 @@ class PdfController extends Controller
                 //dd($equipos);
                 $hoja = $duplicado->Hoja;
                 // $hojaAntiguo=$antiguo->Hoja;
+                // Genera el código QR                    
+                $urlDelDocumento = 'www.motorgasperu.com' . route('verPdfInicialDupliExt', $id, false);
+                $qrCode = QrCode::size(70)->generate($urlDelDocumento);
 
                 $data = [
                     "fecha" => $fecha,
@@ -916,6 +954,7 @@ class PdfController extends Controller
                     "chip" => $chip,
                     "fechaAntiguo" => Carbon::parse($dupli->fecha),
                     "pesos" => $duplicado->calculaPesos,
+                    "qrCode" => $qrCode,
                 ];
                 $pdf = App::make('dompdf.wrapper');
                 $pdf->loadView('duplicadoExternoInicialGnv', $data);

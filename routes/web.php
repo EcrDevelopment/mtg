@@ -79,9 +79,19 @@ Route::get('contact', function () {
 });
 
 
-// Rutas para QR (ver PDF)
+// Rutas para QR (ver PDF) Anual-GNV
 Route::get('/certificado-anual-gnv/{id}/temp', [PdfController::class, 'generaPdfAnualGnv'])->name("verPdfAnual");
+Route::get('/duplicado-anual-gnv/{id}/temp', [PdfController::class, 'generaDuplicadoAnualGnv'])->name("verPdfAnualDupli");
+Route::get('/duplicado-anual-ex-gnv/{id}/temp', [PdfController::class, 'generaDuplicadoExternoAnualGnv'])->name("verPdfAnualDupliExt");
+
+// Rutas para QR (ver PDF) Inicial-GNV
 Route::get('/certificado-inicial-gnv/{id}/temp', [PdfController::class, 'generaPdfInicialGnv'])->name("verPdfInicial");
+Route::get('/duplicado-inicial-gnv/{id}/temp', [PdfController::class, 'generaDuplicadoInicialGnv'])->name("verPdfInicialDupli");
+Route::get('/duplicado-inicial-ex-gnv/{id}/temp', [PdfController::class, 'generaDuplicadoExternoInicialGnv'])->name("verPdfInicialDupliExt");
+
+//Rutas para QR preconversion GNV
+Route::get('/preConver-gnv/{id}/temp', [PdfController::class, 'generaPdfPreGnv'])->name("verPdfPreGnvPdf");
+
 
 
 Route::get('phpmyinfo', function () {

@@ -75,6 +75,12 @@
         ul{
             font-size: 10px;
         }
+        .qr-code {
+            width: 25%;
+            /* Ajusta el ancho según tus necesidades */
+            margin-left: auto;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -224,7 +230,12 @@
                 <li>De acuerdo a la normatividad vigente, el resultado de la prueba de emisiones contaminantes del vehiculó es aprobatorio.</li>
             </ul>
         <p>Se expide el presente en la ciudad de Lima, a los {{$fecha}}</p>
-
+        <!-- Agrega esto donde quieras mostrar el código QR -->
+        @if(!empty($qrCode))
+        <div class="qr-code">            
+            <img src="data:image/png;base64, {!! base64_encode($qrCode) !!}" alt="Código QR">
+        </div>
+        @endif
     </main>
 
     <footer>

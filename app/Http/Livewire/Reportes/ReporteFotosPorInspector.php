@@ -55,11 +55,10 @@ class ReporteFotosPorInspector extends Component
                 'users.name as nombreInspector',
                 DB::raw('(@row_number := @row_number + 1) AS `index`'),
                 DB::raw('COUNT(DISTINCT expedientes.id) as totalExpedientes'),
-                DB::raw('COUNT(DISTINCT CASE WHEN imagenes.id IS NOT NULL THEN expedientes.id END) as expedientesConFotos'),
-                DB::raw('CONCAT(ROUND((COUNT(DISTINCT CASE WHEN imagenes.id IS NOT NULL THEN expedientes.id END) / COUNT(DISTINCT expedientes.id)) * 100, 0), "%") as porcentaje')
+                DB::raw('COUNT(DISTINCT CASE WHEN imagenes.id IS NOT NULL AND imagenes.extension = "jpg" THEN expedientes.id END) as expedientesConFotos'),
+                DB::raw('CONCAT(ROUND((COUNT(DISTINCT CASE WHEN imagenes.id IS NOT NULL AND imagenes.extension = "jpg" THEN expedientes.id END) / COUNT(DISTINCT expedientes.id)) * 100, 0), "%") as porcentaje')
             )
             ->leftJoin('users', 'expedientes.usuario_idusuario', '=', 'users.id')
-
             ->leftJoin('imagenes', 'expedientes.id', '=', 'imagenes.Expediente_idExpediente')
             ->crossJoin(DB::raw('(SELECT @row_number := 0) AS init'))
             ->groupBy('nombreInspector')
@@ -69,6 +68,9 @@ class ReporteFotosPorInspector extends Component
         $this->inspectoresConFotos = $inspectoresConFotos;
         Cache::put('inspectoresConFotos_copy', $this->inspectoresConFotos, now()->addMinutes(10));
     }
+
+
+
 
     public function exportarExcel()
     {

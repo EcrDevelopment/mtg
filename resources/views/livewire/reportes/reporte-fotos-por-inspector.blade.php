@@ -59,10 +59,7 @@
                                                 </th>
                                                 <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
                                                     Cant Exp Subidos
-                                                </th>                                              
-                                                <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
-                                                    Fotos Subidas
-                                                </th>
+                                                </th> 
                                                 <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
                                                     Porcentaje
                                                 </th>
@@ -71,8 +68,6 @@
                                         </thead>
                                         <tbody>
                                             @foreach ($inspectoresConFotos as $item)
-                                                @if (gettype($item) === 'object')
-                                                    @if ($item->fotosSubidas < 1)
                                                         <tr class="border-b dark:border-neutral-500 bg-orange-200">
                                                             <td class="whitespace-nowrap border-r px-6 py-4 dark:border-neutral-500">
                                                                 {{ $item->index }}
@@ -87,35 +82,9 @@
                                                                 {{ $item->expedientesConFotos}}
                                                             </td>
                                                             <td class="whitespace-nowrap border-r px-6 py-4 font-medium dark:border-neutral-500">
-                                                                {{ $item->fotosSubidas}}
-                                                            </td>
-                                                            <td class="whitespace-nowrap border-r px-6 py-4 font-medium dark:border-neutral-500">
                                                                 {{$item->porcentaje}}
                                                             </td>
                                                         </tr>
-                                                    @else
-                                                        <tr class="border-b dark:border-neutral-500">
-                                                            <td class="whitespace-nowrap border-r px-6 py-4 dark:border-neutral-500">
-                                                                {{ $item->index }}
-                                                            </td>
-                                                            <td class="whitespace-nowrap border-r px-6 py-4 font-medium dark:border-neutral-500">
-                                                                {{ $item->nombreInspector }}
-                                                            </td>
-                                                            <td class="whitespace-nowrap border-r px-6 py-4 font-medium dark:border-neutral-500">
-                                                                {{ $item->totalExpedientes}}
-                                                            </td>
-                                                            <td class="whitespace-nowrap border-r px-6 py-4 font-medium dark:border-neutral-500">
-                                                                {{ $item->expedientesConFotos }}
-                                                            </td>
-                                                            <td class="whitespace-nowrap border-r px-6 py-4 font-medium dark:border-neutral-500">
-                                                                {{ $item->fotosSubidas }}
-                                                            </td>
-                                                            <td class="whitespace-nowrap border-r px-6 py-4 font-medium dark:border-neutral-500">
-                                                                {{$item->porcentaje}}
-                                                            </td>
-                                                        </tr>
-                                                    @endif
-                                                @endif
                                             @endforeach
                                         </tbody>
                                         

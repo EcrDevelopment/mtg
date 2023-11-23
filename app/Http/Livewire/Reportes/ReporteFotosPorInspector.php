@@ -50,16 +50,12 @@ class ReporteFotosPorInspector extends Component
     {
         $this->validate();
 
-
-        //explicame este query
-
         $inspectoresConFotos = DB::table('expedientes')
             ->select(
                 'users.name as nombreInspector',
                 DB::raw('(@row_number := @row_number + 1) AS `index`'),
                 DB::raw('COUNT(DISTINCT expedientes.id) as totalExpedientes'),
                 DB::raw('COUNT(DISTINCT CASE WHEN imagenes.id IS NOT NULL THEN expedientes.id END) as expedientesConFotos'),
-                DB::raw('COUNT(DISTINCT imagenes.id) as fotosSubidas'),
                 DB::raw('CONCAT(ROUND((COUNT(DISTINCT CASE WHEN imagenes.id IS NOT NULL THEN expedientes.id END) / COUNT(DISTINCT expedientes.id)) * 100, 0), "%") as porcentaje')
             )
             ->leftJoin('users', 'expedientes.usuario_idusuario', '=', 'users.id')

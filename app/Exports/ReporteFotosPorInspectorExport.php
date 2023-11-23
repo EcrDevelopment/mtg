@@ -56,7 +56,6 @@ class ReporteFotosPorInspectorExport implements FromCollection, WithHeadings, Wi
             'Inspector',
             'Realizo Exp',
             'Subio Exp',
-            'Fotos Subidas',
             'Porcentaje',
         ];
     }
@@ -70,7 +69,6 @@ class ReporteFotosPorInspectorExport implements FromCollection, WithHeadings, Wi
             $data->nombreInspector,
             $data->totalExpedientes,
             $data->expedientesConFotos,
-            $data->fotosSubidas,
             $data->porcentaje,            
         ];
     }

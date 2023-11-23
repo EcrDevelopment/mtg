@@ -67,22 +67,22 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($inspectoresConFotos as $item)
+                                            @foreach ($inspectoresConFotos as $key =>  $item)
                                                         <tr class="border-b dark:border-neutral-500 bg-orange-200">
                                                             <td class="whitespace-nowrap border-r px-6 py-4 dark:border-neutral-500">
-                                                                {{ $item->index }}
+                                                                {{ $key + 1}}
                                                             </td>
                                                             <td class="whitespace-nowrap border-r px-6 py-4 font-medium dark:border-neutral-500">
-                                                                {{ $item->nombreInspector }}
+                                                                {{ $item->nombreInspector ?? 'N.A' }}
                                                             </td>
                                                             <td class="whitespace-nowrap border-r px-6 py-4 font-medium dark:border-neutral-500">
-                                                                {{ $item->totalExpedientes}}
+                                                                {{ $item->totalExpedientes ?? 'N.A' }}
                                                             </td>
                                                             <td class="whitespace-nowrap border-r px-6 py-4 font-medium dark:border-neutral-500">
-                                                                {{ $item->expedientesConFotos}}
+                                                                {{ $item->expedientesConFotos ?? 'N.A' }}
                                                             </td>
                                                             <td class="whitespace-nowrap border-r px-6 py-4 font-medium dark:border-neutral-500">
-                                                                {{$item->porcentaje}}
+                                                                {{$item->porcentaje ?? 'N.A' }}
                                                             </td>
                                                         </tr>
                                             @endforeach

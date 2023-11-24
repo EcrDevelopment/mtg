@@ -86,8 +86,8 @@
         .qr-code {
             width: 25%;
             /* Ajusta el ancho según tus necesidades */
-            margin-left: auto;
-            text-align: center;
+            float: right; /* Hace que el contenedor flote a la derecha */
+            margin-left: 10px;
         }
     </style>
 </head>

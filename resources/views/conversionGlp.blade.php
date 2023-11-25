@@ -52,6 +52,7 @@
 
             color: black;
             text-align: center;
+            font-size: 15px;
         }
 
         h4 {
@@ -76,7 +77,7 @@
         }
 
         ol {
-            font-size: 10px;
+            font-size: 8px;
         }
 
         ul {

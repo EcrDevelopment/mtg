@@ -51,6 +51,7 @@
 
             color: black;
             text-align: center;
+            font-size: 17px;
         }
 
         h4 {
@@ -79,7 +80,7 @@
         }
 
         ol {
-            font-size: 10px;
+            font-size: 7px;
         }
 
         ul {
@@ -93,6 +94,7 @@
             /* Hace que el contenedor flote a la derecha */
             margin-left: 10px;
         }
+
     </style>
 </head>
 
@@ -101,14 +103,13 @@
 
     </header>
     <main>
-        <p style=" margin-top: 3cm;text-align: center;">
+        <p style=" margin-top: 2.7cm;text-align: center;">
             Entidad Certificadora de Conversiones a GLP
             autorizada por el MTC mediante R.D. N° 0464-2023-MTC/17.03
         </p>
         <h3>CERTIFICADO DE INSPECCIÓN DE VEHÍCULO A GLP</h3>
         <h5>{{ 'Certificado N° ' . $numHoja . ' - ' . date('Y') }}</h5>
         <h4> {{ 'LA ENTIDAD CERTIFICADORA ' . $empresa . ' CERTIFICA:' }}</h4>
-
         <p>
             Haber efectuado la evaluación de las condiciones de seguridad del sistema de combustión a
             Gas Licuado de Petróleo - GLP del siguiente vehículo:
@@ -265,13 +266,12 @@
             Habilitandose al mismo para cargar Gas Licuado de Petróleo-GLP hasta el día:
             {{ $fechaCert->format('d/m/') . ($fechaCert->format('Y') + 1) }}
         </p>
-
         <p>
             El presente Certificado es emitido a solicitud del Taller de Conversión a GLP autorizado:
             <strong>{{ $taller->nombre }}</strong>
         </p>
         <h6>OBSERVACIONES</h6>
-        <ol type="1">
+        <ul type="1">
             <li>
                 <strong>
                     Cumpliendo con el D.S. 047-2001-MTC,modificatorias 009-2012 MINAM,
@@ -279,7 +279,7 @@
                     contaminantes del vehiculó es aprobatorio.
                 </strong>
             </li>
-        </ol>
+        </ul>
 
         <p>Se expide el presente en la ciudad de Lima, a los {{ $fecha }}</p>
 

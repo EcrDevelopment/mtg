@@ -149,7 +149,7 @@
                 <td>{{(isset($carro->numSerie)? $carro->numSerie : 'NE')}}</td>
                 <td style="padding: 0 5px 0 5px; text-align:center;">15</td>
                 <td>Peso neto(kg)</td>
-                <td>{{(isset($carro->pesoNeto)? $carro->pesoNeto : '0.00')}}</td>
+                <td>{{(isset($carro->pesoNeto)? $carro->pesoNeto+0 : '0')}}</td>
             </tr>
             <tr>
                 <td style="padding: 0 5px 0 5px; text-align:center;">8</td>
@@ -157,7 +157,7 @@
                 <td>{{(isset($carro->numMotor)? $carro->numMotor : 'NE')}}</td>
                 <td style="padding: 0 5px 0 5px; text-align:center;">16</td>
                 <td>Peso bruto(kg)</td>
-                <td>{{(isset($carro->pesoBruto)? $carro->pesoBruto : '0.00')}}</td>
+                <td>{{(isset($carro->pesoBruto)? $carro->pesoBruto+0 : '0')}}</td>
             </tr>
         </table>
         <p>Habiéndose instalado al mismo los siguientes componentes:</p>
@@ -208,7 +208,7 @@
                 <tr>
                     <td style="text-align:center;">18</td>
                     <td style="text-align:center;">Peso neto(kg)</td>
-                    <td style="text-align:center;">{{$carro->pesoNeto+$pesos}}</td>
+                    <td style="text-align:center;">{{$carro->pesoNeto+$pesos+0}}</td>
                 </tr>
             </table>
         <p>Consiste por el presente documento que el sistema de combustible  a Gas Natural Vehicular GNV, del vehículo antes referido, no afectaran negativamente la seguridad
@@ -232,7 +232,7 @@
         <p>Se expide el presente en la ciudad de Lima, a los {{$fecha}}</p>
         <!-- Agrega esto donde quieras mostrar el código QR -->
         @if(!empty($qrCode))
-        <div class="qr-code">            
+        <div class="qr-code">
             <img src="data:image/png;base64, {!! base64_encode($qrCode) !!}" alt="Código QR">
         </div>
         @endif

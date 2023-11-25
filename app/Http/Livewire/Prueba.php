@@ -374,6 +374,64 @@ class Prueba extends Component
         }
     }
 
+    public function certificarmodi(){
+        $taller = Taller::findOrFail($this->taller);
+        $servicio = Servicio::findOrFail($this->servicio);
+        $hoja = $this->procesaFormato($this->numSugerido, $servicio->tipoServicio->id);
+        if (!$hoja) {
+            $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "No fue posible certificar", "icono" => "warning"]);
+            return;
+        }
+
+        if (!isset($this->vehiculo)) {
+            $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "Debes ingresar un vehículo válido para poder certificar", "icono" => "warning"]);
+            return;
+        }
+        
+        $idTipoServicio = $servicio->tipoServicio->id;
+        // Condición para verificar el servicio y llamar a la función correspondiente
+        if (in_array($idTipoServicio, [1, 2, 7, 8, 10, 12])) {
+            if (!$this->vehiculo->esCertificableGnv) {
+                $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "Debes completar los datos de los equipos para poder certificar", "icono" => "warning"]);
+                return;
+            }
+        } elseif (in_array($idTipoServicio, [3, 4, 9])) {
+            if (!$this->vehiculo->esCertificableGlp) {
+                $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "Debes completar los datos de los equipos para poder certificar", "icono" => "warning"]);
+                return;
+            }
+        } else {
+            $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "El Vehículo no es válido para la certificación, complete los datos de equipos para continuar", "icono" => "warning"]);
+            return;
+        }
+
+        $certi = Certificacion::certificarGnv($taller, $servicio, $hoja, $this->vehiculo, Auth::user());
+
+        if ($certi) {
+            $this->estado = "certificado";
+            $this->certificacion = $certi;
+
+            $expe = Expediente::create([
+                "placa" => $this->vehiculo->placa,
+                "certificado" => $hoja->numSerie,
+                "estado" => 1,
+                "idTaller" => $taller->id,
+                'usuario_idusuario' => Auth::id(),
+                'servicio_idservicio' => $servicio->id,
+            ]);
+
+            $this->guardarFotos($expe);
+            guardarArchivosEnExpediente::dispatch($expe, $certi);
+
+            $certEx = CertifiacionExpediente::create(["idCertificacion" => $certi->id, "idExpediente" => $expe->id]);
+
+            $this->emit("minAlert", ["titulo" => "¡EXCELENTE TRABAJO!", "mensaje" => "Tu certificado N°: " . $certi->Hoja->numSerie . " está listo.", "icono" => "success"]);
+        } else {
+            $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "No fue posible certificar", "icono" => "warning"]);
+        }
+        
+    }
+
     public function certificarPreconver()
     {
         $taller = Taller::findOrFail($this->taller);

@@ -217,7 +217,7 @@
              del mismo(**), el tránsito terrestre, el medio ambiente o incumplen con las condiciones técnicas establecidas en la normativa vigente en la materia(***),según el
               expediente técnico   N° {{$hoja->numSerie}} - 2023,  habilitándose al mismo para cargar  Gas  Natural  vehicular-GNV,  hasta  el: {{$fechaCert->format("d/m/").($fechaCert->format("Y")+1)}}
         </p>
-        <h6>OBSERVACIONES</h6>
+        <h6 style="font-size: 10px;">OBSERVACIONES</h6>
             <ul>
                 <li>(*) Los datos de los numerales 1 al 18, provienen de la tarjeta de propiedad del vehículo y/o han sido suministrados por el cliente, por tal motivo deberán
                     ser verificados por el cliente antes de iniciar cualquier trámite con este certificado.

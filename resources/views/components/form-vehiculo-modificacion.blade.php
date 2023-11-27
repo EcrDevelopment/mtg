@@ -15,13 +15,13 @@
         <div class="grid grid-cols-2 gap-4 py-6">
             <div>
                 <x-jet-label value="Razón Social / Persona Natural:" />
-                <x-jet-input type="text" class="w-full" wire:model="" />
-                <x-jet-input-error for="" />
+                <x-jet-input type="text" class="w-full" wire:model="propietario" />
+                <x-jet-input-error for="propietario" />
             </div>
             <div>
                 <x-jet-label value="Dirección: "/>
-                <x-jet-input type="text" class="w-full" wire:model="" />
-                <x-jet-input-error for="" />
+                <x-jet-input type="text" class="w-full" wire:model="direccion" />
+                <x-jet-input-error for="direccion" />
             </div>
         </div>
 
@@ -91,8 +91,8 @@
             </div>
             <div>
                 <x-jet-label value="Chasis:" />
-                <x-jet-input type="text" class="w-full" wire:model="" />
-                <x-jet-input-error for="" />
+                <x-jet-input type="text" class="w-full" wire:model="chasis" />
+                <x-jet-input-error for="chasis" />
             </div>            
             <div class="flex flex-row justify-center">
                 <div class="w-1/2">
@@ -115,8 +115,8 @@
             </div>
             <div>
                 <x-jet-label value="Carrocería:" />
-                <x-jet-input type="text" class="w-full" wire:model="" />
-                <x-jet-input-error for="" />
+                <x-jet-input type="text" class="w-full" wire:model="carroceria" />
+                <x-jet-input-error for="carroceria" />
             </div>
             
             <div>
@@ -208,13 +208,13 @@
         <div class="mt-4 grid grid-cols-3 gap-4">
             <div class="col-span-1">
                 <x-jet-label value="Fórmula rodante (FR):" />
-                <x-jet-input type="text" class="w-full" wire:model="" />
-                <x-jet-input-error for="" />
+                <x-jet-input type="text" class="w-full" wire:model="potencia" />
+                <x-jet-input-error for="potencia" />
             </div>
             <div class="col-span-2">
                 <x-jet-label value="Rectificación:" />
-                <x-jet-input type="text" class="w-full" wire:model="" maxlength="245" />
-                <x-jet-input-error for="" />
+                <x-jet-input type="text" class="w-full" wire:model="rectificacion" maxlength="245" />
+                <x-jet-input-error for="rectificacion" />
             </div>
         </div>
 

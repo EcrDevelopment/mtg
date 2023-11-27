@@ -100,6 +100,7 @@ class Prueba extends Component
     {
         $formatoGnv = 1;
         $formatoGlp = 3;
+        $formatoModi = 24;
         if ($tipoServ) {
             switch ($tipoServ) {
                 case 1:
@@ -113,6 +114,9 @@ class Prueba extends Component
                     break;
                 case 4:
                     $this->numSugerido = $this->obtieneFormato($formatoGlp);
+                    break;
+                case 5:
+                    $this->numSugerido = $this->obtieneFormato($formatoModi);
                     break;
                 case 8:
                     $this->numSugerido = $this->obtieneFormato($formatoGnv);
@@ -374,7 +378,8 @@ class Prueba extends Component
         }
     }
 
-    public function certificarmodi(){
+    public function certificarmodi()
+    {
         $taller = Taller::findOrFail($this->taller);
         $servicio = Servicio::findOrFail($this->servicio);
         $hoja = $this->procesaFormato($this->numSugerido, $servicio->tipoServicio->id);
@@ -387,7 +392,7 @@ class Prueba extends Component
             $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "Debes ingresar un vehículo válido para poder certificar", "icono" => "warning"]);
             return;
         }
-        
+
         $idTipoServicio = $servicio->tipoServicio->id;
         // Condición para verificar el servicio y llamar a la función correspondiente
         if (in_array($idTipoServicio, [1, 2, 7, 8, 10, 12])) {
@@ -400,6 +405,11 @@ class Prueba extends Component
                 $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "Debes completar los datos de los equipos para poder certificar", "icono" => "warning"]);
                 return;
             }
+        } elseif (in_array($idTipoServicio, [5])) {
+            if (!$this->vehiculo->esCertificableModi) {
+                $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "Debes completar los datos de los equipos para poder certificar", "icono" => "warning"]);
+                return;
+            }   
         } else {
             $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "El Vehículo no es válido para la certificación, complete los datos de equipos para continuar", "icono" => "warning"]);
             return;
@@ -429,7 +439,6 @@ class Prueba extends Component
         } else {
             $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "No fue posible certificar", "icono" => "warning"]);
         }
-        
     }
 
     public function certificarPreconver()

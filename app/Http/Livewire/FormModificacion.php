@@ -289,13 +289,13 @@ class FormModificacion extends Component
                 "pesoBruto" => $this->retornaNulo($this->vehiculo->pesoBruto),
                 "cargaUtil" => $this->retornaNulo($this->vehiculo->cargaUtil),
 
-                //restantes
-                "direccion" => $this->retornaNE($this->direccion),
-                "chasis" => $this->retornaNE($this->chasis),
-                "carroceria" => $this->retornaNE($this->carroceria),
-                "potencia" => $this->retornaNE($this->potencia),
-                "rodante" => $this->retornaNE($this->rodante),
-                "rectificacion" => $this->retornaNE($this->rectificacion),
+                //restantes (crear para modi)
+                "direccion" => $this->retornaNE($this->vehiculo->direccion),
+                "chasis" => $this->retornaNE($this->vehiculo->chasis),
+                "carroceria" => $this->retornaNE($this->vehiculo->carroceria),
+                "potencia" => $this->retornaNE($this->vehiculo->potencia),
+                "rodante" => $this->retornaNE($this->vehiculo->rodante),
+                "rectificacion" => $this->retornaNE($this->vehiculo->rectificacion),
             ])
         ) {
             $this->estado = 'cargado';

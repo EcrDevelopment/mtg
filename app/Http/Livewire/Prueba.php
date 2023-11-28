@@ -100,7 +100,7 @@ class Prueba extends Component
     {
         $formatoGnv = 1;
         $formatoGlp = 3;
-        $formatoModi = 24;
+        $formatoModi = 4;
         if ($tipoServ) {
             switch ($tipoServ) {
                 case 1:

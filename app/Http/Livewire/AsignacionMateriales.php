@@ -107,7 +107,7 @@ class AsignacionMateriales extends Component
         return $nuevos;
     }
 
-    
+    //ese es tu error no hay asinar
     
     public function asignarMaterial($art,Salida $salida){
         switch ($art["tipo"]) {
@@ -120,7 +120,10 @@ class AsignacionMateriales extends Component
                 break;
             case 3:
                 $items=$this->asignarFormatos($art,$salida);
-                break;           
+                break;   
+            case 4:
+                $items=$this->asignarFormatos($art,$salida);
+                break;         
             default:
                 
                 break;
@@ -163,7 +166,7 @@ class AsignacionMateriales extends Component
         ])
         ->whereBetween('numSerie', [$art["inicio"],$art["final"]])
         ->get();
-
+           // dd($formatos);
         foreach($formatos as $formato){
             $formato->update(['idUsuario'=>null,'ubicacion'=>'En proceso de envio a '.$usuario->name,'estado'=>2]);
             $this->guardaDetalles($formato,$salida->id,$art["motivo"]);

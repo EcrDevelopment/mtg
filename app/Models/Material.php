@@ -80,6 +80,18 @@ class Material extends Model
         return json_encode($grupos);
     }
 
+    public static function stockPorGruposModi(){
+        $grupos=DB::table('material')
+                ->select(DB::raw('grupo as guia,count(*) as stock,min(numSerie) as minimo,Max(numSerie) as maximo'))
+                ->where([
+                    ['estado',1],
+                    ['idTipoMaterial',4]//TIPO DE MATERIAL: FORMATO MODIFICACION
+                    ])
+                ->groupBy('grupo')
+                ->get();
+        return json_encode($grupos);
+    }
+
     public static function materialPorGrupo($grupo){
         $grupo=DB::table('material')
                 ->select("material.*")

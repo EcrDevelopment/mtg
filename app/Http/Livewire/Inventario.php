@@ -17,7 +17,9 @@ class Inventario extends Component
         $this->todos=Material::where([
              //FORMATOS EN STOCK
             ['idUsuario',Auth::id()],
-            ])->get();        
+            ])->get();      
+            
+            //dd($this->todos);
     }
     
     public function render()

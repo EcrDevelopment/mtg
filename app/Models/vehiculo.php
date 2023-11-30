@@ -43,6 +43,10 @@ class vehiculo extends Model
     public function Equipos(){
         return $this->belongsToMany(Equipo::class, 'equiposvehiculo','idVehiculo','idEquipo');
     }
+    public function modificaciones()
+    {
+        return $this->belongsToMany(Modificacion::class, 'vehiculo_modificacion', 'idVehiculo', 'idModificacion');
+    }
 
     public function cuentaDis($tipo){
         $cuenta=0;
@@ -74,6 +78,11 @@ class vehiculo extends Model
             if($reg>0 && $cil >0){
                 $estado=true;
             }
+        return $estado;
+    }
+
+    public function getEsCertificableModiAttribute(){
+        $estado=false;
         return $estado;
     }
 

@@ -97,6 +97,21 @@ class CreateAsignacion extends Component
                     }
                 }
                 break;
+            case 4:
+                    $this->guias = json_decode(Material::stockPorGruposModi(), true);
+                    if ($this->guia) {
+                        $cant = Material::where([
+                            ['estado', 1],
+                            ['idTipoMaterial', $this->tipoM],
+                            ['grupo', $this->guia],
+                        ])->count();
+                        if (array_key_exists("cantidad", $this->rules)) {
+                            $this->rules["cantidad"] = "required|numeric|min:1|max:" . $cant;
+                        } else {
+                            $this->rules += ["cantidad" => 'required|numeric|min:1|max:' . $cant];
+                        }
+                    }
+                    break;
             default:
                 $this->guias = new Collection();
                 break;
@@ -146,7 +161,7 @@ class CreateAsignacion extends Component
     public function validaSeries()
     {
         $result = new Collection();
-        if ($this->tipoM == 1 || $this->tipoM == 3) {
+        if ($this->tipoM == 1 || $this->tipoM == 3 || $this->tipoM == 4) { // AGREGUE EL TIPOM 4 PARA MODIFI
             if ($this->numInicio && $this->guia) {
                 $series = $this->creaColeccion($this->numInicio, $this->numFinal);
                 $mat = Material::where([['idTipoMaterial', $this->tipoM], ['grupo', $this->guia], ["estado", 1]])->pluck('numSerie');
@@ -203,10 +218,7 @@ class CreateAsignacion extends Component
                     "numInicio" => 'required|numeric|min:1',
                     "numFinal" => 'required|numeric|min:1',
                 ];
-                $this->validate($rule);  
-
-       
-
+                $this->validate($rule);        
                 $temp=$this->validaSeries();
                 if($temp->count()>0){
                    // $this->emit("minAlert",["titulo"=>"TODO OK","mensaje"=>"BIEN HECHO ".$temp->count(),"icono"=>"success"]); 
@@ -220,6 +232,28 @@ class CreateAsignacion extends Component
                     $this->emit("minAlert",["titulo"=>"ERROR","mensaje"=>"Las series ingresadas no pertenecen al grupo seleccionado o no existen ","icono"=>"error"]); 
                     $this->reset(['tipoM','motivo','cantidad','guia','numInicio','numFinal']);
         
+                }
+            break;
+
+            case 4:
+                $rule = [
+                    "guia" => 'required',
+                    "numInicio" => 'required',
+                    "numFinal" => 'required',
+                ];
+                $this->validate($rule);
+                $temp = $this->validaSeries();
+                if ($temp->count() > 0) {
+                    // $this->emit("minAlert",["titulo"=>"TODO OK","mensaje"=>"BIEN HECHO ".$temp->count(),"icono"=>"success"]); 
+                    $articulo = array("tipo" => $this->tipoM, "nombreTipo" => $this->nombreTipo, "cantidad" => $this->cantidad, "inicio" => $this->numInicio, "final" => $this->numFinal, "motivo" => $this->motivo);
+                    $this->emit('agregarArticulo', $articulo);
+                    $this->reset(['tipoM', 'motivo', 'cantidad', 'guia', 'numInicio', 'numFinal']);
+                    $this->open = false;
+                    $this->emit("minAlert", ["titulo" => "BUEN TRABAJO!", "mensaje" => "El articulo se añadio Correctamente", "icono" => "success"]);
+                    //$this->reset(["grupo"]);
+                } else {
+                    $this->emit("minAlert", ["titulo" => "ERROR", "mensaje" => "Las series ingresadas no pertenecen al grupo seleccionado o no existen ", "icono" => "error"]);
+                    $this->reset(['tipoM', 'motivo', 'cantidad', 'guia', 'numInicio', 'numFinal']);
                 }
             break;
 

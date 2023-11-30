@@ -200,19 +200,19 @@
             </div>
             <div>
                 <x-jet-label value="Potencia (HP @ RPM):" />
-                <x-jet-input type="text" class="w-full" wire:model="" />
-                <x-jet-input-error for="" />
+                <x-jet-input type="text" class="w-full" wire:model="potencia" />
+                <x-jet-input-error for="potencia" />
             </div>            
 
         </div>
         <div class="mt-4 grid grid-cols-3 gap-4">
             <div class="col-span-1">
                 <x-jet-label value="Fórmula rodante (FR):" />
-                <x-jet-input type="text" class="w-full" wire:model="potencia" />
-                <x-jet-input-error for="potencia" />
+                <x-jet-input type="text" class="w-full" wire:model="rodante" />
+                <x-jet-input-error for="rodante" />
             </div>
             <div class="col-span-2">
-                <x-jet-label value="Rectificación:" />
+                <x-jet-label value="Datos a modificar:" />
                 <x-jet-input type="text" class="w-full" wire:model="rectificacion" maxlength="245" />
                 <x-jet-input-error for="rectificacion" />
             </div>

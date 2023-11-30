@@ -182,6 +182,9 @@ class Certificacion extends Model
         if (in_array($idServicio, [1, 2, 7, 8, 10, 12])) {
             $hoja = Certificacion::find($this->attributes['id'])->Materiales->where('idTipoMaterial', 1)->first();
             return $hoja;
+        } elseif (in_array($idServicio, [5])) {
+            $hoja = Certificacion::find($this->attributes['id'])->Materiales->where('idTipoMaterial',4)->first();
+            return $hoja;
         } elseif (in_array($idServicio, [3, 4, 9])) {
             $hoja = Certificacion::find($this->attributes['id'])->Materiales->where('idTipoMaterial', 3)->first();
             return $hoja;
@@ -438,6 +441,32 @@ class Certificacion extends Model
         return $peso;
     }
 
+
+    public static function certificarGlp(Taller $taller, Servicio $servicio, Material $hoja, vehiculo $vehiculo, User $inspector)
+    {
+        $cert = Certificacion::create([
+            "idVehiculo" => $vehiculo->id,
+            "idTaller" => $taller->id,
+            "idInspector" => $inspector->id,
+            "idServicio" => $servicio->id,
+            "estado" => 1,
+            "precio" => $servicio->precio,
+            "pagado" => 0,
+        ]);
+        if ($cert) {
+            //cambia el estado de la hoja a consumido
+            $hoja->update(["estado" => 4, "ubicacion" => "En poder del cliente"]);
+            //crea y guarda el servicio y material usado en esta certificacion
+            $servM = ServicioMaterial::create([
+                "idMaterial" => $hoja->id,
+                "idCertificacion" => $cert->id
+            ]);
+            //retorna el certificado
+            return $cert;
+        } else {
+            return null;
+        }
+    }
     public static function certificarGnv(Taller $taller, Servicio $servicio, Material $hoja, vehiculo $vehiculo, User $inspector)
     {
         $cert = Certificacion::create([
@@ -463,8 +492,7 @@ class Certificacion extends Model
             return null;
         }
     }
-
-    public static function certificarGlp(Taller $taller, Servicio $servicio, Material $hoja, vehiculo $vehiculo, User $inspector)
+    public static function certificarModi(Taller $taller, Servicio $servicio, Material $hoja, vehiculo $vehiculo, User $inspector)
     {
         $cert = Certificacion::create([
             "idVehiculo" => $vehiculo->id,

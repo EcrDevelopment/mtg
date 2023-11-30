@@ -19,4 +19,9 @@ class modificacion extends Model
         "rodante",
         "rectificacion",
     ];
+
+    public function vehiculos()
+    {
+        return $this->belongsToMany(Vehiculo::class, 'vehiculo_modificacion', 'idModificacion', 'idVehiculo');
+    }
 }

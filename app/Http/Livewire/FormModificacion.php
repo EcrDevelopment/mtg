@@ -3,6 +3,8 @@
 namespace App\Http\Livewire;
 
 use App\Models\vehiculo;
+use App\Models\Modificacion;
+use App\Models\VehiculoModificacion;
 use Livewire\Component;
 
 class FormModificacion extends Component
@@ -24,6 +26,8 @@ class FormModificacion extends Component
     public $estado, $vehiculos, $busqueda, $tipoServicio;
 
     //VARIABLES FALTANTES (TABLA MODIFICACION)
+    //aqui estas inicializando la variable modificacion como una variable de tipo MODIFICACION osea el modelo
+    public modificacion $modificacion;
     public $direccion, $chasis, $carroceria, $potencia, $rodante, $rectificacion;
 
     public function mount()
@@ -62,7 +66,7 @@ class FormModificacion extends Component
         "carroceria" => "nullable",
         "potencia" => "nullable",
         "rodante" => "nullable",
-        "rectificacion"=>"nullable",
+        "rectificacion" => "nullable",
 
         "vehiculo.propietario" => "required|min:6",
         "vehiculo.placa" => "required|min:6",
@@ -88,6 +92,7 @@ class FormModificacion extends Component
         "vehiculo.pesoBruto" => "nullable|numeric",
         "vehiculo.cargaUtil" => "nullable|numeric",
         //variables restantes
+
         "modificacion.direccion" => "nullable",
         "modificacion.chasis" => "nullable",
         "modificacion.carroceria" => "nullable",
@@ -129,7 +134,7 @@ class FormModificacion extends Component
             "carroceria" => "nullable",
             "potencia" => "nullable",
             "rodante" => "nullable",
-            "rectificacion"=>"nullable",
+            "rectificacion" => "nullable",
         ];
 
         $this->validate($rules);
@@ -180,15 +185,24 @@ class FormModificacion extends Component
             "cargaUtil" => $this->retornaNulo($this->cargaUtil),
             //considerar en el PDF
 
-            //restantes
+        ]);
+
+        // Crea una nueva modificación
+        $modificacion = Modificacion::create([
             "direccion" => $this->retornaNE($this->direccion),
             "chasis" => $this->retornaNE($this->chasis),
             "carroceria" => $this->retornaNE($this->carroceria),
             "potencia" => $this->retornaNE($this->potencia),
             "rodante" => $this->retornaNE($this->rodante),
-            "rectificacion"=>$this->retornaNE($this->rectificacion),
-
+            "rectificacion" => $this->retornaNE($this->rectificacion),
         ]);
+
+        VehiculoModificacion::create([
+            'idVehiculo' => $vehiculo->id,
+            'idModificacion' => $modificacion->id,
+        ]);
+
+
         //dd($vehiculo);
         if ($vehiculo) {
             $this->vehiculo = $vehiculo;
@@ -203,6 +217,8 @@ class FormModificacion extends Component
             $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "Ocurrio un error al guardar los datos del vehículo", "icono" => "warning"]);
         }
     }
+
+
 
     public function actualizarVehiculo()
     {
@@ -237,7 +253,7 @@ class FormModificacion extends Component
                 "modificacion.carroceria" => "nullable",
                 "modificacion.potencia" => "nullable",
                 "modificacion.rodante" => "nullable",
-                "modificacion.rectificacion"=>"nullable",
+                "modificacion.rectificacion" => "nullable",
             ];
 
         $this->validate($rules);
@@ -290,6 +306,7 @@ class FormModificacion extends Component
                 "cargaUtil" => $this->retornaNulo($this->vehiculo->cargaUtil),
 
                 //restantes (crear para modi)
+
                 "direccion" => $this->retornaNE($this->vehiculo->direccion),
                 "chasis" => $this->retornaNE($this->vehiculo->chasis),
                 "carroceria" => $this->retornaNE($this->vehiculo->carroceria),
@@ -297,13 +314,25 @@ class FormModificacion extends Component
                 "rodante" => $this->retornaNE($this->vehiculo->rodante),
                 "rectificacion" => $this->retornaNE($this->vehiculo->rectificacion),
             ])
+
+
         ) {
+            $this->vehiculo->modificacion->update([
+                "direccion" => $this->retornaNE($this->direccion),
+                "chasis" => $this->retornaNE($this->chasis),
+                "carroceria" => $this->retornaNE($this->carroceria),
+                "potencia" => $this->retornaNE($this->potencia),
+                "rodante" => $this->retornaNE($this->rodante),
+                "rectificacion" => $this->retornaNE($this->rectificacion),
+            ]);
+
             $this->estado = 'cargado';
             $this->emit("minAlert", ["titulo" => "¡BUEN TRABAJO!", "mensaje" => "Datos del vehículo actualizados correctamente", "icono" => "success"]);
         } else {
             $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "Ocurrio un error al actualizar los datos del vehículo", "icono" => "warning"]);
         }
     }
+
 
     public function retornaNE($value)
     {
@@ -346,16 +375,26 @@ class FormModificacion extends Component
         }
     }
 
-    public function seleccionaVehiculo(vehiculo $veh)
+
+    public function seleccionaVehiculo(Vehiculo $vehiculo)
     {
-        $this->vehiculo = $veh;
+        $vehiculo->load('modificaciones'); // Cargar las modificaciones junto con el vehículo        
+        $this->vehiculo = $vehiculo;  // Asignar el vehículo con sus modificaciones a la propiedad del componente        
+       
+        //este if es solo para que en caso el metodo last() no encuentre ninguna modificacion no lo mande nulo y no salga error las validaciones van en el certificar no aqui
+        if(!empty($vehiculo->modificaciones->last())){
+            $this->modificacion = $vehiculo->modificaciones->last(); // Asignar la modificación actual (la última) a la propiedad del componente
+        } 
         $this->estado = 'cargado';
         if ($this->nombreDelInvocador != null) {
-            $this->emitTo($this->nombreDelInvocador, 'cargaVehiculo', $veh->id);
+            $this->emitTo($this->nombreDelInvocador, 'cargaVehiculo', $vehiculo->id);
         } else {
-            $this->emitTo('prueba', 'cargaVehiculo', $veh->id);
+            $this->emitTo('prueba', 'cargaVehiculo', $vehiculo->id);
         }
+        // Limpiar los resultados de búsqueda
         $this->vehiculos = null;
         $this->busqueda = false;
     }
+
+    
 }

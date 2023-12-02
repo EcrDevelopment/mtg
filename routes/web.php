@@ -96,7 +96,10 @@ Route::get('/preConver-gnv/{id}/temp', [PdfController::class, 'generaPdfPreGnv']
 Route::get('/certificado-anual-glp/{id}/temp', [PdfController::class, 'generaPdfAnualGlp'])->name("verPdfAnualGlp");
 
 // Rutas para QR (ver PDF) Inicial-GLP
-Route::get('/certificado-inicial-glp/{id}/temp', [PdfController::class, 'generaPdfInicialGlp'])->name("verPdfInicialGlp");;
+Route::get('/certificado-inicial-glp/{id}/temp', [PdfController::class, 'generaPdfInicialGlp'])->name("verPdfInicialGlp");
+
+//Rutas para QR (ver PDF) Modificacion
+Route::get('/certificado-modificacion/{id}/temp', [PdfController::class, 'generaPdfModificacion'])->name("verPdfModificacion");
 
 
 Route::get('phpmyinfo', function () {
@@ -230,7 +233,10 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified'])
         Route::get('/fichaTecnicaGlp/{idCert}','generarFichaTecnicaGlp')->name("fichaTecnicaGlp");
         Route::get('/fichaTecnicaGlp/{idCert}/descargar','descargarFichaTecnicaGlp')->name("descargarFichaTecnicaGlp");
 
-         //Rutas para generar cargo de materiales
+        //Rutas para ver certificado modificacion
+        Route::get('/certificado-modificacion/{id}', 'generaPdfModificacion')->name("certificadoModificacion");
+
+        //Rutas para generar cargo de materiales
         Route::get('/cargo/{id}','generaCargo')->name('generaCargo');
 
         Route::get('/boletoAnalizadorDeGases/{id}', 'generaBoletoDeAnalizador')->name("analizadorGnv");
@@ -238,7 +244,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified'])
 
 
 
-
+        //Rutas para los notificaciones
     Route::get("expediente-fotos/{id}/download","App\Http\Controllers\ZipController@descargaFotosExpediente")->name("descargaFotosExp");
     Route::get("Notification/{idNoti}/{idSoli}","App\Http\Controllers\NotificationController@marcarUnaNotificación")->name("leerNotificacion");
     Route::get("Notification/{idNoti}anular","App\Http\Controllers\AnulacionController@marcarAnulacion")->name("leerAnular");

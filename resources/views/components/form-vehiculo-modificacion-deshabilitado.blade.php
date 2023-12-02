@@ -7,12 +7,12 @@
         <div class="grid grid-cols-2 gap-4 py-6">
             <div>
                 <x-jet-label value="Razón Social / Persona Natural:" />
-                <x-jet-input type="text" class="w-full" wire:model="vehiculo.propietario" />
+                <x-jet-input type="text" class="w-full" wire:model="vehiculo.propietario" disabled/>
                 <x-jet-input-error for="vehiculo.propietario" />
             </div>
             <div>
                 <x-jet-label value="Dirección: "/>
-                <x-jet-input type="text" class="w-full" wire:model="modificacion.direccion" />
+                <x-jet-input type="text" class="w-full" wire:model="direccion" disabled/>
                 <x-jet-input-error for="modificacion.direccion" />
             </div>
         </div>
@@ -82,7 +82,7 @@
             </div>
             <div>
                 <x-jet-label value="Chasis:" />
-                <x-jet-input type="text" class="w-full" wire:model="modificacion.chasis" disabled/>
+                <x-jet-input type="text" class="w-full" wire:model="chasis" disabled/>
                 <x-jet-input-error for="modificacion.chasis" />
             </div>            
             <div class="flex flex-row justify-center">
@@ -104,8 +104,8 @@
             </div>
             <div>
                 <x-jet-label value="Carrocería:" />
-                <x-jet-input type="text" class="w-full" wire:model="modificacion.carroceria" disabled/>
-                <x-jet-input-error for="carroceria" />
+                <x-jet-input type="text" class="w-full" wire:model="carroceria" disabled/>
+                <x-jet-input-error for="modificacion.carroceria" />
             </div>
             
             <div>
@@ -178,7 +178,7 @@
             </div>
             <div>
                 <x-jet-label value="Potencia (HP @ RPM):" />
-                <x-jet-input type="text" class="w-full" wire:model="modificacion.potencia"  disabled/>
+                <x-jet-input type="text" class="w-full" wire:model="potencia"  disabled/>
                 <x-jet-input-error for="modificacion.potencia" />
             </div>            
 
@@ -186,12 +186,12 @@
         <div class="mt-4 grid grid-cols-3 gap-4">
             <div class="col-span-1">
                 <x-jet-label value="Fórmula rodante (FR):" />
-                <x-jet-input type="text" class="w-full" wire:model="modificacion.rodante" disabled/>
+                <x-jet-input type="text" class="w-full" wire:model="rodante" disabled/>
                 <x-jet-input-error for="modificacion.rodante" />
             </div>
             <div class="col-span-2">
                 <x-jet-label value="Datos a modificar:" />
-                <x-jet-input type="text" class="w-full" wire:model="modificacion.rectificacion" maxlength="245" disabled/>
+                <x-jet-input type="text" class="w-full" wire:model="rectificacion" maxlength="245" disabled/>
                 <x-jet-input-error for="modificacion.rectificacion" />
             </div>
         </div>

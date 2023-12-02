@@ -561,41 +561,8 @@
                                                 @endif
                                                 <i class="fas fa-download"></i>
                                                 <span>desc. Certificado</span>
-                                                </a>
-                                                @if ($certificacion->Servicio->tipoServicio->id == 1)
-                                                    <a href="{{ route('preConversionGnv', [$certificacion->id]) }}" target="__blank"
-                                                        rel="noopener noreferrer"
-                                                        class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center hover:cursor-pointer">
-                                                        <i class="fas fa-eye"></i>
-                                                        <span>Ver Preconversion.</span>
-                                                    </a>
-                                                @endif
-                                                @if ($certificacion->Servicio->tipoServicio->id != 8)
-                                                    <a href="{{ $certificacion->rutaVistaFt }}" target="__blank"
-                                                        rel="noopener noreferrer"
-                                                        class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center hover:cursor-pointer">
-                                                        <i class="fas fa-eye"></i>
-                                                        <span>Ver Ficha Tec.</span>
-                                                    </a>
-                                                    <a href="{{ $certificacion->rutaDescargaFt }}" target="__blank"
-                                                        rel="noopener noreferrer"
-                                                        class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center hover:cursor-pointer">
-                                                        <i class="fas fa-download"></i>
-                                                        <span>desc. Ficha Tec.</span>
-                                                    </a>
-                                                    <a href="{{ route('checkListArribaGnv', [$certificacion->id]) }}"
-                                                        target="__blank" rel="noopener noreferrer"
-                                                        class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center hover:cursor-pointer">
-                                                        <i class="fas fa-eye"></i>
-                                                        <span>CheckList Arriba</span>
-                                                    </a>
-                                                    <a href="{{ route('checkListAbajoGnv', [$certificacion->id]) }}" target="__blank"
-                                                        rel="noopener noreferrer"
-                                                        class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white rounded-b-md justify-between items-center hover:cursor-pointer">
-                                                        <i class="fas fa-eye"></i>
-                                                        <span>CheckList Abajo</span>
-                                                    </a>
-                                                @endif
+                                                </a>                                                
+                                                
                                             </div>
                                         </div>
 

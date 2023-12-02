@@ -15,7 +15,7 @@
             <div>
                 <x-jet-label value="Dirección: "/>
                 <x-jet-input type="text" class="w-full" wire:model="modificacion.direccion" />
-                <x-jet-input-error for="modificacion.direccion" />
+                <x-jet-input-error for="direccion" />
             </div>
         </div>
 

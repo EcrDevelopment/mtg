@@ -34,6 +34,7 @@ class FormModificacion extends Component
     {
         $this->estado = "nuevo";
         //$this->vehiculo=vehiculo::make();
+        
     }
 
     protected $rules = [
@@ -317,16 +318,19 @@ class FormModificacion extends Component
 
 
         ) {
-            $this->vehiculo->modificacion->update([
-                "direccion" => $this->retornaNE($this->direccion),
-                "chasis" => $this->retornaNE($this->chasis),
-                "carroceria" => $this->retornaNE($this->carroceria),
-                "potencia" => $this->retornaNE($this->potencia),
-                "rodante" => $this->retornaNE($this->rodante),
-                "rectificacion" => $this->retornaNE($this->rectificacion),
-            ]);
+            if (
+                $this->modificacion
+                ->update([
+                    "direccion" => $this->retornaNE($this->modificacion->direccion),
+                    "chasis" => $this->retornaNE($this->modificacion->chasis),
+                    "carroceria" => $this->retornaNE($this->modificacion->carroceria),
+                    "potencia" => $this->retornaNE($this->modificacion->potencia),
+                    "rodante" => $this->retornaNE($this->modificacion->rodante),
+                    "rectificacion" => $this->retornaNE($this->modificacion->rectificacion),
+                ])
+            )
 
-            $this->estado = 'cargado';
+                $this->estado = 'cargado';
             $this->emit("minAlert", ["titulo" => "¡BUEN TRABAJO!", "mensaje" => "Datos del vehículo actualizados correctamente", "icono" => "success"]);
         } else {
             $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "Ocurrio un error al actualizar los datos del vehículo", "icono" => "warning"]);
@@ -380,11 +384,11 @@ class FormModificacion extends Component
     {
         $vehiculo->load('modificaciones'); // Cargar las modificaciones junto con el vehículo        
         $this->vehiculo = $vehiculo;  // Asignar el vehículo con sus modificaciones a la propiedad del componente        
-       
+
         //este if es solo para que en caso el metodo last() no encuentre ninguna modificacion no lo mande nulo y no salga error las validaciones van en el certificar no aqui
-        if(!empty($vehiculo->modificaciones->last())){
+        if (!empty($vehiculo->modificaciones->last())) {
             $this->modificacion = $vehiculo->modificaciones->last(); // Asignar la modificación actual (la última) a la propiedad del componente
-        } 
+        }
         $this->estado = 'cargado';
         if ($this->nombreDelInvocador != null) {
             $this->emitTo($this->nombreDelInvocador, 'cargaVehiculo', $vehiculo->id);
@@ -395,6 +399,4 @@ class FormModificacion extends Component
         $this->vehiculos = null;
         $this->busqueda = false;
     }
-
-    
 }

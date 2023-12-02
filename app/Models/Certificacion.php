@@ -229,6 +229,9 @@ class Certificacion extends Model
             case 4: //tipo servicio = anual gnv
                 $ruta = route('certificadoAnualGlp', ['id' => $this->attributes['id']]);
                 break;
+            case 5: //tipo servicio = modificacion
+                $ruta = route('certificadoModificacion', ['id' => $this->attributes['id']]);
+                break;
 
             case 8: //tipo servicio = anual gnv
                 $dupli = Duplicado::find($this->attributes["idDuplicado"]);

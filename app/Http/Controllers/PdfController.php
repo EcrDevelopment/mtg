@@ -215,6 +215,47 @@ class PdfController extends Controller
         }
     }
 
+    //vista y descarga de Modificacion
+
+    public function generaPdfModificacion($id)
+    {
+        if (Certificacion::findOrFail($id)) {
+            $certificacion = Certificacion::find($id);
+            if ($certificacion->Servicio->tipoServicio->id) {
+                if ($certificacion->Servicio->tipoServicio->id == 5) {
+                    $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
+                    $fechaCert = $certificacion->created_at;
+                    $fecha = $fechaCert->format('d') . ' días del mes de ' . $meses[$fechaCert->format('m') - 1] . ' del ' . $fechaCert->format('Y') . '.';
+                    $hoja = $certificacion->Materiales->where('idTipoMaterial', 4)->first();
+                    // Asegúrate de cargar las relaciones necesarias
+                    $certificacion->load('Vehiculo.modificaciones');
+                    // Genera el código QR                    
+                    $urlDelDocumento = 'www.motorgasperu.com' . route('verPdfModificacion', $id, false); // Reemplaza 'certificadoAnualGnv' con el nombre correcto de tu ruta
+                    $qrCode = QrCode::size(70)->generate($urlDelDocumento);
+                    $data = [
+                        "fecha" => $fecha,
+                        "empresa" => "MOTORGAS COMPANY S.A.",
+                        "carro" => $certificacion->Vehiculo,
+                        "taller" => $certificacion->Taller,
+                        "hoja" => $hoja,
+                        "fechaCert" => $fechaCert,
+                        "largo" => $this->devuelveDatoParseado($certificacion->Vehiculo->largo),
+                        "ancho" => $this->devuelveDatoParseado($certificacion->Vehiculo->ancho),
+                        "altura" => $this->devuelveDatoParseado($certificacion->Vehiculo->altura),
+                        "modificacion" => $certificacion->Vehiculo->modificaciones->last(),
+                        "qrCode" => $qrCode,
+                    ];
+                    $pdf = App::make('dompdf.wrapper');
+                    $pdf->loadView('modificacion', $data);
+                    return $pdf->stream($certificacion->Vehiculo->placa . '-' . $hoja->numSerie . '-modificacion.pdf'); //esto de donde saca
+                }
+                return abort(404);
+            }
+        } else {
+            return abort(404);
+        }
+    }
+
     //vista y descarga de ANUALES GNV
 
     public function generaPdfAnualGnv($id)
@@ -1102,7 +1143,7 @@ class PdfController extends Controller
         $gnvs = $salida->porAsignacion->where("idTipoMaterial", 1);
         $glps = $salida->porAsignacion->where("idTipoMaterial", 3);
         $chips = $salida->porAsignacion->where("idTipoMaterial", 2);
-        $modis= $salida->porAsignacion->where("idTipoMaterial", 4);
+        $modis = $salida->porAsignacion->where("idTipoMaterial", 4);
 
         //dd($gnvs->get()->pluck("numSerie")->all());
         if ($gnvs->count() > 0) {
@@ -1118,7 +1159,7 @@ class PdfController extends Controller
         if ($modis->count() > 0) {
             $materiales->push(["series" => $this->encuentraSeries($modis->get()->all()), "tipo" => $modis->first()->tipo->descripcion, "cantidad" => $modis->count(), "motivo" => $modis->first()->detalle->motivo]);
         }
-        
+
         return $materiales;
     }
 

@@ -156,6 +156,36 @@ trait pdfTrait
         ]);
     }
 
+    public function guardarPdfModificacion(Certificacion $certificacion, Expediente $expe)
+    {
+
+        $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
+        $fechaCert = $certificacion->created_at;
+        $fecha = $fechaCert->format('d') . ' días del mes de ' . $meses[$fechaCert->format('m') - 1] . ' del ' . $fechaCert->format('Y') . '.';
+        $hoja = $certificacion->Materiales->where('idTipoMaterial', 4)->first();
+        $data = [
+            "fecha" => $fecha,
+            "empresa" => "MOTORGAS COMPANY S.A.",
+            "carro" => $certificacion->Vehiculo,
+            "taller" => $certificacion->Taller,
+            "hoja" => $hoja,
+            "fechaCert" => $fechaCert,
+            "largo" => $this->devuelveDatoParseado($certificacion->Vehiculo->largo),
+            "ancho" => $this->devuelveDatoParseado($certificacion->Vehiculo->ancho),
+            "altura" => $this->devuelveDatoParseado($certificacion->Vehiculo->altura),
+        ];
+        $pdf = App::make('dompdf.wrapper');
+        $pdf->loadView('modificacion', $data);
+        $archivo =  $pdf->download($certificacion->Vehiculo->placa . '-' . $hoja->numSerie . '-modificacion.pdf')->getOriginalContent();
+        Storage::put('public/expedientes/' . $certificacion->Vehiculo->placa . '-' . $hoja->numSerie . '-modificacion.pdf', $archivo);
+        Imagen::create([
+            'nombre' => $certificacion->Vehiculo->placa . '-' . $hoja->numSerie,
+            'ruta' => 'public/expedientes/' . $certificacion->Vehiculo->placa . '-' . $hoja->numSerie . '-modificacion.pdf',
+            'extension' => 'pdf',
+            'Expediente_idExpediente' => $expe->id,
+        ]);
+    }
+
     public function guardarPdfInicialGnv(Certificacion $certificacion, Expediente $expe)
     {
         //para que no te hagas tanto problema para pruebas ponte con tu vista comenta es otro mano y ya

@@ -143,6 +143,12 @@
                                                                     Revision anual GLP
                                                                 </p>
                                                             @break
+                                                            @case(5)
+                                                                <p
+                                                                    class="text-sm leading-none text-gray-600 ml-2 p-2 bg-blue-200 rounded-full">
+                                                                    Modificación
+                                                                </p>
+                                                            @break
 
                                                             @case(8)
                                                                 <p

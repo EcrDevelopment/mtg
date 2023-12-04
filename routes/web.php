@@ -63,19 +63,19 @@ Route::get('/', function () {
 });*/
 
 Route::get('/', function () {
-    return view('index'); 
+    return view('index');
 });
 Route::get('index', function () {
-    return view('index'); 
+    return view('index');
 });
 Route::get('about', function () {
-    return view('about'); 
+    return view('about');
 });
 Route::get('services', function () {
-    return view('services'); 
+    return view('services');
 });
 Route::get('contact', function () {
-    return view('contact'); 
+    return view('contact');
 });
 
 

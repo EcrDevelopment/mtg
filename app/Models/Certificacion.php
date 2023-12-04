@@ -185,6 +185,9 @@ class Certificacion extends Model
         } elseif (in_array($idServicio, [3, 4, 9,13])) {
             $hoja = Certificacion::find($this->attributes['id'])->Materiales->where('idTipoMaterial', 3)->first();
             return $hoja;
+        } elseif (in_array($idServicio, [5])) {
+            $hoja = Certificacion::find($this->attributes['id'])->Materiales->where('idTipoMaterial', 4)->first();
+            return $hoja;
         }else{
             return $hoja;
         }
@@ -272,6 +275,9 @@ class Certificacion extends Model
                 break;
             case 4: //tipo servicio = anual glp
                 $ruta = route('descargarCertificadoAnualGlp', ['id' => $this->attributes['id']]);
+                break;
+            case 5: //tipo servicio = modificacion
+                $ruta = route('descargarCertificadoModificacion', ['id' => $this->attributes['id']]);
                 break;
 
             case 8: //tipo servicio = anual gnv

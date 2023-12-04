@@ -12,10 +12,7 @@
         @default
          <x-form-vehiculo-habilitado/>
     @endswitch
-   
-    @if($vehiculo)
-        @livewire('form-equipos',['vehiculo'=>$vehiculo,"tipoServicio"=>$tipoServicio,"nombreDelInvocador"=>$nombreDelInvocador])
-    @endif
+
 
     <x-jet-dialog-modal wire:model="busqueda">
         <x-slot name="title">

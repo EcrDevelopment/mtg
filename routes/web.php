@@ -241,6 +241,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified'])
 
         //Rutas para ver certificado modificacion
         Route::get('/certificado-modificacion/{id}', 'generaPdfModificacion')->name("certificadoModificacion");
+        //Ruta para descargar certificado modificacion
+        Route::get('/certificado-modificacion/{id}/descargar', 'descargaPdfModificacion')->name("descargarCertificadoModificacion");
 
         //Rutas para generar cargo de materiales
         Route::get('/cargo/{id}','generaCargo')->name('generaCargo');

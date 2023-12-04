@@ -22,6 +22,7 @@
                         <option value="1">Formato GNV</option>
                         <option value="2">CHIP</option>
                         <option value="3">Formato GLP</option>
+                        <option value="4">Modificación</option>
                     </select>
                     <x-jet-input-error for="inspector" />
                 </div>

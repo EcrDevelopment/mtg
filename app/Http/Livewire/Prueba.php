@@ -410,8 +410,8 @@ class Prueba extends Component
 
         if ($certi) {
             $this->estado = "certificado";
-            $this->certificacion = $certi;
-
+            $this->certificacion = $certi;      
+            
             $expe = Expediente::create([
                 "placa" => $this->vehiculo->placa,
                 "certificado" => $hoja->numSerie,
@@ -425,6 +425,7 @@ class Prueba extends Component
             guardarArchivosEnExpediente::dispatch($expe, $certi);
 
             $certEx = CertifiacionExpediente::create(["idCertificacion" => $certi->id, "idExpediente" => $expe->id]);
+
 
             $this->emit("minAlert", ["titulo" => "¡EXCELENTE TRABAJO!", "mensaje" => "Tu certificado N°: " . $certi->Hoja->numSerie . " está listo.", "icono" => "success"]);
         } else {

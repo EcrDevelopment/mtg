@@ -103,6 +103,10 @@
                                                                     @case(3)
                                                                         {{ $articulo['inicio'] . ' - ' . $articulo['final'] }}
                                                                     @break
+                                                                    {{--para modificacion--}}
+                                                                    @case(4)
+                                                                        {{ $articulo['inicio'] . ' - ' . $articulo['final'] }}
+                                                                    @break
                                                                     @default                                                                        
                                                                 @endswitch                                                               
                                                             </td>

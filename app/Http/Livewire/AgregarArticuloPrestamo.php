@@ -14,6 +14,7 @@ class AgregarArticuloPrestamo extends Component
 
     public $open=false;
     public $stockGlp,$stockGnv,$stockChips,$nombreTipo,$tiposMateriales;
+    public $stockModi;//variables faltantes(modi)
 
     public $cantidad,$numInicio,$numFinal,$tipoM=0,$motivo="Prestamo de material";
 
@@ -89,6 +90,16 @@ class AgregarArticuloPrestamo extends Component
                         $this->rules+=["cantidad"=>'required|numeric|min:1|max:'.$cant];
                     }
             break;
+            case 4:               
+                $cant=$this->disponibles->where("idTipoMaterial",$this->tipoM)->count();
+                //dd($cant);                                       
+                if (array_key_exists("cantidad",$this->rules)){
+                    $this->rules["cantidad"]="required|numeric|min:1|max:".$cant;
+                }else{
+                    $this->rules+=["cantidad"=>'required|numeric|min:1|max:'.$cant];
+                }
+            
+            break;
             default:
                //$this->guias=new Collection();
             break;
@@ -161,6 +172,21 @@ class AgregarArticuloPrestamo extends Component
 
                 }
             break;
+            case 4:                
+                $temp = $this->validaSeries();
+                if ($temp->count() > 0) {
+                    // $this->emit("minAlert",["titulo"=>"TODO OK","mensaje"=>"BIEN HECHO ".$temp->count(),"icono"=>"success"]); 
+                    $articulo = array("tipo" => $this->tipoM, "nombreTipo" => $this->nombreTipo, "cantidad" => $this->cantidad, "inicio" => $this->numInicio, "final" => $this->numFinal, "motivo" =>"Prestamo de Materiales");
+                    $this->emit('agregarArticulo', $articulo);
+                    $this->reset(['tipoM', 'motivo', 'cantidad', 'numInicio', 'numFinal']);
+                    $this->open = false;
+                    $this->emit("minAlert", ["titulo" => "BUEN TRABAJO!", "mensaje" => "El articulo se añadio Correctamente", "icono" => "success"]);
+                    //$this->reset(["grupo"]);
+                } else {
+                    $this->emit("minAlert", ["titulo" => "ERROR", "mensaje" => "Las series seleccionadas ya fueron agregadas o no estan en su poder", "icono" => "error"]);
+                    $this->reset(['tipoM', 'motivo', 'cantidad', 'numInicio', 'numFinal']);
+                }
+            break;
 
             default:
                 $rule = ["cantidad" => 'required|numeric|min:1'];
@@ -175,7 +201,7 @@ class AgregarArticuloPrestamo extends Component
 
     public function validaSeries(){
         $result= new Collection();
-        if($this->tipoM==1 || $this->tipoM==3){
+        if($this->tipoM==1 || $this->tipoM==3 | $this->tipoM==4){
             if($this->numInicio && $this->numFinal){
                 $series=$this->creaColeccion($this->numInicio,$this->numFinal);
                 $mat=$this->disponibles->pluck('numSerie');

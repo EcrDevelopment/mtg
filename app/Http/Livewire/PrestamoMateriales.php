@@ -105,7 +105,13 @@ class PrestamoMateriales extends Component
                 $this->agregaMaterialesAseleccionados( $this->buscaMateriales($formatosSeleccionados,$articulo["tipo"]));
                 $this->quitaDeMaterialesDisponibles( $this->buscaMateriales($formatosSeleccionados,$articulo["tipo"]));
             break;
-
+            //para modificacion
+            case 4:
+                $formatosSeleccionados = $this->creaColeccion($articulo["inicio"], $articulo["final"]);
+                $this->agregaMaterialesAseleccionados( $this->buscaMateriales($formatosSeleccionados,$articulo["tipo"]));
+                $this->quitaDeMaterialesDisponibles( $this->buscaMateriales($formatosSeleccionados,$articulo["tipo"]));
+            break;
+            
             default:
                 # code...
             break;
@@ -122,6 +128,10 @@ class PrestamoMateriales extends Component
                 # code...
                 break;
             case 3:
+                $this->quitaFormato($articulo);
+                break;
+            // para modificacion
+            case 4:
                 $this->quitaFormato($articulo);
                 break;
 
@@ -165,6 +175,14 @@ class PrestamoMateriales extends Component
                 });
             break;
             case 3:
+                $dispo = $this->todo->filter(function ($item) use ($nuevaLista) {
+                    if (in_array($item->numSerie, $nuevaLista->all())) {
+                        return $item;
+                    }
+                });
+            break;
+            //para modificacion
+            case 4:
                 $dispo = $this->todo->filter(function ($item) use ($nuevaLista) {
                     if (in_array($item->numSerie, $nuevaLista->all())) {
                         return $item;

@@ -16,7 +16,20 @@
 
                     <input class="bg-gray-50 outline-none block rounded-md border-indigo-500 w-full "
                         wire:model="hasta" placeholder="Hasta...">
+
+                        <div class="w-full">
+                            <select wire:model="tipoMaterial"
+                                class="bg-gray-50 mx-2 border-indigo-500 rounded-md outline-none ml-1 block w-full ">
+                                <option value="">Seleccione Material</option>
+                                <option value="1">Formato GNV</option>
+                                <option value="2">CHIP</option>
+                                <option value="3">Formato GLP</option>
+                                <option value="4">Modificación</option>
+                            </select>
+                            <x-jet-input-error for="tipoMaterial" />
+                        </div>
                 </div>
+                
                 <button wire:click="buscar"
                     class="bg-indigo-600 px-6 py-4 w-full md:w-auto rounded-md text-white font-semibold tracking-wide cursor-pointer mb-4">
                     <p class="truncate"> Realizar Consulta </p>

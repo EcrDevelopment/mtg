@@ -480,6 +480,7 @@ class Certificacion extends Model
             return null;
         }
     }
+    
     public static function certificarGnv(Taller $taller, Servicio $servicio, Material $hoja, vehiculo $vehiculo, User $inspector)
     {
         $cert = Certificacion::create([

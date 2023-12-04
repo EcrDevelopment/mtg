@@ -239,7 +239,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified'])
         Route::get('/fichaTecnicaGlp/{idCert}','generarFichaTecnicaGlp')->name("fichaTecnicaGlp");
         Route::get('/fichaTecnicaGlp/{idCert}/descargar','descargarFichaTecnicaGlp')->name("descargarFichaTecnicaGlp");
 
-        //Rutas para ver certificado modificacion
+        //Ruta para ver certificado modificacion
         Route::get('/certificado-modificacion/{id}', 'generaPdfModificacion')->name("certificadoModificacion");
         //Ruta para descargar certificado modificacion
         Route::get('/certificado-modificacion/{id}/descargar', 'descargaPdfModificacion')->name("descargarCertificadoModificacion");

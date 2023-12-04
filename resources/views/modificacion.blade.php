@@ -93,6 +93,11 @@
             margin-left: auto;
             text-align: center;
         }
+
+        .nota-container h6 {
+            margin-top: 5px;
+            /* Ajusta el margen superior de la segunda línea según sea necesario */
+        }
     </style>
 </head>
 
@@ -229,7 +234,12 @@
         </table>
         <p>Al que se le ha efectuado las siguientes modificaciones:</p>
 
-        <h6>RECTIFICACION: {!! nl2br(e($modificacion->rectificacion)) !!} {!! nl2br(e($modificacion->nota)) !!}</h6>
+        <h6>
+            <span>RECTIFICACION: {!! nl2br(e($modificacion->rectificacion)) !!}</span>
+        </h6>
+        <h6>
+            <span>{!! nl2br(e($modificacion->nota)) !!}</span>
+        </h6>
 
         <h6>(ADECUACION A RD 4848-2006 Y RD10476-2008 MTC/15)</h6>
 

@@ -67,6 +67,23 @@
                         <x-jet-input-error for="numFinal" />
                     </div>                    
                 @break
+                @case(4)
+                    <div>
+                        <x-jet-label value="Cantidad:" />
+                        <x-jet-input type="number" class="w-full" wire:model="cantidad" />
+                        <x-jet-input-error for="cantidad" />
+                    </div>
+                    <div>
+                        <x-jet-label value="N° de inicio" />
+                        <x-jet-input type="number" class="w-full" wire:model="numInicio" />
+                        <x-jet-input-error for="numInicio" />
+                    </div>
+                    <div>
+                        <x-jet-label value="N° de Final" />
+                        <x-jet-input type="number" class="w-full" wire:model="numFinal" enable />
+                        <x-jet-input-error for="numFinal" />
+                    </div>                    
+                @break
 
                 @default
                     <div class="p-4 bg-indigo-300 rounded-md my-4">

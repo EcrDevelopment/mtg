@@ -104,6 +104,9 @@ trait pdfTrait
             case 4: //tipo servicio = anual glp
                 $this->guardarPdfAnualGlp($certi, $expe);
                 break;
+            case 5: //tipo servicio = modificacion
+                    $this->guardarPdfModificacion($certi, $expe);
+                    break;
 
             case 8: //tipo servicio = duplicado gnv
 

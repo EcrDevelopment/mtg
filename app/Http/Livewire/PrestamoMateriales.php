@@ -13,10 +13,10 @@ use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
 class PrestamoMateriales extends Component
-{   
-    
+{
+
     public $inspectores,$inspectoresReceptores,$inspectorEmisor, $inspectorReceptor,$envio,$ruta;
-    public $estado = 1;    
+    public $estado = 1;
     public $articulos = [];
 
     public $todo, $disponibles;
@@ -35,12 +35,12 @@ class PrestamoMateriales extends Component
         $this->inspectores = User::role(['inspector', 'supervisor'])
             ->where('id', '!=', Auth::id())
             ->orderBy('name')->get();
-            
-               
+
+
         $this->estado=1;
-       
+
         $this->seleccionados = new Collection();
-        
+
     }
 
     public function updatedInspectorEmisor($value){
@@ -74,8 +74,8 @@ class PrestamoMateriales extends Component
             $this->agregaMaterialesAdisponibles($chips);
             $this->quitaDeMaterialesSeleccionados($chips);
             unset($this->articulos[$id]);
-        }  
-        
+        }
+
     }
 
     public function creaColeccion($inicio, $fin){
@@ -92,20 +92,20 @@ class PrestamoMateriales extends Component
                 $formatosSeleccionados = $this->creaColeccion($articulo["inicio"], $articulo["final"]);
                 $this->agregaMaterialesAseleccionados( $this->buscaMateriales($formatosSeleccionados,$articulo["tipo"]));
                 $this->quitaDeMaterialesDisponibles( $this->buscaMateriales($formatosSeleccionados,$articulo["tipo"]));
-               
+
             break;
-            case 2:               
+            case 2:
                 $chips=$this->buscaChips($articulo["cantidad"]);
                 $this->agregaMaterialesAseleccionados($chips);
                 $this->quitaDeMaterialesDisponibles($chips);
-               
+
             break;
             case 3:
                 $formatosSeleccionados = $this->creaColeccion($articulo["inicio"], $articulo["final"]);
-                $this->agregaMaterialesAseleccionados( $this->buscaMateriales($formatosSeleccionados,$articulo["tipo"]));         
-                $this->quitaDeMaterialesDisponibles( $this->buscaMateriales($formatosSeleccionados,$articulo["tipo"]));  
+                $this->agregaMaterialesAseleccionados( $this->buscaMateriales($formatosSeleccionados,$articulo["tipo"]));
+                $this->quitaDeMaterialesDisponibles( $this->buscaMateriales($formatosSeleccionados,$articulo["tipo"]));
             break;
-            
+
             default:
                 # code...
             break;
@@ -146,14 +146,14 @@ class PrestamoMateriales extends Component
                     $this->disponibles = $this->buscaMateriales($this->selGNV, $articulo["tipo"]);
                 }
             */
-                
+
     }
 
     public function quitaChip(){
     }
 
     public function buscaMateriales($nuevaLista, $tipo){
-        $dispo = new Collection();        
+        $dispo = new Collection();
         switch ($tipo) {
             case 1:
                 $dispo = $this->todo->filter(function ($item) use ($nuevaLista) {
@@ -162,7 +162,7 @@ class PrestamoMateriales extends Component
                         return $item;
                     }
                 });
-            break;            
+            break;
             case 3:
                 $dispo = $this->todo->filter(function ($item) use ($nuevaLista) {
                     if (in_array($item->numSerie, $nuevaLista->all())) {
@@ -177,49 +177,49 @@ class PrestamoMateriales extends Component
         return $dispo;
     }
 
-    public function buscaChips($cantidad){        
-        $chips=new Collection();        
+    public function buscaChips($cantidad){
+        $chips=new Collection();
         $todoChips=$this->disponibles->where("idTipoMaterial",2)->sortBy("id");
-        $chips=$todoChips->chunk($cantidad)->first();  
-        return $chips;      
+        $chips=$todoChips->chunk($cantidad)->first();
+        return $chips;
     }
 
-    public function buscaChipsParaEliminar($cantidad){        
-        $chips=new Collection();        
+    public function buscaChipsParaEliminar($cantidad){
+        $chips=new Collection();
         $todoChips=$this->seleccionados->where("idTipoMaterial",2)->sortBy("id")->chunk($cantidad)->first();
-        $chips=$todoChips;  
-        return $chips;      
+        $chips=$todoChips;
+        return $chips;
     }
 
 
     public function agregaMaterialesAseleccionados(Collection $materiales){
         $materiales->each(function ($item, $key) {
             $this->seleccionados->push($item);
-        });        
+        });
     }
 
-    public function quitaDeMaterialesSeleccionados(Collection $materiales){           
-        $materiales->each(function ($item, $key) { 
-            if($this->seleccionados->find($item->id)){   
-                $index=$this->seleccionados->search($this->seleccionados->find($item->id));                            
-                $this->seleccionados->pull($index);                
+    public function quitaDeMaterialesSeleccionados(Collection $materiales){
+        $materiales->each(function ($item, $key) {
+            if($this->seleccionados->find($item->id)){
+                $index=$this->seleccionados->search($this->seleccionados->find($item->id));
+                $this->seleccionados->pull($index);
             }
-        }); 
+        });
     }
-    
+
     public function agregaMaterialesAdisponibles(Collection $materiales){
         $materiales->each(function ($item, $key) {
             $this->disponibles->push($item);
-        });        
+        });
     }
 
-    public function quitaDeMaterialesDisponibles(Collection $materiales){ 
-        $materiales->each(function ($item, $key) { 
-            if($this->disponibles->find($item->id)){   
-                $index=$this->disponibles->search($this->disponibles->find($item->id));                            
-                $this->disponibles->pull($index);                
+    public function quitaDeMaterialesDisponibles(Collection $materiales){
+        $materiales->each(function ($item, $key) {
+            if($this->disponibles->find($item->id)){
+                $index=$this->disponibles->search($this->disponibles->find($item->id));
+                $this->disponibles->pull($index);
             }
-        }); 
+        });
     }
 
     public function guardar(){
@@ -227,9 +227,9 @@ class PrestamoMateriales extends Component
         $this->validate(
             [
                 "inspectorEmisor"=>"required|numeric|min:1",
-                "inspectorReceptor"=>"required|numeric|min:1",                
+                "inspectorReceptor"=>"required|numeric|min:1",
                 "articulos"=>"required|array|min:1"
-            ]  
+            ]
         );
         $salida=Salida::create(
             [
@@ -237,9 +237,9 @@ class PrestamoMateriales extends Component
                 "idUsuarioSalida"=>$this->inspectorEmisor,
                 "idUsuarioAsignado"=>$this->inspectorReceptor,
                 "motivo"=>"Prestamo de Materiales",
-                "estado"=>1   //se asigna estado de salida como envio             
+                "estado"=>1   //se asigna estado de salida como envio
             ]
-        ); 
+        );
         $usuario=User::find($salida->idUsuarioAsignado);
         $this->seleccionados->each(function ($item, $key) use($usuario,$salida) {
             //dd(Material::findOrFail($item->id));
@@ -251,22 +251,22 @@ class PrestamoMateriales extends Component
         });
 
         $this->envio=$salida;
-        $this->estado=2;        
+        $this->estado=2;
         $this->ruta=route('generaCargo', ['id' => $salida->id]);
         $this->reset(['articulos','inspectorEmisor','inspectorReceptor']);
-       
-        
+
+
     }
 
-    public function guardaDetalles($articulo,$idSalida){        
+    public function guardaDetalles($articulo,$idSalida){
         $detalleSal=SalidaDetalle::create([
             "idSalida"=>$idSalida,
             "idMaterial"=>$articulo->id,
             "estado"=>1,
             "motivo"=>"Préstamo de materiales"
-        ]);        
+        ]);
         return $detalleSal;
     }
 
-    
+
 }

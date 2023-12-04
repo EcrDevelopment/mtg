@@ -28,23 +28,23 @@ class CreateVehiculo extends Component
         $this->placa=null;
     }
 
-    protected $rules=[        
+    protected $rules=[
         "placa"=>"nullable|min:6|max:10",
         "categoria"=>"nullable",
         "marca"=>"required|min:2",
         "modelo"=>"required|min:2",
-        "version"=>"nullable", 
-        "anioFab"=>"nullable|numeric|min:0",                  
+        "version"=>"nullable",
+        "anioFab"=>"nullable|numeric|min:0",
         "numSerie"=>"nullable|min:2",
         "numMotor"=>"nullable|min:2",
         "cilindros"=>"nullable|numeric|min:1",
         "cilindrada"=>"nullable|numeric|min:1",
-        "combustible"=>"nullable|min:2", 
-        "ejes"=>"nullable|numeric|min:1",   
-        "ruedas"=>"nullable|numeric|min:1",    
-        "asientos"=>"nullable|numeric|min:1",      
-        "pasajeros"=>"nullable|numeric|min:1",   
-        "largo"=>"nullable|numeric",   
+        "combustible"=>"nullable|min:2",
+        "ejes"=>"nullable|numeric|min:1",
+        "ruedas"=>"nullable|numeric|min:1",
+        "asientos"=>"nullable|numeric|min:1",
+        "pasajeros"=>"nullable|numeric|min:1",
+        "largo"=>"nullable|numeric",
         "ancho"=>"nullable|numeric",
         "altura"=>"nullable|numeric",
         "color"=>"nullable|min:2",
@@ -56,18 +56,18 @@ class CreateVehiculo extends Component
         "vehiculo.categoria"=>"nullable",
         "vehiculo.marca"=>"required|min:2",
         "vehiculo.modelo"=>"required|min:2",
-        "vehiculo.version"=>"nullable", 
-        "vehiculo.anioFab"=>"nullable|numeric|min:1900",                  
+        "vehiculo.version"=>"nullable",
+        "vehiculo.anioFab"=>"nullable|numeric|min:1900",
         "vehiculo.numSerie"=>"nullable|min:2",
         "vehiculo.numMotor"=>"nullable|min:2",
         "vehiculo.cilindros"=>"nullable|numeric|min:1",
         "vehiculo.cilindrada"=>"nullable|numeric|min:1",
-        "vehiculo.combustible"=>"nullable|min:2", 
-        "vehiculo.ejes"=>"nullable|numeric|min:1",   
-        "vehiculo.ruedas"=>"nullable|numeric|min:1",    
-        "vehiculo.asientos"=>"nullable|numeric|min:1",      
-        "vehiculo.pasajeros"=>"nullable|numeric|min:1",   
-        "vehiculo.largo"=>"nullable|numeric",   
+        "vehiculo.combustible"=>"nullable|min:2",
+        "vehiculo.ejes"=>"nullable|numeric|min:1",
+        "vehiculo.ruedas"=>"nullable|numeric|min:1",
+        "vehiculo.asientos"=>"nullable|numeric|min:1",
+        "vehiculo.pasajeros"=>"nullable|numeric|min:1",
+        "vehiculo.largo"=>"nullable|numeric",
         "vehiculo.ancho"=>"nullable|numeric",
         "vehiculo.altura"=>"nullable|numeric",
         "vehiculo.color"=>"nullable|min:2",
@@ -82,24 +82,24 @@ class CreateVehiculo extends Component
     }
 
     public function guardaVehiculo(){
-        
+
         $rules=[
             "placa"=>"required|min:6|max:7",
             "categoria"=>"nullable",
             "marca"=>"required|min:2",
             "modelo"=>"required|min:2",
-            "version"=>"nullable", 
-            "anioFab"=>"nullable|numeric|min:0",                  
+            "version"=>"nullable",
+            "anioFab"=>"nullable|numeric|min:0",
             "numSerie"=>"nullable|min:2",
             "numMotor"=>"nullable|min:2",
             "cilindros"=>"nullable|numeric|min:1",
             "cilindrada"=>"nullable|numeric|min:1",
-            "combustible"=>"nullable|min:2", 
-            "ejes"=>"nullable|numeric|min:1",   
-            "ruedas"=>"nullable|numeric|min:1",    
-            "asientos"=>"nullable|numeric|min:1",      
-            "pasajeros"=>"nullable|numeric|min:1",   
-            "largo"=>"nullable|numeric",   
+            "combustible"=>"nullable|min:2",
+            "ejes"=>"nullable|numeric|min:1",
+            "ruedas"=>"nullable|numeric|min:1",
+            "asientos"=>"nullable|numeric|min:1",
+            "pasajeros"=>"nullable|numeric|min:1",
+            "largo"=>"nullable|numeric",
             "ancho"=>"nullable|numeric",
             "altura"=>"nullable|numeric",
             "color"=>"nullable|min:2",
@@ -114,8 +114,8 @@ class CreateVehiculo extends Component
                 $rules["placa"]="nullable";
             }
             $this->validate($rules);
-        }       
-        $vehiculo=vehiculo::create([            
+        }
+        $vehiculo=vehiculo::create([
             "placa"=>$this->placa==""?null:strtoupper($this->placa),
             "categoria"=>strtoupper($this->categoria),
             "marca"=>$this->retornaNE($this->marca),
@@ -156,49 +156,49 @@ class CreateVehiculo extends Component
 
             //considerar en el PDF
             "pesoNeto"=>$this->retornaNulo($this->pesoNeto),
-            "pesoBruto"=>$this->retornaNulo($this->pesoBruto),  
-            "cargaUtil"=>$this->retornaNulo($this->cargaUtil), 
-            //considerar en el PDF         
+            "pesoBruto"=>$this->retornaNulo($this->pesoBruto),
+            "cargaUtil"=>$this->retornaNulo($this->cargaUtil),
+            //considerar en el PDF
 
         ]);
         //dd($vehiculo);
         if($vehiculo){
-            $this->vehiculo=$vehiculo; 
-            $this->estado='cargado';                      
+            $this->vehiculo=$vehiculo;
+            $this->estado='cargado';
             $this->emit("minAlert",["titulo"=>"¡BUEN TRABAJO!","mensaje"=>'El vehículo con placa '.$vehiculo->placa.' se registro correctamente.',"icono"=>"success"]);
             if($this->nombreDelInvocador!=null){
                 $this->emitTo($this->nombreDelInvocador,'cargaVehiculo',$vehiculo->id);
             }else{
                 $this->emitTo('prueba','cargaVehiculo',$vehiculo->id);
             }
-                
-            
+
+
         }else{
             $this->emit("minAlert",["titulo"=>"AVISO DEL SISTEMA","mensaje"=>"Ocurrio un error al guardar los datos del vehículo","icono"=>"warning"]);
         }
 
-        
+
     }
 
     public function actualizarVehiculo(){
         $rules=
-            [ 
+            [
                 "vehiculo.placa"=>"required|min:6|max:7",
                 "vehiculo.categoria"=>"nullable",
                 "vehiculo.marca"=>"required|min:2",
                 "vehiculo.modelo"=>"required|min:2",
-                "vehiculo.version"=>"nullable", 
-                "vehiculo.anioFab"=>"nullable|numeric|min:1900",                  
+                "vehiculo.version"=>"nullable",
+                "vehiculo.anioFab"=>"nullable|numeric|min:1900",
                 "vehiculo.numSerie"=>"nullable|min:2",
                 "vehiculo.numMotor"=>"nullable|min:2",
                 "vehiculo.cilindros"=>"nullable|numeric|min:1",
                 "vehiculo.cilindrada"=>"nullable|numeric|min:1",
-                "vehiculo.combustible"=>"nullable|min:2", 
-                "vehiculo.ejes"=>"nullable|numeric|min:1",   
-                "vehiculo.ruedas"=>"nullable|numeric|min:1",    
-                "vehiculo.asientos"=>"nullable|numeric|min:1",      
-                "vehiculo.pasajeros"=>"nullable|numeric|min:1",   
-                "vehiculo.largo"=>"nullable|numeric",   
+                "vehiculo.combustible"=>"nullable|min:2",
+                "vehiculo.ejes"=>"nullable|numeric|min:1",
+                "vehiculo.ruedas"=>"nullable|numeric|min:1",
+                "vehiculo.asientos"=>"nullable|numeric|min:1",
+                "vehiculo.pasajeros"=>"nullable|numeric|min:1",
+                "vehiculo.largo"=>"nullable|numeric",
                 "vehiculo.ancho"=>"nullable|numeric",
                 "vehiculo.altura"=>"nullable|numeric",
                 "vehiculo.color"=>"nullable|min:2",
@@ -214,7 +214,7 @@ class CreateVehiculo extends Component
                 $rules["vehiculo.placa"]="nullable";
             }
             $this->validate($rules);
-        } 
+        }
         if(
         $this->vehiculo
         ->update([
@@ -258,7 +258,7 @@ class CreateVehiculo extends Component
 
             //considerar en el PDF
             "pesoNeto"=>$this->retornaNulo($this->vehiculo->pesoNeto),
-            "pesoBruto"=>$this->retornaNulo($this->vehiculo->pesoBruto),  
+            "pesoBruto"=>$this->retornaNulo($this->vehiculo->pesoBruto),
             "cargaUtil"=>$this->retornaNulo($this->vehiculo->cargaUtil),
         ])){
             $this->estado='cargado';
@@ -266,31 +266,31 @@ class CreateVehiculo extends Component
         } else{
             $this->emit("minAlert",["titulo"=>"AVISO DEL SISTEMA","mensaje"=>"Ocurrio un error al actualizar los datos del vehículo","icono"=>"warning"]);
         }
-        
-       
+
+
     }
 
     public function retornaNE($value){
         if($value){
-            return strtoupper($value);                   
+            return strtoupper($value);
         }else{
-            return $value='NE';    
+            return $value='NE';
         }
     }
 
     public function retornaSV($value){
         if($value){
-            return strtoupper($value);         
+            return strtoupper($value);
         }else{
-            return $value='S/V'; 
+            return $value='S/V';
         }
     }
 
     public function retornaNulo($value){
         if($value){
-            return $value;                       
+            return $value;
         }else{
-            return Null; 
+            return Null;
         }
     }
 
@@ -300,16 +300,16 @@ class CreateVehiculo extends Component
 
         $vehiculos=vehiculo::where('placa','like','%'.$this->placa.'%')->get();
         if($vehiculos->count() > 0){
-            $this->busqueda=true;           
+            $this->busqueda=true;
             $this->vehiculos=$vehiculos;
         }else{
             $this->emit("minAlert",["titulo"=>"AVISO DEL SISTEMA","mensaje"=>"No se encontro ningún vehículo con la placa ingresada","icono"=>"warning"]);
         }
-       
+
     }
 
-    public function seleccionaVehiculo(vehiculo $veh){        
-        $this->vehiculo=$veh;        
+    public function seleccionaVehiculo(vehiculo $veh){
+        $this->vehiculo=$veh;
         $this->estado='cargado';
         if($this->nombreDelInvocador!=null){
             $this->emitTo($this->nombreDelInvocador,'cargaVehiculo',$veh->id);
@@ -319,6 +319,6 @@ class CreateVehiculo extends Component
         $this->vehiculos=null;
         $this->busqueda=false;
     }
-    
+
 
 }

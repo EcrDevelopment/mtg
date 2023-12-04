@@ -289,6 +289,10 @@ class Certificacion extends Model
             case 12: //tipo servicio = preconversion
                 $ruta = route('descargarPreGnvPdf', ['id' => $this->attributes['id']]);
                 break;
+            case 13: //tipo servicio = preconversion
+                $ruta = route('descargarPreGlpPdf', ['id' => $this->attributes['id']]);
+                break;
+
 
             default:
                 $ruta = null;

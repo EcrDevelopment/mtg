@@ -396,14 +396,14 @@ class Prueba extends Component
         if (!isset($this->vehiculo)) {
             $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "Debes ingresar un vehículo válido para poder certificar", "icono" => "warning"]);
             return;
-    
+
         }
 
         $certi = Certificacion::certificarModi($taller, $servicio, $hoja, $this->vehiculo, Auth::user());
 
         if ($certi) {
             $this->estado = "certificado";
-            $this->certificacion = $certi;            
+            $this->certificacion = $certi;
 
             $this->emit("minAlert", ["titulo" => "¡EXCELENTE TRABAJO!", "mensaje" => "Tu certificado N°: " . $certi->Hoja->numSerie . " está listo.", "icono" => "success"]);
         } else {
@@ -443,7 +443,7 @@ class Prueba extends Component
         return $chip;
     }
 
-    /*
+  /*
     public function certificarConChip()
     {
         $taller = Taller::findOrFail($this->taller);

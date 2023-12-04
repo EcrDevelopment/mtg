@@ -4,12 +4,12 @@
         <i class="fas fa-check-circle fa-lg"></i>
     </div>
     <div class="mt-2 mb-6 px-8 py-2">
-        <div class="grid grid-cols-1 gap-8 sm:grid-cols-3">            
+        <div class="grid grid-cols-1 gap-8 sm:grid-cols-3">
             <div>
                 <x-jet-label value="Placa:" />
                 <x-jet-input type="text" class="w-full" wire:model="vehiculo.placa" maxlength="6" disabled/>
                 <x-jet-input-error for="placa" />
-            </div>            
+            </div>
             <div>
                 <x-jet-label value="Categoria:" />
                 <select wire:model="vehiculo.categoria"
@@ -159,21 +159,21 @@
                 class="hover:cursor-pointer  my-4 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 mt-4 sm:mt-0 inline-flex items-start justify-start px-6 py-3 bg-amber-400 hover:bg-amber-500 focus:outline-none rounded">
                 <p class="text-sm font-medium leading-none text-white">Editar vehículo</p>
             </a>
-            
+
             @if (isset($ruta))
                 <a href="{{ $ruta }}" target="__blank"
                     class="hover:cursor-pointer  my-4 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 mt-4 sm:mt-0 inline-flex items-start justify-start px-6 py-3 bg-indigo-400 hover:bg-amber-500 focus:outline-none rounded">
                     <p class="text-sm font-medium leading-none text-white">Ver PDF</p>
                 </a>
             @endif
-            
+
         </div>
         --}}
         <div class="mt-4  mb-2 flex flex-row justify-center items-center">
             <a wire:click="$set('estado','editando')"
                 class="hover:cursor-pointer focus:ring-2 focus:ring-offset-2 focus:ring-amber-600 sm:mt-0 inline-flex items-center justify-center px-6 py-3 bg-indigo-400 hover:bg-indigo-500 focus:outline-none rounded">
                 <p class="text-sm font-medium leading-none text-white">Editar vehículo</p>
-            </a>           
+            </a>
         </div>
 
     </div>

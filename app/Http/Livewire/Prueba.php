@@ -130,6 +130,9 @@ class Prueba extends Component
                 case 12:
                     $this->numSugerido = $this->obtieneFormato($formatoGnv);
                     break;
+                case 13:
+                    $this->numSugerido = $this->obtieneFormato($formatoGlp);
+                    break;
                 default:
                     $this->numSugerido = 0;
                     break;
@@ -194,6 +197,10 @@ class Prueba extends Component
                 break;
             case 12:
                 $hoja = Material::where([['numSerie', $serie], ['idTipoMaterial', 1], ['estado', 3], ['idUsuario', Auth::id()]])->first();
+                return $hoja;
+                break;
+            case 13:
+                $hoja = Material::where([['numSerie', $serie], ['idTipoMaterial', 3], ['estado', 3], ['idUsuario', Auth::id()]])->first();
                 return $hoja;
                 break;
             default:
@@ -399,7 +406,29 @@ class Prueba extends Component
 
         }
 
-        $certi = Certificacion::certificarModi($taller, $servicio, $hoja, $this->vehiculo, Auth::user());
+        $idTipoServicio = $servicio->tipoServicio->id;
+        // Condición para verificar el servicio y llamar a la función correspondiente
+        if (in_array($idTipoServicio, [1, 2, 7, 8, 10, 12])) {
+            if (!$this->vehiculo->esCertificableGnv) {
+                $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "Debes completar los datos de los equipos para poder certificar", "icono" => "warning"]);
+                return;
+            }
+        } elseif (in_array($idTipoServicio, [3, 4, 9])) {
+            if (!$this->vehiculo->esCertificableGlp) {
+                $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "Debes completar los datos de los equipos para poder certificar", "icono" => "warning"]);
+                return;
+            }
+        } elseif (in_array($idTipoServicio, [5])) {
+            if (!$this->vehiculo->esCertificableModi) {
+                $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "Debes completar los datos de los equipos para poder certificar", "icono" => "warning"]);
+                return;
+            }
+        } else {
+            $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "El Vehículo no es válido para la certificación, complete los datos de equipos para continuar", "icono" => "warning"]);
+            return;
+        }
+
+        $certi = Certificacion::certificarGnv($taller, $servicio, $hoja, $this->vehiculo, Auth::user());
 
         if ($certi) {
             $this->estado = "certificado";
@@ -430,6 +459,31 @@ class Prueba extends Component
                     }
                 } else {
                     $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "Debes completar los datos de los equipos para poder certificar", "icono" => "warning"]);
+                }
+            } else {
+                $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "Debes ingresar un vehículo valido para poder certificar", "icono" => "warning"]);
+            }
+        }
+    }
+    public function certificarPreconverGlp()
+    {
+        $taller = Taller::findOrFail($this->taller);
+        $servicio = Servicio::findOrFail($this->servicio);
+        $hoja = $this->procesaFormato($this->numSugerido, $servicio->tipoServicio->id);
+
+        if ($hoja != null) {
+            if (isset($this->vehiculo)) {
+                if ($this->vehiculo->esCertificableGlp) {
+                    $certi = Certificacion::certificarGlpPre($taller, $servicio, $hoja, $this->vehiculo, Auth::user());
+                    if ($certi) {
+                        $this->estado = "certificado";
+                        $this->certificacion = $certi;
+                        $this->emit("minAlert", ["titulo" => "¡EXCELENTE TRABAJO!", "mensaje" => "Tu certificado N°: " . $certi->Hoja->numSerie . " esta listo.", "icono" => "success"]);
+                    } else {
+                        $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "No fue posible certificar", "icono" => "warning"]);
+                    }
+                } else {
+                    $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "HOLA aca la cagas", "icono" => "warning"]);
                 }
             } else {
                 $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "Debes ingresar un vehículo valido para poder certificar", "icono" => "warning"]);

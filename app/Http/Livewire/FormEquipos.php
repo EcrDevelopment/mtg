@@ -47,7 +47,7 @@ class FormEquipos extends Component
         $serviciosGnv = [1, 2, 7, 8, 10, 12];
 
         // arreglo con ID's de tipos de servicios para GLP
-        $serviciosGlp = [3,4,9];
+        $serviciosGlp = [3,4,9,13];
 
         if (in_array($this->tipoServicio->id, $serviciosGnv)) {
             $this->cantEquipos = $this->cuentaEquiposGnv();

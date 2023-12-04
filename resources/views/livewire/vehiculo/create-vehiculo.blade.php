@@ -33,6 +33,7 @@
                         <div
                             class="flex justify-between items-center border-b border-slate-200 py-3 px-2 border-l-4  border-l-transparent bg-gradient-to-r from-transparent to-transparent hover:border-l-4 hover:border-l-indigo-300  hover:from-slate-100 transition ease-linear duration-150">
                             <div class="inline-flex items-center space-x-2">
+
                                 <div>
                                     <i class="fas fa-car"></i>
                                 </div>

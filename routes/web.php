@@ -209,6 +209,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified'])
         Route::get('/preConver/{id}/descargar', 'generaDescargaPreGnv')->name("descargarPreGnvPdf");
 
 
+
+
         //Rutas para descargar y ver documentos complementarios de GNV
         Route::get('/fichaTecnicaGnv/{idCert}', 'generarFichaTecnica')->name("fichaTecnicaGnv");
         Route::get('/fichaTecnicaGnv/{idCert}/download', 'descargarFichaTecnica')->name("descargarFichaTecnicaGnv");
@@ -216,6 +218,10 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified'])
         Route::get('/checkListArriba/{idCert}', 'generarCheckListArribaGnv')->name("checkListArribaGnv");
         Route::get('/checkListAbajo/{idCert}', 'generarCheckListAbajoGnv')->name("checkListAbajoGnv");
 
+
+        //Rutas para descargar certificado preconversion GLP
+        Route::get('/preConverGlp/{id}', 'generaPdfPreGlp')->name("generaPreGlpPdf");
+        Route::get('/preConverGlp/{id}/descargar', 'generaDescargaPreGlp')->name("descargarPreGlpPdf");
 
         //Rutas para ver certificado anual GLP
         Route::get('/certificado-anual-glp/{id}', 'generaPdfAnualGlp')->name("certificadoAnualGlp");

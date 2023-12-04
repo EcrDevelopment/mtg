@@ -10,7 +10,7 @@ class CreateVehiculo extends Component
     public $nombreDelInvocador,$noPlaca;
 
     //VARIABLES DEL VEHICULO
-    public $placa,$categoria,$marca,$modelo,$version,$anioFab,$numSerie,$numMotor,
+    public $propietario,$placa,$categoria,$marca,$modelo,$version,$anioFab,$numSerie,$numMotor,
     $cilindros,$cilindrada,$combustible,$ejes,$ruedas,$asientos,$pasajeros,
     $largo,$ancho,$altura,$color,$pesoNeto,$pesoBruto,$cargaUtil;
 
@@ -29,6 +29,7 @@ class CreateVehiculo extends Component
     }
 
     protected $rules=[
+        "propietario"=>"nullable",
         "placa"=>"nullable|min:6|max:10",
         "categoria"=>"nullable",
         "marca"=>"required|min:2",
@@ -52,6 +53,7 @@ class CreateVehiculo extends Component
         "pesoBruto"=>"nullable|numeric",
         "cargaUtil"=>"nullable|numeric",
 
+        "vehiculo.propietario"=>"nullable",
         "vehiculo.placa"=>"required|min:6",
         "vehiculo.categoria"=>"nullable",
         "vehiculo.marca"=>"required|min:2",
@@ -84,6 +86,7 @@ class CreateVehiculo extends Component
     public function guardaVehiculo(){
 
         $rules=[
+            "propietario"=>"nullable",
             "placa"=>"required|min:6|max:7",
             "categoria"=>"nullable",
             "marca"=>"required|min:2",
@@ -107,6 +110,7 @@ class CreateVehiculo extends Component
             "pesoBruto"=>"nullable|numeric",
             "cargaUtil"=>"nullable|numeric"
         ];
+
         if($this->noPlaca!=1){
             $this->validate($rules);
         }else{
@@ -218,6 +222,7 @@ class CreateVehiculo extends Component
         if(
         $this->vehiculo
         ->update([
+            "propietario"=>$this->vehiculo->propietario,
             "placa"=>strtoupper($this->vehiculo->placa),
             "categoria"=>strtoupper($this->vehiculo->categoria),
             "marca"=>$this->retornaNE($this->vehiculo->marca),

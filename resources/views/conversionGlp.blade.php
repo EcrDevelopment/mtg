@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>CERTIFICADO DE CONVERSIÓN DEL VEHÍCULO A GNV</title>
+    <title>CERTIFICADO DE CONVERSIÓN DEL VEHÍCULO A GLP</title>
     <style>
         @page {
             margin: 0cm 0cm;

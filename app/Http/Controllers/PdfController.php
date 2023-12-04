@@ -637,6 +637,47 @@ class PdfController extends Controller
         }
     }
 
+    public function generaPdfPreGlp($id)
+    {
+        if (Certificacion::findOrFail($id)) {
+            $certificacion = Certificacion::find($id);
+            if ($certificacion->Servicio->tipoServicio->id) {
+                if ($certificacion->Servicio->tipoServicio->id == 13) {
+                    $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
+                    $fechaCert = $certificacion->created_at;
+                    $fecha = $fechaCert->format('d') . ' días del mes de ' . $meses[$fechaCert->format('m') - 1] . ' del ' . $fechaCert->format('Y') . '.';
+                    $hoja = $certificacion->Materiales->where('idTipoMaterial', 3)->first();
+                    $equipos = $certificacion->Vehiculo->Equipos->where("idTipoEquipo", ">", 3)->sortBy("idTipoEquipo");
+                    $cargaUtil = $this->calculaCargaUtil($certificacion->Vehiculo->pesoBruto, $certificacion->Vehiculo->pesoNeto);
+                    // Genera el código QR
+                    $urlDelDocumento = 'www.motorgasperu.com' . route('verPdfInicialGlp', $id, false); // Reemplaza 'certificadoAnualGnv' con el nombre correcto de tu ruta
+                    $qrCode = QrCode::size(70)->generate($urlDelDocumento);
+                    $data = [
+                        "fecha" => $fecha,
+                        "empresa" => "MOTORGAS COMPANY S.A.",
+                        "cargaUtil" => $cargaUtil,
+                        "carro" => $certificacion->Vehiculo,
+                        "taller" => $certificacion->Taller,
+                        "hoja" => $hoja,
+                        "numHoja" => $this->completarConCeros($hoja->numSerie),
+                        "fechaCert" => $fechaCert,
+                        "equipos" => $equipos,
+                        "largo" => $this->devuelveDatoParseado($certificacion->Vehiculo->largo),
+                        "ancho" => $this->devuelveDatoParseado($certificacion->Vehiculo->ancho),
+                        "altura" => $this->devuelveDatoParseado($certificacion->Vehiculo->altura),
+                        "qrCode" => $qrCode,
+                    ];
+                    $pdf = App::make('dompdf.wrapper');
+                    $pdf->loadView('conversionGlp', $data);
+                    return $pdf->stream($certificacion->Vehiculo->placa . '-' . $hoja->numSerie . '-anual-glp.pdf');
+                }
+                return abort(404);
+            }
+        } else {
+            return abort(404);
+        }
+    }
+
     public function generaDescargaPreGnv($id)
     {
         if (Certificacion::findOrFail($id)) {

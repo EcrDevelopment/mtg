@@ -26,6 +26,12 @@
                         @case(10)
                             Datos de los equipos de GNV
                         @break
+                        @case(12)
+                            Datos de los equipos de GNV
+                        @break
+                        @case(13)
+                            Datos de los equipos de GLP
+                        @break
 
                         @default
                     @endswitch
@@ -59,6 +65,12 @@
                         @break
                         @case(10)
                             Datos de los equipos de GNV
+                        @break
+                        @case(12)
+                            Datos de los equipos de GNV
+                        @break
+                        @case(13)
+                            Datos de los equipos de GLP
                         @break
 
                         @default
@@ -218,8 +230,7 @@
             </x-slot>
         @else
             <x-slot name="equip">
-                <p class="w-4/6 text-center p-2 text-sm text-gray-400 m-auto">No se encontraron Equipos
-                    registrados en este vehículo</p>
+                <p class="w-4/6 text-center p-2 text-sm text-gray-400 m-auto">Este vehículo no cuenta con equipos registrados</p>
             </x-slot>
         @endif
 

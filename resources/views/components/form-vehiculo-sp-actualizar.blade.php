@@ -6,6 +6,13 @@
         </a>
     </div>
     <div class="mt-2 mb-6 px-8 py-2">
+        @if ($this->tipoServicio->id==13)
+        <div class="mb-2">
+            <x-jet-label value="Propietario:" />
+            <x-jet-input type="text" class="w-full" wire:model="propietario"   maxlength="245" />
+            <x-jet-input-error for="propietario" />
+        </div>
+        @endif
         <div class="grid grid-cols-1 gap-8 sm:grid-cols-3">
             {{--
             <div>
@@ -17,7 +24,7 @@
             <div class="hidden">
                 {{$this->vehiculo->placa??$this->noPlaca=1}}
             </div>
-            
+
             <div class="flex flex-row items-center space-x-2 justify-center">
                 <div class="w-4/6 {{ $this->noPlaca == 1 ? 'hidden' : ''}}">
                     <x-jet-label value="Placa:" />
@@ -31,7 +38,7 @@
                         <label for="checkbox1" class="py-2 ml-2 text-sm font-medium text-gray-900 select-none hover:cursor-pointer ">
                             En trámite
                         </label>
-                </div>                
+                </div>
             </div>
             <div>
                 <x-jet-label value="Categoria:" />
@@ -187,7 +194,7 @@
                     class="hover:cursor-pointer  my-4 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 mt-4 sm:mt-0 inline-flex items-start justify-start px-6 py-3 bg-indigo-400 hover:bg-amber-500 focus:outline-none rounded">
                     <p class="text-sm font-medium leading-none text-white">Ver PDF</p>
                 </a>
-            @endif            
+            @endif
         </div>
         --}}
         <div class="mt-4  mb-2 flex flex-row justify-center items-center space-x-2">
@@ -204,7 +211,7 @@
                     </span>
                     Actualizar vehículo
                 </p>
-            </a>           
+            </a>
         </div>
 
     </div>

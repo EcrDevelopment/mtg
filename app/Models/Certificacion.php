@@ -182,10 +182,7 @@ class Certificacion extends Model
         if (in_array($idServicio, [1, 2, 7, 8, 10, 12])) {
             $hoja = Certificacion::find($this->attributes['id'])->Materiales->where('idTipoMaterial', 1)->first();
             return $hoja;
-        } elseif (in_array($idServicio, [5])) {
-            $hoja = Certificacion::find($this->attributes['id'])->Materiales->where('idTipoMaterial',4)->first();
-            return $hoja;
-        } elseif (in_array($idServicio, [3, 4, 9])) {
+        } elseif (in_array($idServicio, [3, 4, 9,13])) {
             $hoja = Certificacion::find($this->attributes['id'])->Materiales->where('idTipoMaterial', 3)->first();
             return $hoja;
         }else{
@@ -247,6 +244,9 @@ class Certificacion extends Model
 
             case 12: //tipo servicio = Preconver
                 $ruta = route('generaPreGnvPdf', ['id' => $this->attributes['id']]);
+                break;
+            case 13: //tipo servicio = Preconver
+                $ruta = route('generaPreGlpPdf', ['id' => $this->attributes['id']]);
                 break;
 
             default:
@@ -438,14 +438,14 @@ class Certificacion extends Model
 
     public function getCalculaPesosAttribute()
     {
-        $peso = 0;
-        $equipos = $this->Vehiculo->Equipos->where('idTipoEquipo', 3);
-        foreach ($equipos as $eq) {
-            if ($eq->peso > 0) {
-                $peso += $eq->peso;
-            }
+        $equipos =0;
+        if ($this->Servicio->tipoServicio->id == 3 && $this->Vehiculo->combustible == 'BI-COMBUSTIBLE GLP') {
+            return 30;
         }
-        return $peso;
+
+        $equipos = $this->Vehiculo->Equipos->where('idTipoEquipo', 3);
+
+        return $equipos->sum('peso');
     }
 
 
@@ -551,7 +551,59 @@ class Certificacion extends Model
         }
     }
 
+    public static function certificarGlpPre(Taller $taller, Servicio $servicio, Material $hoja, vehiculo $vehiculo, User $inspector)
+    {
+        $cert = Certificacion::create([
+            "idVehiculo" => $vehiculo->id,
+            "idTaller" => $taller->id,
+            "idInspector" => $inspector->id,
+            "idServicio" => $servicio->id,
+            "estado" => 3,
+            "precio" => $servicio->precio,
+            "pagado" => 0,
+        ]);
+        if ($cert) {
+            //cambia el estado de la hoja a consumido
+            $hoja->update(["estado" => 4, "ubicacion" => "En poder del cliente"]);
+            //crea y guarda el servicio y material usado en esta certificacion
+            $servM = ServicioMaterial::create([
+                "idMaterial" => $hoja->id,
+                "idCertificacion" => $cert->id
+            ]);
+            //retorna el certificado
+            return $cert;
+        } else {
+            return null;
+        }
+    }
+
     public static function certificarGnvPendiente(Taller $taller, Servicio $servicio, Material $hoja, vehiculo $vehiculo, User $inspector, $precio)
+    {
+        $cert = Certificacion::create([
+            "idVehiculo" => $vehiculo->id,
+            "idTaller" => $taller->id,
+            "idInspector" => $inspector->id,
+            "idServicio" => $servicio->id,
+            "estado" => 1,
+            "precio" => $precio,
+            "pagado" => 0,
+        ]);
+        if ($cert) {
+            //cambia el estado de la hoja a consumido
+            $hoja->update(["estado" => 4, "ubicacion" => "En poder del cliente"]);
+            //crea y guarda el servicio y material usado en esta certificacion
+            $servM = ServicioMaterial::create([
+                "idMaterial" => $hoja->id,
+                "idCertificacion" => $cert->id
+            ]);
+            //retorna el certificado
+            return $cert;
+        } else {
+            return null;
+        }
+    }
+
+    public static function certificarGlpPendiente(Taller $taller, Servicio $servicio, Material $hoja, vehiculo $vehiculo, User $inspector, $precio)
     {
         $cert = Certificacion::create([
             "idVehiculo" => $vehiculo->id,
@@ -639,6 +691,35 @@ class Certificacion extends Model
     }
 
     public static function duplicarCertificadoGnv(Duplicado $duplicado, Taller $taller, User $inspector, Servicio $servicio, Material $hoja)
+    {
+        $anterior = Certificacion::find($duplicado->idAnterior);
+        $cert = Certificacion::create([
+            "idVehiculo" => $anterior->Vehiculo->id,
+            "idTaller" => $taller->id,
+            "idInspector" => $inspector->id,
+            "idServicio" => $servicio->id,
+            "estado" => 1,
+            "precio" => $servicio->precio,
+            "pagado" => 0,
+            "idDuplicado" => $duplicado->id
+        ]);
+
+        if ($cert) {
+            //cambia el estado de la hoja a consumido
+            $hoja->update(["estado" => 4, "ubicacion" => "En poder del cliente"]);
+            //crea y guarda el servicio y material usado en esta certificacion
+            $servM = ServicioMaterial::create([
+                "idMaterial" => $hoja->id,
+                "idCertificacion" => $cert->id
+            ]);
+            //retorna el certificado
+            return $cert;
+        } else {
+            return null;
+        }
+    }
+
+    public static function duplicarCertificadoGlp(Duplicado $duplicado, Taller $taller, User $inspector, Servicio $servicio, Material $hoja)
     {
         $anterior = Certificacion::find($duplicado->idAnterior);
         $cert = Certificacion::create([

@@ -150,6 +150,7 @@ class PrestamoMateriales extends Component
     }
 
     public function quitaChip(){
+
     }
 
     public function buscaMateriales($nuevaLista, $tipo){

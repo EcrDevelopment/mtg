@@ -245,7 +245,7 @@ class CrearEquipo extends Component
     public function listaTiposDisponibles()
     {
         $serviciosGnv = [1, 2, 7, 8, 10, 12];
-        $serviciosGlp = [3, 4, 9];
+        $serviciosGlp = [3, 4, 9,13];
         if (in_array($this->tipoServicio->id, $serviciosGnv)) {
             $this->listaEquiposTipoGnv();
         }

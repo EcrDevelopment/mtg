@@ -5,6 +5,15 @@
             tabindex="0" role="button">Nuevo</a>
     </div>
     <div class="mt-2 mb-6 px-8 py-2">
+
+        @if ($this->tipoServicio->id==13)
+        <div class="mb-2">
+            <x-jet-label value="Propietario:" />
+            <x-jet-input type="text" class="w-full" wire:model="propietario"   maxlength="245" />
+            <x-jet-input-error for="propietario" />
+        </div>
+        @endif
+
         <div class="grid grid-cols-1 gap-8 sm:grid-cols-3">
             <div class="flex flex-row items-center space-x-2 justify-center">
                 <div class="w-4/6 {{ $this->noPlaca==1 ? 'hidden' : ''}}">
@@ -19,7 +28,7 @@
                         <label for="checkbox1" class="py-2 ml-2 text-sm font-medium text-gray-900 select-none hover:cursor-pointer ">
                             En trámite
                         </label>
-                </div>                
+                </div>
             </div>
             <div>
                 <x-jet-label value="Categoria:" />
@@ -98,7 +107,7 @@
                 <x-jet-label value="Combustible:" />
                 <x-jet-input type="text" class="w-full" wire:model="combustible" list="items"/>
                 <datalist id="items">
-                    <option value="GASOLINA">GASOLINA</option>                   
+                    <option value="GASOLINA">GASOLINA</option>
                     <option value="BI-COMBUSTIBLE GNV">BI-COMBUSTIBLE GNV</option>
                     <option value="BI-COMBUSTIBLE GLP">BI-COMBUSTIBLE GLP</option>
                     <option value="GNV">GNV</option>
@@ -175,15 +184,15 @@
         <div class="mt-4  mb-2 flex flex-row justify-center items-center">
             <button wire:click="guardaVehiculo" wire:loading.attr="disabled" wire:target="guardaVehiculo"
                 class="hover:cursor-pointer focus:ring-2 focus:ring-offset-2 focus:ring-amber-600 sm:mt-0 inline-flex items-center justify-center px-6 py-3 bg-amber-400 hover:bg-amber-500 focus:outline-none rounded">
-                <p class="text-sm font-medium leading-none text-white">                
+                <p class="text-sm font-medium leading-none text-white">
                 <span wire:loading wire:target="guardaVehiculo">
                     <i class="fas fa-spinner animate-spin"></i>
                     &nbsp;
                 </span>
-                    Guardar vehículo                    
+                    Guardar vehículo
                 </p>
-            </button>           
+            </button>
         </div>
     </div>
-    
+
 </div>

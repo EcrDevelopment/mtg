@@ -16,29 +16,29 @@ class AgregarArticuloPrestamo extends Component
     public $stockGlp,$stockGnv,$stockChips,$nombreTipo,$tiposMateriales;
 
     public $cantidad,$numInicio,$numFinal,$tipoM=0,$motivo="Prestamo de material";
-   
+
     public  $articulos=[];
-  
-    public $stocks= [ ]; 
+
+    public $stocks= [ ];
 
     public Collection $disponibles;
 
-    protected $rules=[               
+    protected $rules=[
         "tipoM"=>"required|numeric",
-        //"motivo"=>"required|min:3","cantidad"=>"required",      
+        //"motivo"=>"required|min:3","cantidad"=>"required",
     ];
 
-    
+
 
     public function render()
     {
         return view('livewire.agregar-articulo-prestamo');
     }
 
-    public function mount(){      
-        $this->tiposMateriales=TipoMaterial::all()->sortBy("descripcion"); 
-       // $this->disponibles=new Collection();       
-        $this->listaStock();                
+    public function mount(){
+        $this->tiposMateriales=TipoMaterial::all()->sortBy("descripcion");
+       // $this->disponibles=new Collection();
+        $this->listaStock();
     }
 
     public function listaStock(){
@@ -48,7 +48,7 @@ class AgregarArticuloPrestamo extends Component
                 $lista=$this->disponibles->where('idTipoMaterial',$material->id);
             }else{
                 $lista=[];
-            }          
+            }
             $this->stocks+=[$material->descripcion=>count($lista)];
         }
     }
@@ -62,66 +62,62 @@ class AgregarArticuloPrestamo extends Component
         }
     }
 
-   
+
 
     public function updated($propertyName){
 
         switch ($this->tipoM) {
-            case 1:               
+            case 1:
                     $cant=$this->disponibles->where("idTipoMaterial",$this->tipoM)->count();
-                    //dd($cant);                                       
+                    //dd($cant);
                     if (array_key_exists("cantidad",$this->rules)){
                         $this->rules["cantidad"]="required|numeric|min:1|max:".$cant;
                     }else{
                         $this->rules+=["cantidad"=>'required|numeric|min:1|max:'.$cant];
                     }
-                
+
             break;
             case 2:
                 $this->rules+=["cantidad"=>'required|numeric|min:1|max:'.$this->stocks["CHIP"]];
                 break;
-            case 3:                
-                $cant=Material::where([
-                    ['estado',3],
-                    ['idTipoMaterial',$this->tipoM],
-                    ['idUsuario',Auth::id()],
-                    ])->count();
-                //dd($cant);                                       
-                if (array_key_exists("cantidad",$this->rules)){
-                    $this->rules["cantidad"]="required|numeric|min:1|max:".$cant;
-                }else{
-                    $this->rules+=["cantidad"=>'required|numeric|min:1|max:'.$cant];
-                }                  
+            case 3:
+                $cant=$this->disponibles->where("idTipoMaterial",$this->tipoM)->count();
+                    //dd($cant);
+                    if (array_key_exists("cantidad",$this->rules)){
+                        $this->rules["cantidad"]="required|numeric|min:1|max:".$cant;
+                    }else{
+                        $this->rules+=["cantidad"=>'required|numeric|min:1|max:'.$cant];
+                    }
             break;
             default:
-               //$this->guias=new Collection();                         
+               //$this->guias=new Collection();
             break;
-        }   
+        }
 
 
         if($propertyName=="cantidad" && $this->numInicio>0){
-            if($this->cantidad){               
+            if($this->cantidad){
                 $this->numFinal=$this->numInicio+($this->cantidad-1);
             }else{
                 $this->numFinal=0;
             }
-        } 
+        }
         if($propertyName=="numInicio" && $this->cantidad>0){
 
-            if($this->numInicio){               
-                $this->numFinal=$this->numInicio+($this->cantidad-1);                
+            if($this->numInicio){
+                $this->numFinal=$this->numInicio+($this->cantidad-1);
             }
         }
         $this->validateOnly($propertyName);
     }
 
     public function addArticulo(){
-        $temp=new Collection();        
+        $temp=new Collection();
         switch ($this->tipoM) {
-            case 1:                
+            case 1:
                 $temp = $this->validaSeries();
                 if ($temp->count() > 0) {
-                    // $this->emit("minAlert",["titulo"=>"TODO OK","mensaje"=>"BIEN HECHO ".$temp->count(),"icono"=>"success"]); 
+                    // $this->emit("minAlert",["titulo"=>"TODO OK","mensaje"=>"BIEN HECHO ".$temp->count(),"icono"=>"success"]);
                     $articulo = array("tipo" => $this->tipoM, "nombreTipo" => $this->nombreTipo, "cantidad" => $this->cantidad, "inicio" => $this->numInicio, "final" => $this->numFinal, "motivo" =>"Prestamo de Materiales");
                     $this->emit('agregarArticulo', $articulo);
                     $this->reset(['tipoM', 'motivo', 'cantidad', 'numInicio', 'numFinal']);
@@ -136,7 +132,7 @@ class AgregarArticuloPrestamo extends Component
 
             case 2:
                 $rule = ["cantidad" => 'required|numeric|min:1|max:' . $this->stocks["CHIP"]];
-                if($this->validate($rule)){                    
+                if($this->validate($rule)){
                     $articulo = array("tipo" => $this->tipoM, "nombreTipo" => $this->nombreTipo, "cantidad" => $this->cantidad, "inicio" => "N/A", "final" => "N/A", "motivo" =>"Prestamo de Materiales");
                     $this->emit('agregarArticulo', $articulo);
                     $this->reset(['tipoM', 'motivo', 'cantidad', 'numInicio', 'numFinal']);
@@ -149,10 +145,10 @@ class AgregarArticuloPrestamo extends Component
                 }
             break;
 
-            case 3:                
+            case 3:
                 $temp=$this->validaSeries();
                 if($temp->count()>0){
-                   // $this->emit("minAlert",["titulo"=>"TODO OK","mensaje"=>"BIEN HECHO ".$temp->count(),"icono"=>"success"]); 
+                   // $this->emit("minAlert",["titulo"=>"TODO OK","mensaje"=>"BIEN HECHO ".$temp->count(),"icono"=>"success"]);
                     $articulo= array("tipo"=>$this->tipoM,"nombreTipo"=>$this->nombreTipo,"cantidad"=>$this->cantidad,"inicio"=>$this->numInicio,"final"=>$this->numFinal,"motivo"=>"Prestamo de Materiales");
                     $this->emit('agregarArticulo',$articulo);
                     $this->reset(['tipoM','motivo','cantidad','numInicio','numFinal']);
@@ -160,9 +156,9 @@ class AgregarArticuloPrestamo extends Component
                     $this->emit("minAlert",["titulo"=>"BUEN TRABAJO!","mensaje"=>"El articulo se añadio Correctamente","icono"=>"success"]);
                     //$this->reset(["grupo"]);
                 }else{
-                    $this->emit("minAlert",["titulo"=>"ERROR","mensaje"=>"Las series seleccionadas ya fueron agregadas o no estan en su poder","icono"=>"error"]); 
+                    $this->emit("minAlert",["titulo"=>"ERROR","mensaje"=>"Las series seleccionadas ya fueron agregadas o no estan en su poder","icono"=>"error"]);
                     $this->reset(['tipoM','motivo','cantidad','numInicio','numFinal']);
-        
+
                 }
             break;
 
@@ -171,24 +167,24 @@ class AgregarArticuloPrestamo extends Component
                 break;
         }
 
-    }  
+    }
 
-    public function creaColeccion($inicio,$fin){       
+    public function creaColeccion($inicio,$fin){
         return range($inicio, $fin);
     }
 
     public function validaSeries(){
-        $result= new Collection();        
+        $result= new Collection();
         if($this->tipoM==1 || $this->tipoM==3){
             if($this->numInicio && $this->numFinal){
                 $series=$this->creaColeccion($this->numInicio,$this->numFinal);
                 $mat=$this->disponibles->pluck('numSerie');
                 $result=$mat->intersect($series);
             }
-        }           
+        }
         return $result;
         //$result = collect();
     }
 
-    
+
 }

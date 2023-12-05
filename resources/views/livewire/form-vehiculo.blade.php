@@ -12,11 +12,11 @@
         @default
          <x-form-vehiculo-habilitado/>
     @endswitch
-    {{-- en el form-vehiculo que es de gnv no deber ir lo equipos
+    {{-- en el form-vehiculo que es de gnv no deber ir lo equipos --}}
     @if ($vehiculo)
         @livewire('form-equipos', ['vehiculo' => $vehiculo, 'tipoServicio' => $tipoServicio, 'nombreDelInvocador' => $nombreDelInvocador])
     @endif
-    --}}
+    
 
     <x-jet-dialog-modal wire:model="busqueda">
         <x-slot name="title">

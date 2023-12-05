@@ -52,7 +52,28 @@
                                 </x-file-pond>
                                 <x-jet-input-error for="imagenes" />
                             </div>
+                            <div class="max-w-5xl m-auto bg-white rounded-lg shadow-md my-4 py-4">
+                                <div class="my-2 flex flex-col md:flex-row justify-evenly items-center">
+                                    <div>
+                                        <x-jet-input type="date" class="" wire:model="fechaCertificacion" />
+                                        <x-jet-input-error for="fechaCertificacion" />
+                                    </div>
+                                    <div>
+                                        <button wire:click="certificar" wire:loading.attr="disabled" wire.target="certificar"
+                                            class="hover:cursor-pointer border border-indigo-500 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 sm:mt-0 inline-flex items-center justify-center px-6 py-3 bg-indigo-400 hover:bg-indigo-500 focus:outline-none rounded">
+                                            <p class="text-sm font-medium leading-none text-white">
+                                                <span wire:loading wire:target="certificar">
+                                                    <i class="fas fa-spinner animate-spin"></i>
+                                                    &nbsp;
+                                                </span>
+                                                &nbsp;Certificar
+                                            </p>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
 
+                            {{--
                             <div class="max-w-5xl m-auto bg-white rounded-lg shadow-md my-4 py-4">
                                 <div class="my-2 flex flex-row justify-evenly items-center">
                                     <button wire:click="certificar" wire:loading.attr="disabled" wire.target="certificar"
@@ -67,6 +88,7 @@
                                     </button>
                                 </div>
                             </div>
+                            --}}
                         @break
 
                         @case('certificado')
@@ -284,6 +306,28 @@
                             </div>
 
                             <div class="max-w-5xl m-auto bg-white rounded-lg shadow-md my-4 py-4">
+                                <div class="my-2 flex flex-col md:flex-row justify-evenly items-center">
+                                    <div>
+                                        <x-jet-input type="date" class="" wire:model="fechaCertificacion" />
+                                        <x-jet-input-error for="fechaCertificacion" />
+                                    </div>
+                                    <div>
+                                        <button wire:click="certificarGlp" wire:loading.attr="disabled"
+                                            wire.target="certificar"
+                                            class="hover:cursor-pointer border border-indigo-500 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 sm:mt-0 inline-flex items-center justify-center px-6 py-3 bg-indigo-400 hover:bg-indigo-500 focus:outline-none rounded">
+                                            <p class="text-sm font-medium leading-none text-white">
+                                                <span wire:loading wire:target="certificarGlp">
+                                                    <i class="fas fa-spinner animate-spin"></i>
+                                                    &nbsp;
+                                                </span>
+                                                &nbsp;Certificar
+                                            </p>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            {{--
+                            <div class="max-w-5xl m-auto bg-white rounded-lg shadow-md my-4 py-4">
                                 <div class="my-2 flex flex-row justify-evenly items-center">
                                     <button wire:click="certificarGlp" wire:loading.attr="disabled" wire.target="certificar"
                                         class="hover:cursor-pointer border border-indigo-500 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 sm:mt-0 inline-flex items-center justify-center px-6 py-3 bg-indigo-400 hover:bg-indigo-500 focus:outline-none rounded">
@@ -297,6 +341,7 @@
                                     </button>
                                 </div>
                             </div>
+                            --}}
                         @break
 
                         @case('certificado')
@@ -516,17 +561,24 @@
                             </div>
 
                             <div class="max-w-5xl m-auto bg-white rounded-lg shadow-md my-4 py-4">
-                                <div class="my-2 flex flex-row justify-evenly items-center">
-                                    <button wire:click="certificarmodi" wire:loading.attr="certificarmodi" wire.target="certificarmodi"
-                                        class="hover:cursor-pointer border border-indigo-500 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 sm:mt-0 inline-flex items-center justify-center px-6 py-3 bg-indigo-400 hover:bg-indigo-500 focus:outline-none rounded">
-                                        <p class="text-sm font-medium leading-none text-white">
-                                            <span wire:loading wire:target="certificarGlp">
-                                                <i class="fas fa-spinner animate-spin"></i>
-                                                &nbsp;
-                                            </span>
-                                            &nbsp;Certificar
-                                        </p>
-                                    </button>
+                                <div class="my-2 flex flex-col md:flex-row justify-evenly items-center">
+                                    <div>
+                                        <x-jet-input type="date" class="" wire:model="fechaCertificacion" />
+                                        <x-jet-input-error for="fechaCertificacion" />
+                                    </div>
+                                    <div>
+                                        <button wire:click="certificarmodi" wire:loading.attr="certificarmodi"
+                                            wire.target="certificarmodi"
+                                            class="hover:cursor-pointer border border-indigo-500 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 sm:mt-0 inline-flex items-center justify-center px-6 py-3 bg-indigo-400 hover:bg-indigo-500 focus:outline-none rounded">
+                                            <p class="text-sm font-medium leading-none text-white">
+                                                <span wire:loading wire:target="certificarmodi">
+                                                    <i class="fas fa-spinner animate-spin"></i>
+                                                    &nbsp;
+                                                </span>
+                                                &nbsp;Certificar
+                                            </p>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         @break
@@ -561,8 +613,8 @@
                                                 @endif
                                                 <i class="fas fa-download"></i>
                                                 <span>desc. Certificado</span>
-                                                </a>                                                
-                                                
+                                                </a>
+
                                             </div>
                                         </div>
 
@@ -580,7 +632,6 @@
                         @default
                     @endswitch
                 @endif
-
             @break
 
             @case(7)

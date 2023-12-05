@@ -42,6 +42,10 @@ class Prueba extends Component
     //variables del certi
     public $vehiculo;
 
+    //variable para fecha
+    public $fechaCertificacion;
+
+
     protected $rules = ["placa" => "required|min:3|max:7"];
 
     public function mount()
@@ -320,6 +324,9 @@ class Prueba extends Component
                 'servicio_idservicio' => $servicio->id,
             ]);
 
+            // Agrega la fecha al modelo Certificacion
+            $certi->update(['created_at' => $this->fechaCertificacion]);
+
             $this->guardarFotos($expe);
             guardarArchivosEnExpediente::dispatch($expe, $certi);
 
@@ -379,6 +386,9 @@ class Prueba extends Component
                 'servicio_idservicio' => $servicio->id,
             ]);
 
+            // Agrega la fecha al modelo Certificacion
+            $certi->update(['created_at' => $this->fechaCertificacion]);
+
             $this->guardarFotos($expe);
             guardarArchivosEnExpediente::dispatch($expe, $certi);
 
@@ -420,6 +430,9 @@ class Prueba extends Component
                 'usuario_idusuario' => Auth::id(),
                 'servicio_idservicio' => $servicio->id,
             ]);
+
+            // Agrega la fecha al modelo Certificacion
+            $certi->update(['created_at' => $this->fechaCertificacion]);
 
             $this->guardarFotos($expe);
             guardarArchivosEnExpediente::dispatch($expe, $certi);

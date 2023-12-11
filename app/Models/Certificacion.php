@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 class Certificacion extends Model
 {
@@ -177,18 +178,18 @@ class Certificacion extends Model
 
     public function getHojaAttribute()
     {
-        $idServicio=$this->Servicio->tipoServicio->id;
-        $hoja=null;
+        $idServicio = $this->Servicio->tipoServicio->id;
+        $hoja = null;
         if (in_array($idServicio, [1, 2, 7, 8, 10, 12])) {
             $hoja = Certificacion::find($this->attributes['id'])->Materiales->where('idTipoMaterial', 1)->first();
             return $hoja;
-        } elseif (in_array($idServicio, [3, 4, 9,13])) {
+        } elseif (in_array($idServicio, [3, 4, 9, 13])) {
             $hoja = Certificacion::find($this->attributes['id'])->Materiales->where('idTipoMaterial', 3)->first();
             return $hoja;
         } elseif (in_array($idServicio, [5])) {
             $hoja = Certificacion::find($this->attributes['id'])->Materiales->where('idTipoMaterial', 4)->first();
             return $hoja;
-        }else{
+        } else {
             return $hoja;
         }
     }
@@ -444,7 +445,7 @@ class Certificacion extends Model
 
     public function getCalculaPesosAttribute()
     {
-        $equipos =0;
+        $equipos = 0;
         if ($this->Servicio->tipoServicio->id == 3 && $this->Vehiculo->combustible == 'BI-COMBUSTIBLE GLP') {
             return 30;
         }
@@ -480,7 +481,7 @@ class Certificacion extends Model
             return null;
         }
     }
-    
+
     public static function certificarGnv(Taller $taller, Servicio $servicio, Material $hoja, vehiculo $vehiculo, User $inspector)
     {
         $cert = Certificacion::create([
@@ -506,8 +507,12 @@ class Certificacion extends Model
             return null;
         }
     }
-    public static function certificarModi(Taller $taller, Servicio $servicio, Material $hoja, vehiculo $vehiculo, User $inspector)
+    public static function certificarModi(Taller $taller, Servicio $servicio, Material $hoja, ?vehiculo $vehiculo, User $inspector)
     {
+        // Verifica si $vehiculo es nulo y maneja el caso
+    if ($vehiculo === null) {
+        return null;
+    }
         $cert = Certificacion::create([
             "idVehiculo" => $vehiculo->id,
             "idTaller" => $taller->id,
@@ -531,6 +536,7 @@ class Certificacion extends Model
             return null;
         }
     }
+
 
     public static function certificarGnvPre(Taller $taller, Servicio $servicio, Material $hoja, vehiculo $vehiculo, User $inspector)
     {

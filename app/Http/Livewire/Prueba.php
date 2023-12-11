@@ -416,7 +416,7 @@ class Prueba extends Component
 
         }
 
-        $certi = Certificacion::certificarGnv($taller, $servicio, $hoja, $this->vehiculo, Auth::user());
+        $certi = Certificacion::certificarModi($taller, $servicio, $hoja, $this->vehiculo, Auth::user());
 
         if ($certi) {
             $this->estado = "certificado";

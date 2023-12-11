@@ -40,6 +40,7 @@ use App\Http\Livewire\Reportes\ReporteGeneralGnv;
 use App\Http\Livewire\Reportes\ReporteMateriales;
 use App\Http\Livewire\Reportes\ReporteServiciosPorInspector;
 use App\Http\Livewire\RevisionInventario;
+use App\Http\Livewire\ServicioModi;
 use App\Http\Livewire\TallerRevision;
 use App\Http\Livewire\Tablas\Tiposservicios;
 use App\Http\Livewire\Usuarios;
@@ -138,6 +139,9 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified'])
     //Route::get('/Recepcion-de-materiales',RecepcionMateriales::class)->middleware('can:recepcion')->name('recepcion');
 
     Route::get('/Servicio',Prueba::class)->middleware('can:servicio')->name('servicio');
+    //para servicio modificacion
+    Route::get('/ServicioModi',ServicioModi::class)->name('ServicioModi');
+
 
     Route::get('/Solucion',Arreglando::class)->name('solucion');
     Route::get('/TalleresRevision',TallerRevision::class)->name('talleres.revision');

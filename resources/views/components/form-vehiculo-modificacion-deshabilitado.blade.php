@@ -183,17 +183,22 @@
             </div>            
 
         </div>
-        <div class="mt-4 grid grid-cols-3 gap-4">
-            <div class="col-span-1">
+        <div class="grid grid-cols-2 gap-4 py-6">
+            <div>
                 <x-jet-label value="Fórmula rodante (FR):" />
                 <x-jet-input type="text" class="w-full" wire:model="rodante" disabled/>
                 <x-jet-input-error for="modificacion.rodante" />
             </div>
-            <div class="col-span-2">
-                <x-jet-label value="Datos a modificar:" />
-                <x-textarea class="w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm" wire:model="rectificacion" maxlength="245" disabled/>
-                <x-jet-input-error for="modificacion.rectificacion" />
+            <div>
+                <x-jet-label value="Carga:" />
+                <x-jet-input type="text" class="w-full" wire:model="carga" disabled/>
+                <x-jet-input-error for="modificacion.carga" />
             </div>
+        </div>
+        <div class="col-span-2">
+            <x-jet-label value="Datos a modificar:" />
+            <x-textarea class="w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm" wire:model="rectificacion" maxlength="245" disabled/>
+            <x-jet-input-error for="modificacion.rectificacion" />
         </div>
 
         <div class="mt-4  mb-2 flex flex-row justify-center items-center">

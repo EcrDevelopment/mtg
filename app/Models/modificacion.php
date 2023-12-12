@@ -18,6 +18,7 @@ class Modificacion extends Model
         "potencia",
         "rodante",
         "rectificacion",
+        "carga",
     ];
 
     public function vehiculos()

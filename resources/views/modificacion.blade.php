@@ -256,7 +256,7 @@
 
         <p>
             El vehículo materia de evaluación fue originalmente diseñado y construido para destinarlo al transporte de
-            <strong>PERSONAS</strong>
+            <strong>{{ $modificacion->carga ?? null}}</strong>
         </p>
 
         <p>Se expide el presente en la ciudad de Lima, a los {{ $fecha }}</p>

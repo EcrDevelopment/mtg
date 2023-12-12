@@ -127,7 +127,7 @@
                             <td class="pl-2">
                                 <div class="flex items-center">
                                     <p class="text-sm font-medium leading-none text-gray-600 mr-2">
-                                        {{ $certificacion->inspector->name }}
+                                        {{ $certificacion->inspector->name ?? 'NE-MODI'}}
                                     </p>
                                 </div>
                             </td>

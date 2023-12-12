@@ -28,7 +28,7 @@ class FormModificacion extends Component
     //VARIABLES FALTANTES (TABLA MODIFICACION)
     //aqui estas inicializando la variable modificacion como una variable de tipo MODIFICACION osea el modelo
     public modificacion $modificacion;
-    public $direccion, $chasis, $carroceria, $potencia, $rodante, $rectificacion;
+    public $direccion, $chasis, $carroceria, $potencia, $rodante, $rectificacion, $carga;
 
     public function mount()
     {
@@ -68,6 +68,7 @@ class FormModificacion extends Component
         "potencia" => "nullable",
         "rodante" => "nullable",
         "rectificacion" => "nullable",
+        "carga" => "nullable",
 
         "vehiculo.propietario" => "required|min:6",
         "vehiculo.placa" => "required|min:6",
@@ -100,6 +101,7 @@ class FormModificacion extends Component
         "modificacion.potencia" => "nullable",
         "modificacion.rodante" => "nullable",
         "modificacion.rectificacion" => "nullable",
+        "modificacion.carga" => "nullable",
 
     ];
 
@@ -136,6 +138,7 @@ class FormModificacion extends Component
             "potencia" => "nullable",
             "rodante" => "nullable",
             "rectificacion" => "nullable",
+            "carga" => "nullable",
         ];
 
         $this->validate($rules);
@@ -196,6 +199,7 @@ class FormModificacion extends Component
             "potencia" => $this->retornaNE($this->potencia),
             "rodante" => $this->retornaNE($this->rodante),
             "rectificacion" => $this->retornaNE($this->rectificacion),
+            "carga" => $this->retornaNE($this->carga),
         ]);
 
         VehiculoModificacion::create([
@@ -255,6 +259,7 @@ class FormModificacion extends Component
                 "modificacion.potencia" => "nullable",
                 "modificacion.rodante" => "nullable",
                 "modificacion.rectificacion" => "nullable",
+                "modificacion.carga" => "nullable",
             ];
 
         $this->validate($rules);
@@ -314,6 +319,7 @@ class FormModificacion extends Component
                 "potencia" => $this->retornaNE($this->vehiculo->potencia),
                 "rodante" => $this->retornaNE($this->vehiculo->rodante),
                 "rectificacion" => $this->retornaNE($this->vehiculo->rectificacion),
+                "carga" => $this->retornaNE($this->vehiculo->carga),
             ])
 
 
@@ -327,6 +333,7 @@ class FormModificacion extends Component
                     "potencia" => $this->retornaNE($this->modificacion->potencia),
                     "rodante" => $this->retornaNE($this->modificacion->rodante),
                     "rectificacion" => $this->retornaNE($this->modificacion->rectificacion),
+                    "carga" => $this->retornaNE($this->modificacion->carga),
                 ])
             )
 

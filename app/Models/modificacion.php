@@ -21,6 +21,8 @@ class Modificacion extends Model
         "carga",
     ];
 
+    //vamos a probar
+
     public function vehiculos()
     {
         return $this->belongsToMany(Vehiculo::class, 'vehiculo_modificacion', 'idModificacion', 'idVehiculo');

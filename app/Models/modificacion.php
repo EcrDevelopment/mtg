@@ -18,7 +18,7 @@ class Modificacion extends Model
         "potencia",
         "rodante",
         "rectificacion",
-        "carga",
+        //"carga",
     ];
 
     //vamos a probar

@@ -2,9 +2,13 @@
     <div class="w-4/6 items-center">
         <h1 class="font-bold"><span class="p-1 bg-green-300 rounded-lg">Formato Sugerido:</span></h1>
     </div>
-        <div>
-            <x-jet-input type="text" wire:model="pertenece"  disabled/>
-        </div>
+
+    @if(isset($tipoServicio)&& $tiposervicio == 5)
+    <div>
+        <x-jet-input type="text" wire:model="pertenece"  disabled/>
+    </div>
+    @endif
+        
     
 
     <div class="w-2/6 flex justify-end">

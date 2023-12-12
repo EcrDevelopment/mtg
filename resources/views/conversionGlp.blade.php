@@ -313,7 +313,7 @@
             vehículo antes referido, no afecta negativamente la seguridad del mismo, el tránsito terrestre,
             el medio ambiente o incumple con las condiciones técnicas establecidas en la normativa vigente en la
             materia,
-            según consta en el expediente técnico <strong>N° SD-30- {{ $numHoja }}</strong>, habilitándose al
+            según consta en el expediente técnico <strong>N° {{ $numHoja . ' - ' . date('Y') }}</strong>, habilitándose al
             mismo tiempo para cargar Gas
             Licuado de Petróleo - GLP hasta el dia : {{ $fechaCert->format('d/m/') . ($fechaCert->format('Y') + 1) }}
         </p>

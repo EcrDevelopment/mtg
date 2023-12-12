@@ -34,7 +34,7 @@ class FormModificacion extends Component
     {
         $this->estado = "nuevo";
         //$this->vehiculo=vehiculo::make();
-        
+        $this->modificacion = new Modificacion(); // Agregar esta línea para inicializar $modificacion        
     }
 
     protected $rules = [
@@ -190,7 +190,7 @@ class FormModificacion extends Component
             //considerar en el PDF
 
         ]);
-
+        dd( $this->retornaNE($this->carga));
         // Crea una nueva modificación
         $modificacion = Modificacion::create([
             "direccion" => $this->retornaNE($this->direccion),

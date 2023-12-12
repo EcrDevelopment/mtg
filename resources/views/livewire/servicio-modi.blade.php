@@ -40,7 +40,7 @@
 
             @case(5)
                 <x-formato-sugerido />
-                @livewire('form-modificacion', ['tipoServicio' => $tipoServicio])
+                @livewire('form-modificacion', ['tipoServicio' => $tipoServicio, 'nombreDelInvocador' => "servicio-modi"])
 
                 @if ($estado)
                     @switch($estado)
@@ -53,7 +53,6 @@
                                 </x-file-pond>
                                 <x-jet-input-error for="imagenes" />
                             </div>
-
                             <div class="max-w-5xl m-auto bg-white rounded-lg shadow-md my-4 py-4">
                                 <div class="my-2 flex flex-col md:flex-row justify-evenly items-center">
                                     <div>

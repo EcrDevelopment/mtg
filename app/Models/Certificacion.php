@@ -507,12 +507,8 @@ class Certificacion extends Model
             return null;
         }
     }
-    public static function certificarModi(Taller $taller, Servicio $servicio, Material $hoja, ?vehiculo $vehiculo, User $inspector)
+    public static function certificarModi(Taller $taller, Servicio $servicio, Material $hoja, vehiculo $vehiculo, User $inspector)
     {
-        // Verifica si $vehiculo es nulo y maneja el caso
-    if ($vehiculo === null) {
-        return null;
-    }
         $cert = Certificacion::create([
             "idVehiculo" => $vehiculo->id,
             "idTaller" => $taller->id,

@@ -10,6 +10,7 @@ use App\Models\Imagen;
 use App\Models\Material;
 use App\Models\Servicio;
 use App\Models\Taller;
+use App\Models\User;
 use App\Models\vehiculo;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -39,7 +40,7 @@ class ServicioModi extends Component
     public $vehiculo;
 
     //variable para fecha
-    public $fechaCertificacion;
+    public $fechaCertificacion, $pertenece;
 
 
     protected $rules = ["placa" => "required|min:3|max:7"];
@@ -51,6 +52,36 @@ class ServicioModi extends Component
 
     protected $listeners = ['cargaVehiculo' => 'carga', "refrescaVehiculo" => "refrescaVe"];
 
+    public function updatednumSugerido($val)
+    {
+
+        //dd($this->obtienePertenece($val));
+        $this->pertenece = $this->obtienePertenece($val);
+    }
+    public function obtienePertenece($val)
+    {
+        if ($val) {
+            $m = Material::where("numSerie", $val)->where("idTipoMaterial", 4)->first();
+            // return User::find(Material::where([["numSerie", $val],["idTipoMaterial", 4]] )->first()->idUsuario);
+            if ($m == null) {
+                return "No existe";
+            } else {
+                if ($m->idUsuario == null) {
+                    return "No esta asignado";
+                } else {
+                    if($m->estado==4 ){
+                        return "Formato Consumido";
+                    }else{
+                        return User::find($m->idUsuario)->name;
+                    }
+                    
+                }
+            }
+            //return User::find($m)->name;
+        } else {
+            return null;
+        }
+    }
 
     public function updatedExterno()
     {
@@ -62,23 +93,9 @@ class ServicioModi extends Component
 
     public function carga($id)
     {
-        dd($id);
+        //dd($id);
         $this->vehiculo = vehiculo::find($id);
 
-        // Añade estas líneas para depurar
-        dd($this->vehiculo);
-
-        // Asegúrate de que el vehículo se haya encontrado correctamente
-        if ($this->vehiculo) {
-            // Emitir el evento cargaVehiculo con el ID del vehículo
-            $this->emit('cargaVehiculo', $this->vehiculo->id);
-        } else {
-            $this->emit("minAlert", [
-                "titulo" => "AVISO DEL SISTEMA",
-                "mensaje" => "No se pudo cargar el vehículo. Verifica la información proporcionada.",
-                "icono" => "warning"
-            ]);
-        }
     }
 
     public function updatedTaller($val)
@@ -227,13 +244,14 @@ class ServicioModi extends Component
         $taller = Taller::findOrFail($this->taller);
         $servicio = Servicio::findOrFail($this->servicio);
         $hoja = $this->procesaFormato($this->numSugerido, $servicio->tipoServicio->id);
+
         if (!$hoja) {
             $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "No fue posible certificar", "icono" => "warning"]);
             return;
         }
 
         //dd($this->vehiculo);
-        if (!isset($this->vehiculo)) {
+        if (!$this->vehiculo) {
             $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "Debes ingresar un vehículo válido para poder certificar", "icono" => "warning"]);
             return;
         }

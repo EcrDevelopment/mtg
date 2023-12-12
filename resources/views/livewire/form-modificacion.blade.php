@@ -1,5 +1,6 @@
 <div>
     @switch($estado)
+
         @case('nuevo')
             <x-form-vehiculo-modificacion/>
         @break

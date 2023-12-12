@@ -127,7 +127,7 @@
                     Dirección:
                 </td>
                 <td colspan="4">
-                    {{ $modificacion->direccion }}
+                    {{ $modificacion->direccion ?? null}}
                 </td>
             </tr>
             <tr>
@@ -136,7 +136,7 @@
                 <td>{{ $carro->placa }}</td>
                 <td style="padding: 0 5px 0 5px; text-align:center;">15</td>
                 <td>Potencia (HP @ RPM)</td>
-                <td>{{ $modificacion->potencia }}
+                <td>{{ $modificacion->potencia ?? null}}
                 </td>
             </tr>
             <tr>
@@ -185,7 +185,7 @@
             <tr>
                 <td style="padding: 0 5px 0 5px; text-align:center;">9</td>
                 <td>Chasis</td>
-                <td>{{ $modificacion->chasis }}</td>
+                <td>{{ $modificacion->chasis ?? null }}</td>
                 <td style="padding: 0 5px 0 5px; text-align:center;">21</td>
                 <td>Peso neto(kg.)</td>
                 <td>{{ isset($carro->pesoNeto) ? $carro->pesoNeto + 0 : '0' }}</td>
@@ -217,10 +217,10 @@
             <tr>
                 <td style="padding: 0 5px 0 5px; text-align:center;">13</td>
                 <td>Carrocería</td>
-                <td>{{ $modificacion->carroceria }}</td>
+                <td>{{ $modificacion->carroceria ?? null}}</td>
                 <td style="padding: 0 5px 0 5px; text-align:center;">25</td>
                 <td>Fórmula Rodante (FR)</td>
-                <td>{{ $modificacion->rodante }}</td>
+                <td>{{ $modificacion->rodante ?? null}}</td>
             </tr>
             <tr>
                 <td style="padding: 0 5px 0 5px; text-align:center;">14</td>
@@ -235,10 +235,10 @@
         <p>Al que se le ha efectuado las siguientes modificaciones:</p>
 
         <h6>
-            <span>RECTIFICACION: {!! nl2br(e($modificacion->rectificacion)) !!}</span>
+            <span>RECTIFICACION: {!! nl2br(e($modificacion->rectificacion ?? null)) !!}</span>
         </h6>
         <h6>
-            <span>{!! nl2br(e($modificacion->nota)) !!}</span>
+            <span>{!! nl2br(e($modificacion->nota ?? null)) !!}</span>
         </h6>
 
         <h6>(ADECUACION A RD 4848-2006 Y RD10476-2008 MTC/15)</h6>

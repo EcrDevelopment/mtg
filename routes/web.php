@@ -140,7 +140,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified'])
 
     Route::get('/Servicio',Prueba::class)->middleware('can:servicio')->name('servicio');
     //para servicio modificacion
-    Route::get('/ServicioModi',ServicioModi::class)->name('ServicioModi');
+    Route::get('/ServicioModi',ServicioModi::class)->middleware('can:ServicioModi')->name('ServicioModi');
 
 
     Route::get('/Solucion',Arreglando::class)->name('solucion');

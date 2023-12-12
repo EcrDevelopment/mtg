@@ -54,10 +54,14 @@ class ServicioModi extends Component
 
     public function updatednumSugerido($val)
     {
-
         //dd($this->obtienePertenece($val));
-        $this->pertenece = $this->obtienePertenece($val);
+        //$this->pertenece = $this->obtienePertenece($val);
+        // Verifica si el tipo de servicio es "Modificación" antes de obtener el propietario
+        if ($this->tipoServicio && $this->tipoServicio->id == 5) {
+            $this->pertenece = $this->obtienePertenece($val);
+        }
     }
+
     public function obtienePertenece($val)
     {
         if ($val) {
@@ -69,12 +73,11 @@ class ServicioModi extends Component
                 if ($m->idUsuario == null) {
                     return "No esta asignado";
                 } else {
-                    if($m->estado==4 ){
+                    if ($m->estado == 4) {
                         return "Formato Consumido";
-                    }else{
+                    } else {
                         return User::find($m->idUsuario)->name;
                     }
-                    
                 }
             }
             //return User::find($m)->name;
@@ -95,10 +98,9 @@ class ServicioModi extends Component
     {
         //dd($id);
         $this->vehiculo = vehiculo::find($id);
-
     }
 
-    public function updatedTaller($val)
+    /*public function updatedTaller($val)
     {
         if ($val) {
             $this->servicios = Servicio::where("taller_idtaller", $val)->get();
@@ -106,12 +108,29 @@ class ServicioModi extends Component
         } else {
             $this->reset(["servicios", "servicio"]);
         }
+    }*/
+
+    public function updatedTaller($val)
+    {
+        if ($val) {
+            $this->servicios = Servicio::where('taller_idtaller', $val)
+                ->whereHas('tipoServicio', function ($query) {
+                    $query->where('descripcion', 'Modificación');
+                })
+                ->get();
+
+            $this->servicio = "";
+        } else {
+            $this->reset(["servicios", "servicio"]);
+        }
     }
+
 
     public function updatedServicio($val)
     {
         if ($val) {
             $this->tipoServicio = Servicio::find($val)->tipoServicio;
+            //dd($this->tipoServicio);
             $this->sugeridoSegunTipo($this->tipoServicio->id);
             if ($this->tipoServicio->id == 10) {
                 $this->chip = $this->obtieneChip();
@@ -126,6 +145,14 @@ class ServicioModi extends Component
     {
         return view('livewire.servicio-modi');
     }
+
+    /*public function render()
+    {
+        return view('livewire.servicio-modi', [
+            'servicios' => $this->servicios->where('tipoServicio.descripcion', 'Modificación')
+        ]);
+    }*/
+
 
     public function sugeridoSegunTipo($tipoServ)
     {

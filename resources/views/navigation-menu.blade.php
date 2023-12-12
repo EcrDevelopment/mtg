@@ -18,7 +18,7 @@
                     </x-jet-nav-link>
                 </div>
 
-                @hasanyrole('inspector|administrador|supervisor')
+                @hasanyrole('inspector|administrador|supervisor|digitador')
                     <div class="hidden pt-4 sm:-my-px sm:ml-2 sm:flex">
                         <x-jet-dropdown align="right" width="48">
                             <x-slot name="trigger">                            
@@ -36,6 +36,11 @@
                                 @can('servicio')
                                     <x-jet-dropdown-link href="{{ route('servicio') }}" :active="request()->routeIs('servicio')">
                                         {{ __('Nuevo Servicio') }}
+                                    </x-jet-dropdown-link>
+                                @endcan
+                                @can('ServicioModi')
+                                    <x-jet-dropdown-link href="{{ route('ServicioModi') }}" :active="request()->routeIs('ServicioModi')">
+                                        {{ __('Servicio Modificación') }}
                                     </x-jet-dropdown-link>
                                 @endcan
                                                                                 

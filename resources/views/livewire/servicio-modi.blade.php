@@ -28,7 +28,7 @@
                                 <option value="">Seleccione un taller</option>
                             @endif
                         </select>
-                        <x-jet-input-error for="serv" />
+                        <x-jet-input-error for="servicio" />
                     </div>
 
                 </div>
@@ -39,7 +39,7 @@
         @switch($tipoServicio->id)           
 
             @case(5)
-                <x-formato-sugerido />
+                <x-formato-sugerido2 />
                 @livewire('form-modificacion', ['tipoServicio' => $tipoServicio, 'nombreDelInvocador' => "servicio-modi"])
 
                 @if ($estado)
@@ -111,7 +111,7 @@
                                             </div>
                                         </div>
 
-                                        <a href="{{ route('servicio') }}"
+                                        <a href="{{ route('ServicioModi') }}"
                                             class="hover:cursor-pointer focus:ring-2 focus:ring-offset-2 focus:ring-amber-600 sm:mt-0 inline-flex items-center justify-center px-6 py-3 bg-red-400 hover:bg-red-500 focus:outline-none rounded">
                                             <p class="text-sm font-medium leading-none text-white">
                                                 <i class="fas fa-archive"></i>&nbsp;Finalizar

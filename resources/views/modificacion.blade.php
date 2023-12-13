@@ -220,7 +220,7 @@
                 <td>{{ $modificacion->carroceria ?? null}}</td>
                 <td style="padding: 0 5px 0 5px; text-align:center;">25</td>
                 <td>Fórmula Rodante (FR)</td>
-                <td>{{ $modificacion->rodante ?? null}}</td>
+                <td>{{ $modificacion->rodante}}</td>
             </tr>
             <tr>
                 <td style="padding: 0 5px 0 5px; text-align:center;">14</td>

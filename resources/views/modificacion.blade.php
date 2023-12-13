@@ -127,7 +127,7 @@
                     Dirección:
                 </td>
                 <td colspan="4">
-                    {{ $modificacion->direccion ?? null}}
+                    {{$modificacion->direccion ?? null}}
                 </td>
             </tr>
             <tr>
@@ -162,7 +162,7 @@
                 <td>{{ $carro->version }}</td>
                 <td style="padding: 0 5px 0 5px; text-align:center;">18</td>
                 <td>Largo (m.)</td>
-                <td>{{ $carro->largo }}
+                <td>{{isset($carro->largo) ? $carro->largo : 'NE'}}
                 </td>
             </tr>
             <tr>
@@ -171,7 +171,7 @@
                 <td>{{ isset($carro->marca) ? $carro->marca : 'NE' }}</td>
                 <td style="padding: 0 5px 0 5px; text-align:center;">19</td>
                 <td>Ancho (m.)</td>
-                <td>{{ $carro->ancho }}
+                <td>{{isset($carro->ancho) ? $carro->ancho : 'NE' }}
                 </td>
             </tr>
             <tr>
@@ -180,7 +180,7 @@
                 <td>{{ isset($carro->numSerie) ? $carro->numSerie : 'NE' }}</td>
                 <td style="padding: 0 5px 0 5px; text-align:center;">20</td>
                 <td>Alto (m.)</td>
-                <td>{{ $carro->altura }}</td>
+                <td>{{isset($carro->altura) ? $carro->altura : 'NE'}}</td>
             </tr>
             <tr>
                 <td style="padding: 0 5px 0 5px; text-align:center;">9</td>
@@ -235,11 +235,13 @@
         <p>Al que se le ha efectuado las siguientes modificaciones:</p>
 
         <h6>
-            <span>RECTIFICACION: {!! nl2br(e($modificacion->rectificacion ?? null)) !!}</span>
+            <span>{!! nl2br(e($modificacion->rectificacion ?? null)) !!}</span>
         </h6>
+        {{--
         <h6>
             <span>{!! nl2br(e($modificacion->nota ?? null)) !!}</span>
         </h6>
+        --}}
 
         <h6>(ADECUACION A RD 4848-2006 Y RD10476-2008 MTC/15)</h6>
 

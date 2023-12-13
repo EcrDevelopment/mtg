@@ -20,7 +20,11 @@
             </div>
             <div>
                 <x-jet-label value="Dirección: "/>
-                <x-jet-input type="text" class="w-full" wire:model="direccion" />
+                <select wire:model="direccion"
+                    class="bg-gray-50 border-indigo-500 rounded-md outline-none block w-full ">
+                    <option value="">Seleccione</option>
+                    <option value="LIMA">LIMA</option>
+                </select>
                 <x-jet-input-error for="direccion" />
             </div>
         </div>
@@ -212,7 +216,7 @@
                 <x-jet-input-error for="rodante" />
             </div>
             <div >
-                <x-jet-label value="Carga:" />
+                <x-jet-label value="Transporte de:" />
                 <x-jet-input type="text" class="w-full" wire:model="carga"  />
                 <x-jet-input-error for="carga" />
             </div>

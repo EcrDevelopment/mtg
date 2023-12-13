@@ -188,7 +188,7 @@
                 <td>{{ $modificacion->chasis ?? null }}</td>
                 <td style="padding: 0 5px 0 5px; text-align:center;">21</td>
                 <td>Peso neto(kg.)</td>
-                <td>{{ isset($carro->pesoNeto) ? $carro->pesoNeto }}</td>
+                <td>{{ isset($carro->pesoNeto) ? $carro->pesoNeto + 0 : '0' }}</td>
             </tr>
             <tr>
                 <td style="padding: 0 5px 0 5px; text-align:center;">10</td>
@@ -196,7 +196,7 @@
                 <td>{{ isset($carro->numSerie) ? $carro->numSerie : 'NE' }}</td>
                 <td style="padding: 0 5px 0 5px; text-align:center;">22</td>
                 <td>Peso bruto vehicular(kg.)</td>
-                <td>{{ isset($carro->pesoBruto) ? $carro->pesoBruto }}</td>
+                <td>{{ isset($carro->pesoBruto) ? $carro->pesoBruto + 0 : '0' }}</td>
             </tr>
             <tr>
                 <td style="padding: 0 5px 0 5px; text-align:center;">11</td>
@@ -204,7 +204,7 @@
                 <td>{{ isset($carro->numMotor) ? $carro->numMotor : 'NE' }}</td>
                 <td style="padding: 0 5px 0 5px; text-align:center;">23</td>
                 <td>Carga útil(kg.)</td>
-                <td>{{ isset($carro->cargaUtil) ? $carro->cargaUtil }}</td>
+                <td>{{ isset($carro->cargaUtil) ? $carro->cargaUtil + 0 : '0' }}</td>
             </tr>
             <tr>
                 <td style="padding: 0 5px 0 5px; text-align:center;">12</td>

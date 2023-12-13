@@ -207,6 +207,64 @@ class PdfController extends Controller
         }
     }
 
+    //vistas de CHECKLIST GNV (SOLO VISTAS)
+
+    public function generarCheckListArribaGlp($idCert)
+    {
+        if (Certificacion::findOrFail($idCert)) {
+            $certificacion = Certificacion::find($idCert);
+            //$hoja=$certificacion->Materiales->where('idTipoMaterial',1)->first();
+            $hoja = $certificacion->Hoja;
+            //dd($certificacion->Chip);
+            $data = [
+                'hoja' => $hoja,
+                "vehiculo" => $certificacion->Vehiculo,
+                "servicio" => $certificacion->Servicio,
+                "inspector" => $certificacion->Inspector,
+                "taller" => $certificacion->taller,
+                "fecha" => $certificacion->created_at->format('d/m/Y'),
+                "reductor" => $certificacion->ReductorGlp,
+                "cilindros" => $certificacion->CilindrosGlp,
+                "certificacion" => $certificacion,
+            ];
+            $pdf = App::make('dompdf.wrapper');
+            $pdf->loadView('checkListCilindroArribaGlp', $data);
+            //return $pdf->stream($id.'-'.date('d-m-Y').'-cargo.pdf');
+            return  $pdf->stream('CHKL_ARRIBA-' . $certificacion->Vehiculo->placa . '-' . $hoja->numSerie . '.pdf');
+        } else {
+            return abort(404);
+        }
+    }
+
+    public function generarCheckListAbajoGlp($idCert)
+    {
+        if (Certificacion::findOrFail($idCert)) {
+            $certificacion = Certificacion::find($idCert);
+            //$hoja=$certificacion->Materiales->where('idTipoMaterial',1)->first();
+            $hoja = $certificacion->Hoja;
+            $data = [
+                'hoja' => $hoja,
+                "vehiculo" => $certificacion->Vehiculo,
+                "servicio" => $certificacion->Servicio,
+                "inspector" => $certificacion->Inspector,
+                "taller" => $certificacion->taller,
+                "fecha" => $certificacion->created_at->format('d/m/Y'),
+                "reductor" => $certificacion->Reductor,
+                "chip" => $certificacion->Chip,
+                "cilindros" => $certificacion->Cilindros,
+                "certificacion" => $certificacion,
+            ];
+            $pdf = App::make('dompdf.wrapper');
+            $pdf->loadView('checkListCilindroAbajoGlp', $data);
+            //return $pdf->stream($id.'-'.date('d-m-Y').'-cargo.pdf');
+            return  $pdf->stream('CHKL_ABAJO-' . $certificacion->Vehiculo->placa . '-' . $hoja->numSerie . '.pdf');
+        } else {
+            return abort(404);
+        }
+    }
+
+
+
     public function calculaCargaUtil($pesoBruto, $pesoNeto)
     {
         if ($pesoBruto && $pesoNeto) {
@@ -231,8 +289,8 @@ class PdfController extends Controller
                     $certificacion->load('Vehiculo.modificaciones');
                     // Genera el código QR
                     $urlDelDocumento = 'www.motorgasperu.com' . route('verPdfModificacion', $id, false); // Reemplaza 'certificadoAnualGnv' con el nombre correcto de tu ruta
-                    // Genera el código QR                    
-                    $urlDelDocumento = 'www.motorgasperu.com' . route('verPdfModificacion', $id, false); 
+                    // Genera el código QR
+                    $urlDelDocumento = 'www.motorgasperu.com' . route('verPdfModificacion', $id, false);
 
                     $qrCode = QrCode::size(70)->generate($urlDelDocumento);
                     $data = [
@@ -270,8 +328,8 @@ class PdfController extends Controller
                     $hoja = $certificacion->Materiales->where('idTipoMaterial', 4)->first();
                     // Asegúrate de cargar las relaciones necesarias (modificacion)
                     $certificacion->load('Vehiculo.modificaciones');
-                    // Genera el código QR                    
-                    $urlDelDocumento = 'www.motorgasperu.com' . route('verPdfModificacion', $id, false); 
+                    // Genera el código QR
+                    $urlDelDocumento = 'www.motorgasperu.com' . route('verPdfModificacion', $id, false);
                     $qrCode = QrCode::size(70)->generate($urlDelDocumento);
                     $data = [
                         "fecha" => $fecha,

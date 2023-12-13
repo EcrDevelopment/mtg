@@ -242,6 +242,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified'])
         //Rutas para descargar y ver documentos complementarios de GNV
         Route::get('/fichaTecnicaGlp/{idCert}','generarFichaTecnicaGlp')->name("fichaTecnicaGlp");
         Route::get('/fichaTecnicaGlp/{idCert}/descargar','descargarFichaTecnicaGlp')->name("descargarFichaTecnicaGlp");
+        Route::get('/checkListArribaGlp/{idCert}', 'generarCheckListArribaGlp')->name("checkListArribaGlp");
+        Route::get('/checkListAbajoGlp/{idCert}', 'generarCheckListAbajoGlp')->name("checkListAbajoGlp");
 
         //Ruta para ver certificado modificacion
         Route::get('/certificado-modificacion/{id}', 'generaPdfModificacion')->name("certificadoModificacion");

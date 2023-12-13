@@ -209,9 +209,19 @@ class Certificacion extends Model
         return $this->Vehiculo->Equipos->where('idTipoEquipo', 2)->first();
     }
 
+    public function getReductorGlpAttribute()
+    {
+        return $this->Vehiculo->Equipos->where('idTipoEquipo', 4)->first();
+    }
+
     public function getCilindrosAttribute()
     {
         return $this->Vehiculo->Equipos->where('idTipoEquipo', 3);
+    }
+
+    public function getCilindrosGlpAttribute()
+    {
+        return $this->Vehiculo->Equipos->where('idTipoEquipo', 5);
     }
 
     public function getRutaVistaCertificadoAttribute()

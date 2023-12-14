@@ -12,6 +12,7 @@ use App\Models\TipoServicio;
 use Doctrine\Inflector\Rules\English\Rules;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -246,5 +247,10 @@ class Talleres extends Component
         $this->reset(['serviciosDisponibles','taller','serviciosNuevos']);
     }
 
+    //Para que me rediriga a la vista editar-taller
+    public function redirectEditarTaller($idTaller)
+    {
+        return Redirect::to("Taller/edit/{$idTaller}");
+    }
 
 }

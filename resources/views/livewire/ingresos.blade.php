@@ -353,7 +353,51 @@
                                                     </td>
                                                 </tr>                                            
                                         </tbody>
-                                    </table>  
+                                    </table> 
+                                    @case(4)
+                                    <table class="min-w-full">
+                                        <thead class="bg-indigo-300 border-b">
+                                            <tr>
+                                                <th scope="col"
+                                                    class="text-sm font-medium font-semibold text-gray-900 px-6 py-4 text-left">
+                                                    #
+                                                </th>
+                                                <th scope="col"
+                                                    class="text-sm font-medium font-semibold text-gray-900 px-6 py-4 text-left">
+                                                    Producto
+                                                </th>
+                                                <th scope="col"
+                                                    class="text-sm font-medium font-semibold text-gray-900 px-6 py-4 text-left">
+                                                    Cantidad
+                                                </th>
+    
+                                                <th scope="col"
+                                                    class="text-sm font-medium font-semibold text-gray-900 px-6 py-4 text-left">
+                                                    Series
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>                                           
+                                                <tr class="bg-gray-100 border-b">
+                                                    <td
+                                                        class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                                        1
+                                                    </td>
+                                                    <td
+                                                        class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                                        {{ $ingreso->TipoMaterial->tipo->descripcion }}
+                                                    </td>
+                                                    <td
+                                                        class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                                        {{ $ingreso->FormatosModi->count() }}
+                                                    </td>
+                                                    <td
+                                                        class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                                        {{ $ingreso->InicioSerieModi.' - '.$ingreso->FinalSerieModi }}
+                                                    </td>
+                                                </tr>                                            
+                                        </tbody>
+                                    </table> 
                                         @break
                                     @default
                                         

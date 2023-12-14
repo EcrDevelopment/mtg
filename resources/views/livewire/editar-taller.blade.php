@@ -171,7 +171,7 @@
     <div class="w-full px-4 py-8 flex justify-center space-x-4 ">
         @hasanyrole('administrador')
         <x-jet-secondary-button wire:click="cancelar" class="mx-2">
-            Cancelar
+            Regresar
         </x-jet-secondary-button>     
         @endhasanyrole   
         <x-jet-button wire:click="actualizar" wire:loading.attr="disabled" wire:target="update">

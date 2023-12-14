@@ -78,6 +78,19 @@ class Ingreso extends Model
         return $this->materiales->where('idTipoMaterial',3)->max('numSerie');
     }
 
+    //Datos de los formatos de MODIFICACION
+    public function getFormatosModiAttribute(){
+        return $this->materiales->where('idTipoMaterial',4);
+    }
+
+    public function getInicioSerieModiAttribute(){
+        return $this->materiales->where('idTipoMaterial',4)->min('numSerie');
+    }
+
+    public function getFinalSerieModiAttribute(){
+        return $this->materiales->where('idTipoMaterial',4)->max('numSerie');
+    }
+
 
 
 

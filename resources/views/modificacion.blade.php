@@ -152,7 +152,7 @@
                 <td>Modelo</td>
                 <td>{{ isset($carro->modelo) ? $carro->modelo : 'NE' }}</td>
                 <td style="padding: 0 5px 0 5px; text-align:center;">17</td>
-                <td>N° Cilindros / Cilindrada (cm)</td>
+                <td>N° Cilindros / Cilindrada (cm<sup>3</sup>)</td>
                 <td>{{ (isset($carro->cilindros) ? $carro->cilindros : 'NE') . ' / ' . (isset($carro->cilindrada) ? $carro->cilindrada : 'NE') }}
                 </td>
             </tr>

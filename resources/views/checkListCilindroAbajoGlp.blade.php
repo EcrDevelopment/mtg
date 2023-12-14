@@ -1945,7 +1945,7 @@
 
                         <tr>
                             <td style="border: 1px solid; border-collapse: collapse;">
-                                vehículo a GNV
+                                vehículo a GLP
                             </td>
                             <td style="border: 1px solid; border-collapse: collapse;">
 

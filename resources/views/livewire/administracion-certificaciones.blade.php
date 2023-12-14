@@ -4,8 +4,6 @@
             <div class="sm:flex items-center justify-between">
                 <div class="flex items-center space-x-2">
 
-
-
                     <div class="flex bg-gray-200 items-center p-2 rounded-md mb-4 ">
                         <span>Inspector: </span>
                         <select wire:model="ins"
@@ -18,8 +16,6 @@
                             @endisset
                         </select>
                     </div>
-
-
 
                     <div class="flex bg-gray-200 items-center p-2 rounded-md mb-4 ">
                         <span>Servicio: </span>
@@ -193,6 +189,12 @@
                                             </p>
                                         @break
 
+                                        @case(13)
+                                            <p class="text-sm leading-none text-gray-600 ml-2 p-2 bg-orange-200 rounded-full">
+                                                {{ $certificacion->Servicio->tipoServicio->descripcion }}
+                                            </p>
+                                        @break
+
                                         @default
                                             <p class="text-sm leading-none text-gray-600 ml-2">
                                                 No se encontro datos
@@ -246,66 +248,16 @@
                                             <i class="far fa-times-circle fa-lg" style="color: red;"></i>
                                         @break
 
+                                        @case(3)
+                                            <i class="fa-regular fa-circle-pause fa-lg text-amber-400"></i>
+                                        @break
+
                                         @default
                                     @endswitch
                                 </div>
                             </td>
-                            {{--
-                            <td class="pl-4">
-                                <div class="relative flex justify-center px-5">
-                                    <div x-data="{ dropdownMenu: false }" class="relative">
-                                        <!-- Dropdown toggle button -->
-                                        <button @click="dropdownMenu = ! dropdownMenu"
-                                            class="flex items-center p-2 border border-slate-300  bg-gray-300/50  rounded-md">
-                                            <span class="mr-4 text-indigo-700">Seleccione <i
-                                                    class="fas fa-sort-down -mt-2"></i></span>
-                                        </button>
-                                        <!-- Dropdown list -->
-                                        <div x-show="dropdownMenu"
-                                            class="absolute py-2 mt-2 border border-indigo-300/50  bg-slate-300 rounded-md shadow-xl w-44 z-10 ">
-
-                                            <a href="{{ $this->generarRuta($certificacion->id) }}" target="__blank"
-                                                class="block px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white">
-                                                <i class="fas fa-eye "></i> Ver Certificado
-                                            </a>
-                                            <a href="{{ $this->generarRutaDescarga($certificacion->id) }}"
-                                                class="block px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white">
-                                                <i class="fas fa-file-download"></i> <span>Desc. Certificado</span>
-                                            </a>
-                                            <a href="{{ route('fichaTecnicaGnv',[$certificacion->id])}}" target="__blank"
-                                                class="block px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white">
-                                                <i class="fas fa-eye "></i> ver Ficha Técnica
-                                            </a>
-                                            <a href="{{ route('descargarFichaTecnicaGnv',[$certificacion->id])}}"
-                                                class="block px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white">
-                                                <i class="fas fa-file-download"></i> Desc. Ficha Técnica
-                                            </a>
-
-                                            <a target="__blank" href="{{ route('checkListArribaGnv',[$certificacion->id])}}"
-                                                class="block px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white">
-                                                <i class="fas fa-file-download"></i> CheckList arriba
-                                            </a>
-
-                                            <a target="__blank" href="{{ route('checkListAbajoGnv',[$certificacion->id])}}"
-                                                class="block px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white">
-                                                <i class="fas fa-file-download"></i> CheckList abajo
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-                            --}}
                             <td>
                                 <div class="relative px-5 text-center" x-data="{ menu: false }">
-                                    {{--
-                                    <button class="focus:ring-2 rounded-md focus:outline-none" x-on:click="menu = ! menu" type="button" id="menu-button" aria-expanded="true" aria-haspopup="true">
-                                        <svg class="dropbtn" onclick="dropdownFunction(this)" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                            <path d="M4.16667 10.8332C4.62691 10.8332 5 10.4601 5 9.99984C5 9.5396 4.62691 9.1665 4.16667 9.1665C3.70643 9.1665 3.33334 9.5396 3.33334 9.99984C3.33334 10.4601 3.70643 10.8332 4.16667 10.8332Z" stroke="#9CA3AF" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"></path>
-                                            <path d="M10 10.8332C10.4602 10.8332 10.8333 10.4601 10.8333 9.99984C10.8333 9.5396 10.4602 9.1665 10 9.1665C9.53976 9.1665 9.16666 9.5396 9.16666 9.99984C9.16666 10.4601 9.53976 10.8332 10 10.8332Z" stroke="#9CA3AF" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"></path>
-                                            <path d="M15.8333 10.8332C16.2936 10.8332 16.6667 10.4601 16.6667 9.99984C16.6667 9.5396 16.2936 9.1665 15.8333 9.1665C15.3731 9.1665 15 9.5396 15 9.99984C15 10.4601 15.3731 10.8332 15.8333 10.8332Z" stroke="#9CA3AF" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"></path>
-                                        </svg>
-                                    </button>
-                                    --}}
                                     <button type="button" x-on:click="menu = ! menu" id="menu-button"
                                         aria-expanded="true" aria-haspopup="true" data-te-ripple-init
                                         data-te-ripple-color="light"
@@ -331,12 +283,12 @@
 
                                             @if ($certificacion->Servicio->tipoServicio->id != 8)
                                                 <a href="{{ $certificacion->rutaDescargaCertificado }}"
-                                                    target="__blank" rel="noopener noreferrer"
-                                                    class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center hover:cursor-pointer">
-                                                @else
-                                                    <a href="{{ $certificacion->rutaDescargaCertificado }}"
-                                                        target="__blank" rel="noopener noreferrer"
-                                                        class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between rounded-b-md items-center hover:cursor-pointer">
+                                                target="__blank" rel="noopener noreferrer"
+                                                class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center hover:cursor-pointer">
+                                            @else
+                                                <a href="{{ $certificacion->rutaDescargaCertificado }}"
+                                                target="__blank" rel="noopener noreferrer"
+                                                class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between rounded-b-md items-center hover:cursor-pointer">
                                             @endif
                                             <i class="fas fa-download"></i>
                                             <span>desc. Certificado</span>
@@ -362,13 +314,13 @@
                                                     <i class="fas fa-download"></i>
                                                     <span>desc. Ficha Tec.</span>
                                                 </a>
-                                                <a href="{{ route('checkListArribaGnv', [$certificacion->id]) }}"
+                                                <a href="{{$certificacion->rutaVistaCheckListArriba}}"
                                                     target="__blank" rel="noopener noreferrer"
                                                     class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center hover:cursor-pointer">
                                                     <i class="fas fa-eye"></i>
                                                     <span>CheckList Arriba</span>
                                                 </a>
-                                                <a href="{{ route('checkListAbajoGnv', [$certificacion->id]) }}"
+                                                <a href="{{$certificacion->rutaVistaCheckListAbajo}}"
                                                     target="__blank" rel="noopener noreferrer"
                                                     class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white rounded-b-md justify-between items-center hover:cursor-pointer">
                                                     <i class="fas fa-eye"></i>
@@ -390,32 +342,6 @@
                             </td>
                             <td class="pl-4">
                                 <div class="relative flex justify-center px-5">
-                                    {{--
-                                    <div x-data="{ dropdownMenu: false }" class="relative">
-                                        <!-- Dropdown toggle button -->
-                                        <button @click="dropdownMenu = ! dropdownMenu"
-                                            class="flex items-center p-2 border border-slate-300  bg-gray-300/50  rounded-md hover:bg-gray-300 hover: border-indigo-300">
-                                            <span class="mr-4 text-indigo-700">Seleccione <i
-                                                    class="fas fa-sort-down -mt-2"></i></span>
-                                        </button>
-                                        <!-- Dropdown list -->
-                                        <div x-show="dropdownMenu"
-                                            class="absolute py-2 mt-2 border border-indigo-300/50  bg-slate-300 rounded-md shadow-xl w-44 z-10 ">
-
-                                            
-                                            <a wire:click="$emit('deleteCertificacion',{{ $certificacion->id }})"
-                                                class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center">
-                                                <i class="fas fa-trash"></i> 
-                                                <span>Eliminar servicio</span>
-                                            </a>
-                                            <a wire:click="$emit('anularCertificacion',{{ $certificacion->id }})"
-                                                class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center">
-                                                <i class="fas fa-eraser"></i> 
-                                                <span>Anular Servicio</span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                    --}}
                                     <div class="inline-block text-left" x-data="{ menu: false }">
                                         <button x-on:click="menu = ! menu" type="button"
                                             class="flex items-center text-gray-400 hover:text-gray-600 focus:outline-none"
@@ -447,7 +373,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
                             </td>
                         </tr>
@@ -471,7 +396,6 @@
                 <p class="text-indigo-900 font-bold">No se encontro ningúna certificación</p>
             </div>
         @endif
-
 
     </x-table-administracion-certificaciones>
 
@@ -545,7 +469,7 @@
                     </ul>
                 </section>
             @endif
-                
+
             <h1 class="pt-2  font-semibold sm:text-lg text-gray-900">
                 Documentos:
             </h1>
@@ -618,8 +542,6 @@
 
     </x-jet-dialog-modal>
 
-
-
     @push('js')
         <script>
             Livewire.on('deleteCertificacion', certificacionId => {
@@ -671,4 +593,5 @@
             });
         </script>
     @endpush
+
 </div>

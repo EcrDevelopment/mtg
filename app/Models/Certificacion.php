@@ -318,6 +318,73 @@ class Certificacion extends Model
 
         return $ruta;
     }
+    public function getRutaVistaCheckListArribaAttribute()
+    {
+        $ruta = null;
+        switch ($this->Servicio->tipoServicio->id) {
+            case 1: //tipo servicio = inicial gnv
+                $ruta = route('checkListArribaGnv', ['idCert' => $this->attributes['id']]);
+                break;
+            case 2: //tipo servicio = anual gnv
+                $ruta = route('checkListArribaGnv', ['idCert' => $this->attributes['id']]);
+                break;
+            case 3: //tipo servicio = inicial glp
+                $ruta = route('checkListArribaGlp', ['idCert' => $this->attributes['id']]);
+                break;
+            case 4: //tipo servicio = anual glp
+                $ruta = route('checkListArribaGlp', ['idCert' => $this->attributes['id']]);
+                break;
+            case 10: //tipo servicio = inicial gnv + chip
+                $ruta = route('checkListArribaGnv', ['idCert' => $this->attributes['id']]);
+                break;
+
+            case 12: //tipo servicio = preconversion
+                $ruta = route('checkListArribaGnv', ['idCert' => $this->attributes['id']]);
+                break;
+            case 13: //tipo servicio = preconversion
+                $ruta = route('checkListArribaGlp', ['idCert' => $this->attributes['id']]);
+                break;
+            default:
+                $ruta = null;
+                break;
+        }
+
+        return $ruta;
+    }
+
+    public function getRutaVistaCheckListAbajoAttribute()
+    {
+        $ruta = null;
+        switch ($this->Servicio->tipoServicio->id) {
+            case 1: //tipo servicio = inicial gnv
+                $ruta = route('checkListAbajoGnv', ['idCert' => $this->attributes['id']]);
+                break;
+            case 2: //tipo servicio = anual gnv
+                $ruta = route('checkListAbajoGnv', ['idCert' => $this->attributes['id']]);
+                break;
+            case 3: //tipo servicio = inicial glp
+                $ruta = route('checkListAbajoGlp', ['idCert' => $this->attributes['id']]);
+                break;
+            case 4: //tipo servicio = anual glp
+                $ruta = route('checkListAbajoGlp', ['idCert' => $this->attributes['id']]);
+                break;
+            case 10: //tipo servicio = inicial gnv + chip
+                $ruta = route('checkListAbajoGnv', ['idCert' => $this->attributes['id']]);
+                break;
+
+            case 12: //tipo servicio = preconversion
+                $ruta = route('checkListAbajoGnv', ['idCert' => $this->attributes['id']]);
+                break;
+            case 13: //tipo servicio = preconversion
+                $ruta = route('checkListAbajoGlp', ['idCert' => $this->attributes['id']]);
+                break;
+            default:
+                $ruta = null;
+                break;
+        }
+
+        return $ruta;
+    }
 
     public function generaRutaDuplicado(Duplicado $duplicado)
     {

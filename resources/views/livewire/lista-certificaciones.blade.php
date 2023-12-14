@@ -4,7 +4,7 @@
             <x-slot name="titulo">
                 <h2 class="text-indigo-600 font-bold text-3xl uppercase">
                     <i class="fa-solid fa-file-circle-check fa-xl text-indigo-600"></i>
-                    &nbsp;Listado de certificaciones
+                    &nbsp;Listado de Certificaciones
                 </h2>
             </x-slot>
             <x-slot name="btnAgregar" class="mt-6 ">
@@ -177,6 +177,12 @@
                                                                     {{ $item->Servicio->tipoServicio->descripcion ?? 'Sin Datos' }}
                                                                 </p>
                                                             @break
+                                                            @case(13)
+                                                                <p
+                                                                    class="text-sm leading-none text-gray-600 ml-2 p-2 bg-orange-200 rounded-full">
+                                                                    {{ $item->Servicio->tipoServicio->descripcion ?? 'Sin Datos' }}
+                                                                </p>
+                                                            @break
 
                                                             @default
                                                                 <p class="text-sm leading-none text-gray-600 ml-2">
@@ -333,7 +339,7 @@
                                                         </button>
                                                         <div x-show="menu" x-on:click.away="menu = false"
                                                             class="dropdown-content flex flex-col  border bg-white shadow w-48 absolute z-30 right-0 mt-24 mr-6">
-                                                            @if ($item->Servicio->tipoServicio->id == 12 && $item->estado == 3)
+                                                            @if ($item->Servicio->tipoServicio->id == 12 || $item->Servicio->tipoServicio->id == 13 && $item->estado == 3)
                                                                 <button
                                                                     wire:click="finalizarPreconversion({{ $item->id }})"
                                                                     class="focus:outline-none flex items-center space-x-4 focus:text-lime-400 text-xs w-full hover:bg-indigo-600 py-2 px-6 cursor-pointer hover:text-white">
@@ -422,28 +428,5 @@
             </x-jet-button>
         </x-slot>
     </x-jet-dialog-modal>
-
-    {{--
-    <x-jet-dialog-modal wire:model="eliminar">
-        <x-slot name="title">
-            <h1 class="text-xl font-bold">Solicitar eliminacion</h1>
-        </x-slot>
-        <x-slot name="content">
-                <div class="mb-4">
-                    <x-jet-label class="block mt-2 text-sm font-medium text-gray-600" value="Motivo:" />
-                    <x-jet-input type="text" id="motivo" wire:model="motivo" class="w-full mt-1 form-input" />
-                    <x-jet-input-error for="motivo" />
-                </div>
-        </x-slot>
-        <x-slot name="footer">
-            <x-jet-secondary-button wire:click="$set('eliminar',false)" class="mx-2">
-                Cancelar
-            </x-jet-secondary-button>
-            <x-jet-button wire:click="guardarSolicitudEliminacion" wire:loading.attr="disabled" wire:target="guardarSolicitudEliminacion">
-                Agregar
-            </x-jet-button>
-        </x-slot>
-    </x-jet-dialog-modal>
-    --}}
 
 </div>

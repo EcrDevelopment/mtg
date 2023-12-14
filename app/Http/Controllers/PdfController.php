@@ -230,7 +230,7 @@ class PdfController extends Controller
             $pdf = App::make('dompdf.wrapper');
             $pdf->loadView('checkListCilindroArribaGlp', $data);
             //return $pdf->stream($id.'-'.date('d-m-Y').'-cargo.pdf');
-            return  $pdf->stream('CHKL_ARRIBA-' . $certificacion->Vehiculo->placa . '-' . $hoja->numSerie . '.pdf');
+            return  $pdf->stream('CHKL_ARRIBA_GLP-' . $certificacion->Vehiculo->placa . '-' . $hoja->numSerie . '.pdf');
         } else {
             return abort(404);
         }
@@ -249,15 +249,14 @@ class PdfController extends Controller
                 "inspector" => $certificacion->Inspector,
                 "taller" => $certificacion->taller,
                 "fecha" => $certificacion->created_at->format('d/m/Y'),
-                "reductor" => $certificacion->Reductor,
-                "chip" => $certificacion->Chip,
-                "cilindros" => $certificacion->Cilindros,
+                "reductor" => $certificacion->ReductorGlp,
+                "cilindros" => $certificacion->CilindrosGlp,
                 "certificacion" => $certificacion,
             ];
             $pdf = App::make('dompdf.wrapper');
             $pdf->loadView('checkListCilindroAbajoGlp', $data);
             //return $pdf->stream($id.'-'.date('d-m-Y').'-cargo.pdf');
-            return  $pdf->stream('CHKL_ABAJO-' . $certificacion->Vehiculo->placa . '-' . $hoja->numSerie . '.pdf');
+            return  $pdf->stream('CHKL_ABAJO_GLP-' . $certificacion->Vehiculo->placa . '-' . $hoja->numSerie . '.pdf');
         } else {
             return abort(404);
         }

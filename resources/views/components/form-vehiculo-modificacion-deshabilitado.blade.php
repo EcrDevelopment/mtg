@@ -190,7 +190,7 @@
                 <x-jet-input-error for="modificacion.rodante" />
             </div>
             <div>
-                <x-jet-label value="Carga:" />
+                <x-jet-label value="Transporte de:" />
                 <x-jet-input type="text" class="w-full" wire:model="carga" disabled/>
                 <x-jet-input-error for="modificacion.carga" />
             </div>

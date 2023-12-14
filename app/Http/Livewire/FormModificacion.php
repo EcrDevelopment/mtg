@@ -190,7 +190,7 @@ class FormModificacion extends Component
             //considerar en el PDF
 
         ]);
-        dd( $this->retornaNE($this->carga));
+        //dd( $this->retornaNE($this->carga));
         // Crea una nueva modificación
         $modificacion = Modificacion::create([
             "direccion" => $this->retornaNE($this->direccion),

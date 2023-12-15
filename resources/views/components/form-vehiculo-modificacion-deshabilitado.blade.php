@@ -76,12 +76,12 @@
             </div>
 
             <div>
-                <x-jet-label value="VIN / N° Serie:" />
+                <x-jet-label value="N° Serie / Chasis:" />
                 <x-jet-input type="text" class="w-full" wire:model="vehiculo.numSerie" disabled/>
                 <x-jet-input-error for="numSerie" />
             </div>
             <div>
-                <x-jet-label value="Chasis:" />
+                <x-jet-label value="VIN:" />
                 <x-jet-input type="text" class="w-full" wire:model="chasis" disabled/>
                 <x-jet-input-error for="modificacion.chasis" />
             </div>            

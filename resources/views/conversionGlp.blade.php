@@ -239,7 +239,15 @@
             <tr>
                 <td style="text-align:center;">11</td>
                 <td style="text-align:center;">Combustible</td>
-                <td style="text-align:center;">BI COMBUSTIBLE GLP</td>
+                <td style="text-align:center;">
+                    @if ($carro->combustible === 'GASOLINA' || $carro->combustible === 'BI-COMBUSTIBLE GNV')
+                        BI COMBUSTIBLE GLP
+                    @elseif ($carro->combustible === 'DIESEL')
+                        DUAL GLP
+                    @else
+                        {{$carro->combustible}}
+                    @endif
+                </td>
             </tr>
             <tr>
                 <td style="text-align:center;">15</td>

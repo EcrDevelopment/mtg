@@ -93,6 +93,7 @@
                     <option value="BI-COMBUSTIBLE GLP">BI-COMBUSTIBLE GLP</option>
                     <option value="GNV">GNV</option>
                     <option value="GLP">GLP</option>
+                    <option value="DIESEL">DIESEL</option>
                 </datalist>
 
                 <x-jet-input-error for="combustible" />

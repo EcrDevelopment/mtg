@@ -34,6 +34,7 @@ use App\Http\Livewire\PrestamoMateriales;
 use App\Http\Livewire\Prueba;
 use App\Http\Livewire\PruebaExcel;
 use App\Http\Livewire\Reportes\AdministracionDeServiciosImportados;
+use App\Http\Livewire\Reportes\ReporteCalcular;
 use App\Http\Livewire\Reportes\ReporteDocumentosTaller;
 use App\Http\Livewire\Reportes\ReporteFotosPorInspector;
 use App\Http\Livewire\Reportes\ReporteGeneralGnv;
@@ -175,6 +176,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified'])
     Route::get('/Reporte-de-servicios-por-inspector',ReporteServiciosPorInspector::class)->name('reportes.reporteServiciosPorInspector');
     Route::get('/Reporte-de-fotos-por-inspector',ReporteFotosPorInspector::class)->name('reportes.reporteFotosPorInspector');
     Route::get('/Reporte-de-documentos-a-vencer',ReporteDocumentosTaller::class)->name('reportes.reporteDocumentosTaller');
+    Route::get('/Reporte-calcular',ReporteCalcular::class)->name('reportes.reporteCalcular');
 
     //Ruta para adminsitracion de tablas
     Route::get('/Tablas/TiposDeServicios',Tiposservicios::class)->name('table.tiposServicio');

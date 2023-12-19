@@ -223,7 +223,7 @@
         </div>
         <div class="col-span-2">
             <x-jet-label value="Datos a modificar:" />
-            <x-textarea class="w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm" wire:model="rectificacion" maxlength="245" />
+            <x-textarea class="w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm" wire:model="rectificacion"  />
             <x-jet-input-error for="rectificacion" />
         </div>
 

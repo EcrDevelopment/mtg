@@ -270,6 +270,9 @@
             El presente Certificado es emitido a solicitud del Taller de Conversión a GLP autorizado:
             <strong>{{ $taller->nombre }}</strong>
         </p>
+        <p>
+            Ubicado : {{ $taller->direccion }}
+        </p>
         <h6>OBSERVACIONES</h6>
         <ul type="1">
             <li>

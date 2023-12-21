@@ -1,3 +1,4 @@
+
 <div>
     <div class="sm:px-6 w-full pt-12 pb-4">
         <div class="bg-gray-200  px-8 py-4 rounded-xl w-full ">

@@ -102,7 +102,7 @@
             Entidad Certificadora de Conversiones a GLP
             autorizada por el MTC mediante R.D. N° 0464-2023-MTC/17.03
         </p>
-        <h3>CERTIFICADO DE CONFORMIDAD DEL VEHICULO DE CONVERSION A GLP</h3>
+        <h3>CERTIFICADO DE CONFORMIDAD DE CONVERSION A GLP</h3>
         <h5>{{ 'Certificado N° ' . $numHoja . ' - ' . date('Y') }}</h5>
         <h4> {{ 'LA ENTIDAD CERTIFICADORA ' . $empresa . ' CERTIFICA:' }}</h4>
         <p>

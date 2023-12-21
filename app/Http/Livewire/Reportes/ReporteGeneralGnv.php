@@ -154,3 +154,4 @@ class ReporteGeneralGnv extends Component
         }        
     }
 }
+

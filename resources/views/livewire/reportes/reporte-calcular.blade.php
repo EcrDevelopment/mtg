@@ -101,7 +101,7 @@
                                                     @if (isset($item['detalles'][0]['fecha']))
                                                         {{ $item['detalles'][0]['fecha'] }}
                                                     @endif
-                                                </td>--}}
+                                                </td>--}}  
                                                 {{--<td class="whitespace-nowrap border-r px-6 py-3 font-medium dark:border-neutral-500">{{ $item['detalles'][0]['placa'] ?? '' }}</td>--}}
                                                 <td class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">{{ $item['detalles'][0]['taller'] ?? '' }}</td>
                                                 <td class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">{{ $item['certificador'] }}</td>

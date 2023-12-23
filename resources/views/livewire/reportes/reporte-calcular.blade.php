@@ -83,32 +83,103 @@
                                     <thead class="border-b font-medium dark:border-neutral-500">
                                         <tr class="bg-indigo-200">
                                             <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">#</th>
-                                            {{--<th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">Fecha</th>--}}
-                                            {{--<th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">Placa</th>--}}
-                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">Taller</th>
-                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">Certificador</th>
-                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">Anuales</th>
-                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">Conversión</th>
-                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">Desmontes</th>
-                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">Total</th>
+                                            {{-- <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">Fecha</th> --}}
+                                            {{-- <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">Placa</th> --}}
+                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">Taller
+                                            </th>
+                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
+                                                Certificador</th>
+                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
+                                                Anuales GNV</th>
+                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
+                                                Conversión GNV</th>
+                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
+                                                Desmontes</th>
+                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
+                                                Modificacion</th>
+                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">Anual
+                                                GLP</th>
+                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
+                                                Conversion GLP</th>
+                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
+                                                Chip-Deterioro</th>
+                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
+                                                Chip-Activación</th>
+                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
+                                                Duplicado GNV</th>
+                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
+                                                Duplicado GLP</th>
+                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
+                                                Conver+Chip</th>
+                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
+                                                PreConver GNV</th>
+                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">Total
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($resultados as $key => $item)
+                                            @php
+                                                // Ordenar talleres alfabéticamente
+                                                $detallesOrdenados = collect($item['detalles'])
+                                                    ->sortBy('taller')
+                                                    ->toArray();
+                                            @endphp
                                             <tr class="border-b dark:border-neutral-500 bg-orange-200">
-                                                <td class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">{{ $key + 1 }}</td>
-                                                {{--<td class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                <td
+                                                    class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                    {{ $key + 1 }}</td>
+                                                {{-- <td class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
                                                     @if (isset($item['detalles'][0]['fecha']))
                                                         {{ $item['detalles'][0]['fecha'] }}
                                                     @endif
-                                                </td>--}}  
-                                                {{--<td class="whitespace-nowrap border-r px-6 py-3 font-medium dark:border-neutral-500">{{ $item['detalles'][0]['placa'] ?? '' }}</td>--}}
-                                                <td class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">{{ $item['detalles'][0]['taller'] ?? '' }}</td>
-                                                <td class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">{{ $item['certificador'] }}</td>
-                                                <td class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">{{ $item['totalAnuales'] }}</td>
-                                                <td class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">{{ $item['totalConversiones'] }}</td>
-                                                <td class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">{{ $item['totalDesmontes'] }}</td>
-                                                <td class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500"></td>
+                                                </td> --}}
+                                                {{-- <td class="whitespace-nowrap border-r px-6 py-3 font-medium dark:border-neutral-500">{{ $item['detalles'][0]['placa'] ?? '' }}</td> --}}
+                                                <td
+                                                    class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                    {{ $detallesOrdenados[0]['taller'] ?? '' }}</td>
+                                                <td
+                                                    class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                    {{ $item['certificador'] }}</td>
+                                                <td
+                                                    class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                    {{ $item['totalAnuales'] }}</td>
+                                                <td
+                                                    class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                    {{ $item['totalConversiones'] }}</td>
+                                                <td
+                                                    class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                    {{ $item['totalDesmontes'] }}</td>
+                                                <td
+                                                    class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                    {{ $item['totalModificacion'] }}</td>
+                                                <td
+                                                    class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                    {{ $item['totalAnualGLP'] }}</td>
+                                                <td
+                                                    class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                    {{ $item['totalConversionGLP'] }}</td>
+                                                <td
+                                                    class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                    {{ $item['totalChipDeterioro'] }}</td>
+                                                <td
+                                                    class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                    {{ $item['totalChipActivacion'] }}</td>
+                                                <td
+                                                    class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                    {{ $item['totalDuplicadoGNV'] }}</td>
+                                                <td
+                                                    class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                    {{ $item['totalDuplicadoGLP'] }}</td>
+                                                <td
+                                                    class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                    {{ $item['totalConverChip'] }}</td>
+                                                <td
+                                                    class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                    {{ $item['totalPreConverGNV'] }}</td>
+                                                <td
+                                                    class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                    {{ $item['totalPrecio'] }}</td>
 
                                                 <!-- Agrega más celdas según tus necesidades -->
                                             </tr>

@@ -315,6 +315,7 @@ class PdfController extends Controller
             return abort(404);
         }
     }
+    
     public function descargaPdfModificacion($id)
     {
         if (Certificacion::findOrFail($id)) {

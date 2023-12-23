@@ -29,6 +29,7 @@ use App\Http\Livewire\ImportarConversiones;
 use App\Http\Livewire\ImportarDesmontes;
 use App\Http\Livewire\ListaCertificaciones;
 use App\Http\Livewire\ListaCertificacionesPendientes;
+use App\Http\Livewire\ListadoChips;
 use App\Http\Livewire\NotificacionesPendientes;
 use App\Http\Livewire\PrestamoMateriales;
 use App\Http\Livewire\Prueba;
@@ -128,6 +129,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified'])
     Route::get('/RevisionExpedientes',RevisionExpedientes::class)->middleware('can:revisionExpedientes')->name('revisionExpedientes');
     Route::get('/dashboard', function (){return view('dashboard');})->name('dashboard');
     Route::get('/Listado-Certificaciones',ListaCertificaciones::class)->middleware('can:certificaciones')->name('certificaciones');
+    Route::get('/Listado-Chips',ListadoChips::class)->name('chips'); //->middleware('can:chips')
     Route::get('/Administracion-de-certificaciones',AdministracionCertificaciones::class)->middleware('can:admin.certificaciones')->name('admin.certificaciones');
 
     Route::get('/certificados-pendientes',ListaCertificacionesPendientes::class)->middleware('can:certificaciones.pendientes')->name('certificaciones.pendientes');

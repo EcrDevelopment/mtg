@@ -587,6 +587,7 @@
                     @endswitch
                 @endif
             @break
+
             @case(5)
                 <x-formato-sugerido />
                 @livewire('form-modificacion', ['tipoServicio' => $tipoServicio])
@@ -676,6 +677,7 @@
                     @endswitch
                 @endif
             @break
+            
             @case(7)
                 @livewire('activacion-de-chips', ['tipoServicio' => $tipoServicio, 'idTaller' => $this->taller])
             @break

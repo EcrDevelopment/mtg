@@ -13,7 +13,7 @@ class ListadoChips extends Component
     {
         $this->obtenerChipsConsumidos();
     }
-    
+
     public function render()
     {
         return view('livewire.listado-chips');
@@ -21,7 +21,6 @@ class ListadoChips extends Component
 
     public function obtenerChipsConsumidos()
     {
-        // Implementa la lógica para obtener los chips consumidos por inspector
         $this->chipsConsumidos = DB::table('material')
             ->select(
                 'material.id',
@@ -34,13 +33,18 @@ class ListadoChips extends Component
                 'material.grupo',
                 //'material.idTipoMaterial',
                 'material.created_at',
-                'material.updated_at',
-                //'usuarios.nombre as nombreInspector' // Ajusta el nombre de la tabla según tu esquema
+                //'material.updated_at',
+                'users.name as nombreInspector',
+                //'tiposervicio.descripcion as servicioDescripcion'
+
             )
-            ->join('users', 'material.idUsuario', '=', 'idUsuario')
+            ->join('users', 'material.idUsuario', '=', 'users.id')
+            //->leftJoin('servicio', 'servicio.tipoServicio_idtipoServicio', '=', 'servicio.tipoServicio_idtipoServicio')
+            //->leftJoin('tiposervicio', 'servicio.tipoServicio_idtipoServicio', '=', 'tiposervicio.id')
             ->where([
                 ['material.estado', '=', 4], // Chips consumidos
                 ['material.idTipoMaterial', '=', 2], // Tipo de material CHIP
+                ['material.idUsuario', '=', auth()->id()], // Filtra por el usuario actualmente autenticado
             ])
             ->get();
     }

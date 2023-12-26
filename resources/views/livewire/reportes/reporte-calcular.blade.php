@@ -137,7 +137,7 @@
                                                 {{-- <td class="whitespace-nowrap border-r px-6 py-3 font-medium dark:border-neutral-500">{{ $item['detalles'][0]['placa'] ?? '' }}</td> --}}
                                                 <td
                                                     class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                    {{ $detallesOrdenados[0]['taller'] ?? '' }}</td>
+                                                    {{ $detallesOrdenados[0]['taller'] ?? 'N.E' }}</td>
                                                 <td
                                                     class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
                                                     {{ $item['certificador'] }}</td>

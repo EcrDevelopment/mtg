@@ -163,8 +163,9 @@ class AsignacionMateriales extends Component
         $formatos=Material::where([
             ["idTipoMaterial",$art["tipo"]],
             ["estado",1],
+            ["grupo",$art["grupo"]], //este es el ajuste
         ])
-        ->whereBetween('numSerie', [$art["inicio"],$art["final"]])
+        ->whereBetween('numSerie', [$art["inicio"],$art["final"],])
         ->get();
            // dd($formatos);
         foreach($formatos as $formato){

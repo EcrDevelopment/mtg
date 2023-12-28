@@ -185,7 +185,7 @@ class CreateAsignacion extends Component
                 $temp = $this->validaSeries();
                 if ($temp->count() > 0) {
                     // $this->emit("minAlert",["titulo"=>"TODO OK","mensaje"=>"BIEN HECHO ".$temp->count(),"icono"=>"success"]); 
-                    $articulo = array("tipo" => $this->tipoM, "nombreTipo" => $this->nombreTipo, "cantidad" => $this->cantidad, "inicio" => $this->numInicio, "final" => $this->numFinal, "motivo" => $this->motivo);
+                    $articulo = array("tipo" => $this->tipoM, "nombreTipo" => $this->nombreTipo, "cantidad" => $this->cantidad, "inicio" => $this->numInicio, "final" => $this->numFinal,"grupo"=>$this->guia, "motivo" => $this->motivo);
                     $this->emit('agregarArticulo', $articulo);
                     $this->reset(['tipoM', 'motivo', 'cantidad', 'guia', 'numInicio', 'numFinal']);
                     $this->open = false;
@@ -222,7 +222,7 @@ class CreateAsignacion extends Component
                 $temp=$this->validaSeries();
                 if($temp->count()>0){
                    // $this->emit("minAlert",["titulo"=>"TODO OK","mensaje"=>"BIEN HECHO ".$temp->count(),"icono"=>"success"]); 
-                    $articulo= array("tipo"=>$this->tipoM,"nombreTipo"=>$this->nombreTipo,"cantidad"=>$this->cantidad,"inicio"=>$this->numInicio,"final"=>$this->numFinal,"motivo"=>$this->motivo);
+                    $articulo= array("tipo"=>$this->tipoM,"nombreTipo"=>$this->nombreTipo,"cantidad"=>$this->cantidad,"inicio"=>$this->numInicio,"final"=>$this->numFinal,"grupo"=>$this->guia ,"motivo"=>$this->motivo);
                     $this->emit('agregarArticulo',$articulo);
                     $this->reset(['tipoM','motivo','cantidad','guia','numInicio','numFinal']);
                     $this->open=false;
@@ -245,7 +245,7 @@ class CreateAsignacion extends Component
                 $temp = $this->validaSeries();
                 if ($temp->count() > 0) {
                     // $this->emit("minAlert",["titulo"=>"TODO OK","mensaje"=>"BIEN HECHO ".$temp->count(),"icono"=>"success"]); 
-                    $articulo = array("tipo" => $this->tipoM, "nombreTipo" => $this->nombreTipo, "cantidad" => $this->cantidad, "inicio" => $this->numInicio, "final" => $this->numFinal, "motivo" => $this->motivo);
+                    $articulo = array("tipo" => $this->tipoM, "nombreTipo" => $this->nombreTipo, "cantidad" => $this->cantidad, "inicio" => $this->numInicio, "final" => $this->numFinal,"grupo"=>$this->guia , "motivo" => $this->motivo);
                     $this->emit('agregarArticulo', $articulo);
                     $this->reset(['tipoM', 'motivo', 'cantidad', 'guia', 'numInicio', 'numFinal']);
                     $this->open = false;

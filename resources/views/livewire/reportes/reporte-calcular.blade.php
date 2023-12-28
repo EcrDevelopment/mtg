@@ -6,7 +6,7 @@
                 <div class="p-2 w-64 my-4 md:w-full">
                     <h2 class="text-indigo-600 font-bold text-3xl">
                         <i class="fa-solid fa-square-poll-vertical fa-xl"></i>
-                        &nbsp;REPORTE GENERAL DE LESLIE GNV
+                        &nbsp;REPORTE GENERAL DE SERVICIOS MOTORGAS-COMPANY
                     </h2>
                 </div>
 
@@ -49,7 +49,7 @@
                     </div>
 
                     <button wire:click="calcularReporte"
-                        class="bg-indigo-600 px-6 py-4 w-full md:w-auto rounded-md text-white font-semibold tracking-wide cursor-pointer mb-4">
+                        class="bg-green-400 px-6 py-4 w-full md:w-auto rounded-md text-white font-semibold tracking-wide cursor-pointer mb-4">
                         <p class="truncate"> Generar reporte </p>
                     </button>
                 </div>
@@ -67,8 +67,9 @@
         </div>
 
         @if (isset($resultados))
-            @if (count($resultados))
+            @forelse ($resultados->groupBy('idTaller') as $taller => $certificacionesTaller)
                 <div class="flex flex-col my-4 py-4 rounded-md bg-white px-4 justify-center">
+                    <h2 class="text-indigo-600 text-xl font-bold mb-4">{{ $certificacionesTaller[0]->taller }}</h2>
                     {{--
                         <div class="m-auto flex justify-center items-center bg-gray-300 rounded-md w-full p-4">
                             <button wire:click="exportarExcel"
@@ -76,127 +77,94 @@
                                 <p class="truncate"><i class="fa-solid fa-file-excel fa-lg"></i> Desc. Excel </p>
                             </button>
                         </div> --}}
-                    <div class="overflow-x-auto m-auto w-full" wire:ignore>
-                        <div class="inline-block min-w-full py-2 sm:px-6">
-                            <div class="overflow-hidden">
-                                <table class="min-w-full border text-center text-sm font-light dark:border-neutral-500">
-                                    <thead class="border-b font-medium dark:border-neutral-500">
-                                        <tr class="bg-indigo-200">
-                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">#</th>
-                                            {{-- <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">Fecha</th> --}}
-                                            {{-- <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">Placa</th> --}}
-                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">Taller
-                                            </th>
-                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
-                                                Certificador</th>
-                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
-                                                Anuales GNV</th>
-                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
-                                                Conversión GNV</th>
-                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
-                                                Desmontes</th>
-                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
-                                                Modificacion</th>
-                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">Anual
-                                                GLP</th>
-                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
-                                                Conversion GLP</th>
-                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
-                                                Chip-Deterioro</th>
-                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
-                                                Chip-Activación</th>
-                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
-                                                Duplicado GNV</th>
-                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
-                                                Duplicado GLP</th>
-                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
-                                                Conver+Chip</th>
-                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
-                                                PreConver GNV</th>
-                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">Total
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($resultados as $key => $item)
-                                            @php
-                                                // Ordenar talleres alfabéticamente
-                                                $detallesOrdenados = collect($item['detalles'])
-                                                    ->sortBy('taller')
-                                                    ->toArray();
-                                            @endphp
-                                            <tr class="border-b dark:border-neutral-500 bg-orange-200">
-                                                <td
-                                                    class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                    {{ $key + 1 }}</td>
-                                                {{-- <td class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                    @if (isset($item['detalles'][0]['fecha']))
-                                                        {{ $item['detalles'][0]['fecha'] }}
-                                                    @endif
-                                                </td> --}}
-                                                {{-- <td class="whitespace-nowrap border-r px-6 py-3 font-medium dark:border-neutral-500">{{ $item['detalles'][0]['placa'] ?? '' }}</td> --}}
-                                                <td
-                                                    class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                    {{ $detallesOrdenados[0]['taller'] ?? 'N.E' }}</td>
-                                                <td
-                                                    class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                    {{ $item['certificador'] }}</td>
-                                                <td
-                                                    class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                    {{ $item['totalAnuales'] }}</td>
-                                                <td
-                                                    class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                    {{ $item['totalConversiones'] }}</td>
-                                                <td
-                                                    class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                    {{ $item['totalDesmontes'] }}</td>
-                                                <td
-                                                    class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                    {{ $item['totalModificacion'] }}</td>
-                                                <td
-                                                    class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                    {{ $item['totalAnualGLP'] }}</td>
-                                                <td
-                                                    class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                    {{ $item['totalConversionGLP'] }}</td>
-                                                <td
-                                                    class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                    {{ $item['totalChipDeterioro'] }}</td>
-                                                <td
-                                                    class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                    {{ $item['totalChipActivacion'] }}</td>
-                                                <td
-                                                    class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                    {{ $item['totalDuplicadoGNV'] }}</td>
-                                                <td
-                                                    class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                    {{ $item['totalDuplicadoGLP'] }}</td>
-                                                <td
-                                                    class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                    {{ $item['totalConverChip'] }}</td>
-                                                <td
-                                                    class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                    {{ $item['totalPreConverGNV'] }}</td>
-                                                <td
-                                                    class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                    {{ $item['totalPrecio'] }}</td>
+                    @foreach ($certificacionesTaller->groupBy('idInspector') as $inspector => $certificacionesInspector)
+                        <h3 class="text-red-600  font-bold mb-2">{{'✔️ '. $certificacionesInspector[0]->nombre }}</h3>
+                        @if ($certificacionesInspector->count() > 0)
+                            <div class="overflow-x-auto m-auto w-full" wire:ignore>
+                                <div class="inline-block min-w-full py-2 sm:px-6">
+                                    <div class="overflow-hidden">
+                                        <table
+                                            class="min-w-full border text-center text-sm font-light dark:border-neutral-500">
+                                            <thead class="border-b font-medium dark:border-neutral-500">
+                                                <tr class="bg-indigo-200">
+                                                    <th scope="col"
+                                                        class="border-r px-6 py-4 dark:border-neutral-500">#
+                                                    </th>
+                                                    <th scope="col"
+                                                        class="border-r px-6 py-4 dark:border-neutral-500">
+                                                        Inspector</th>
+                                                    <th scope="col"
+                                                        class="border-r px-6 py-4 dark:border-neutral-500">
+                                                        Vehículo</th>
+                                                    <th scope="col"
+                                                        class="border-r px-6 py-4 dark:border-neutral-500">
+                                                        Servicio</th>
+                                                    <th scope="col"
+                                                        class="border-r px-6 py-4 dark:border-neutral-500">
+                                                        Fecha
+                                                    </th>
+                                                    <th scope="col"
+                                                        class="border-r px-6 py-4 dark:border-neutral-500">
+                                                        Precio
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($certificacionesInspector as $key => $item)
+                                                    <tr class="border-b dark:border-neutral-500 bg-orange-200">
+                                                        <td
+                                                            class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                            {{ $key + 1 }}</td>
 
-                                                <!-- Agrega más celdas según tus necesidades -->
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
+                                                        <td
+                                                            class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                            @if (is_array($item))
+                                                                {{ $item['totalPrecio'] }}
+                                                            @else
+                                                                {{ $item->nombre }}
+                                                            @endif
+                                                        </td>
+                                                        <td
+                                                            class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                            {{ $item->placa }}</td>
+                                                        <td
+                                                            class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                            {{ $item->tiposervicio }}</td>
+                                                        <td
+                                                            class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                            {{ \Carbon\Carbon::parse($item->created_at)->format('d M Y') }}
+                                                        </td>
+                                                        <td
+                                                            class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                            {{ $item->precio }}</td>
+                                                    </tr>
+                                                @endforeach
 
-                                </table>
+                                                <tr class="border-b dark:border-neutral-500 bg-green-200">
+                                                    <td colspan="5"
+                                                        class="border-r px-6 py-3 dark:border-neutral-500 font-bold text-right">
+                                                        Total: {{-- ({{ $certificacionesInspector[0]->nombre }})--}}
+                                                    </td>
+                                                    <td class="border-r px-6 py-3 dark:border-neutral-500 font-bold">
+                                                        {{ number_format($certificacionesInspector->sum('precio'), 2) }}
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
+                        @else
+                            <p class="text-center text-gray-500">No hay certificaciones para este taller.</p>
+                        @endif
+                    @endforeach
                 </div>
-            @else
+            @empty
                 <div class="w-full text-center font-semibold text-gray-100 p-4 mb-4 border rounded-md bg-indigo-400 shadow-lg"
                     wire:loading.class="hidden">
                     No se encontraron resultados.
                 </div>
-            @endif
+            @endforelse
         @endif
     </div>
 </div>

@@ -24,28 +24,22 @@ class ListadoChips extends Component
         $this->chipsConsumidos = DB::table('material')
             ->select(
                 'material.id',
-                //'material.descripcion',
-                //'material.numSerie',
                 'material.idUsuario',
-                //'material.añoActivo',
                 'material.estado',
                 'material.ubicacion',
                 'material.grupo',
-                //'material.idTipoMaterial',
-                'material.created_at',
-                //'material.updated_at',
+                'material.updated_at',
                 'users.name as nombreInspector',
-                //'tiposervicio.descripcion as servicioDescripcion'
-
+                //'tiposervicio.descripcion'
             )
             ->join('users', 'material.idUsuario', '=', 'users.id')
-            //->leftJoin('servicio', 'servicio.tipoServicio_idtipoServicio', '=', 'servicio.tipoServicio_idtipoServicio')
-            //->leftJoin('tiposervicio', 'servicio.tipoServicio_idtipoServicio', '=', 'tiposervicio.id')
             ->where([
                 ['material.estado', '=', 4], // Chips consumidos
                 ['material.idTipoMaterial', '=', 2], // Tipo de material CHIP
+                //['tiposervicio.id', '=', 11], // Id del servicio "Chip por deterioro"
                 ['material.idUsuario', '=', auth()->id()], // Filtra por el usuario actualmente autenticado
             ])
             ->get();
-    }
+           // dd($this->chipsConsumidos);
+    } 
 }

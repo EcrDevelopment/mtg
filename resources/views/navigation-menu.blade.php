@@ -43,12 +43,18 @@
                                         {{ __('Servicio Modificación') }}
                                     </x-jet-dropdown-link>
                                 @endcan
-                                                                                
+                                                                                                                
                                 @can('certificaciones')
                                     <div class="border-t border-gray-100"></div>
                                     <x-jet-dropdown-link href="{{ route('certificaciones') }}" :active="request()->routeIs('certificaciones')">
                                         {{ __('Listado Servicios') }}
                                     </x-jet-dropdown-link>                                 
+                                @endcan
+                                
+                                @can('ListadoChips')
+                                    <x-jet-dropdown-link href="{{ route('ListadoChips') }}" :active="request()->routeIs('ListadoChips')">
+                                        {{ __('Listado Chips') }}
+                                    </x-jet-dropdown-link>
                                 @endcan
 
                                 @can('admin.certificaciones')

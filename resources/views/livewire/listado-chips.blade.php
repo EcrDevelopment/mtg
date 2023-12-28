@@ -25,6 +25,11 @@
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Servicio
                                 </th>
+                                {{-- para agregar placa o id
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Placa / Id
+                                </th>--}}
                                 <th
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Estado
@@ -44,31 +49,35 @@
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
-                            @foreach ($chipsConsumidos as $chip)
+                            @foreach ($chipsConsumidos as $key => $chip)
                                 <tr>
                                     <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                         <div class="flex items-center">
                                             <p class="text-indigo-900 p-1 bg-indigo-200 rounded-md">
-                                                {{ $chip->id }}
+                                                {{ $chip->id }}{{--{{$key + 1}}--}}
+                                                
                                             </p>
                                         </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $chip->nombreInspector }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
-                                         {{-- @if ($chip->servicioDescripcion)
-                                                <p
-                                                    class="text-sm leading-none text-gray-600 ml-2 p-2 bg-green-200 rounded-full">
-                                                    {{ $chip->servicioDescripcion }}
-                                                </p>
+                                            @if (Str::startsWith($chip->ubicacion, 'En poder del cliente '))
+                                                <p class="text-sm leading-none text-gray-600 ml-2 p-2 bg-blue-200 rounded-full">
+                                                    Chip por deterioro
+                                                </p> 
                                             @else
-                                                <p class="text-sm leading-none text-gray-600 ml-2">
-                                                    Sin Datos
+                                                <p class="text-sm leading-none text-gray-600 ml-2 p-2 bg-green-200 rounded-full">
+                                                    Conversión a GNV + chip
                                                 </p>
-                                            @endif--}}
-                                            
+                                            @endif
                                         </div>
                                     </td>
+                                    {{-- para agregar placa o id
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        {{$chip->id}}
+                                    </td>
+                                    --}}
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         @if ($chip->estado == 4)
                                             Consumido
@@ -78,7 +87,7 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $chip->ubicacion }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $chip->grupo }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $chip->created_at }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">{{ \Carbon\Carbon::parse($chip->updated_at)->format('d M Y') }}</td>
                                 </tr>
                             @endforeach
                         </tbody>

@@ -69,84 +69,90 @@ class ReporteCalcular extends Component
         $this->emit('resultadosCalculados', $this->resultados);
     }*/
 
+    /*public function calcularReporte()
+{
+    $this->validate();
+
+    $resultados = DB::table('certificacion')
+        ->select(
+            'certificacion.created_at as fecha',
+            'taller.nombre as nombreTaller',
+            'users.name as certificador',
+            'servicio.precio',
+            'certificacion.estado', // Añade más columnas según sea necesario
+        )
+        ->join('taller', 'certificacion.idTaller', '=', 'taller.id')
+        ->join('users', 'certificacion.idInspector', '=', 'users.id')
+        ->join('servicio', function ($join) {
+            $join->on('certificacion.idServicio', '=', 'servicio.id')
+                ->on('certificacion.idTaller', '=', 'servicio.taller_idtaller')
+                ->on('certificacion.idServicio', '=', 'servicio.tipoServicio_idtipoServicio');
+        })
+        ->whereBetween('certificacion.created_at', [
+            $this->fechaInicio . ' 00:00:00',
+            $this->fechaFin . ' 23:59:59'
+        ])
+        ->get();
+
+    $serviciosPorInspector = $resultados->groupBy('certificador');
+
+    $resultadosFinales = [];
+
+    foreach ($serviciosPorInspector as $certificador => $servicios) {
+        $totalPrecio = $servicios->sum('precio');
+        $totalServicios = $servicios->count();
+
+        $resultadosFinales[] = [
+            'certificador' => $certificador,
+            'totalPrecio' => $totalPrecio,
+            'totalServicios' => $totalServicios,
+            'detalles' => $servicios->toArray(),
+        ];
+    }
+
+    $this->resultados = $resultadosFinales;
+    $this->emit('resultadosCalculados', $this->resultados);
+}*/
+
     public function calcularReporte()
     {
         $this->validate();
 
-        $resultadosCertificacion = DB::table('certificacion')
+        $certificaciones = DB::table('certificacion')
             ->select(
-                'created_at as fecha', // Cambia 'fecha' por 'created_at'
-                //'placa',
-                'idServicio as tipoServicio',
-                'idInspector as certificador',
-                'idTaller as taller',
-                'precio'
+                'certificacion.idTaller',
+                'certificacion.idInspector',
+                'certificacion.idVehiculo',
+                'certificacion.idServicio',
+                'certificacion.created_at',
+                'certificacion.precio',
+                'users.name as nombre',
+                'taller.nombre as taller',
+                'vehiculo.placa as placa',
+                'tiposervicio.descripcion as tiposervicio'
+
+
             )
-            ->whereBetween('created_at', [
+            ->join('users', 'certificacion.idInspector', '=', 'users.id')
+            ->join('taller', 'certificacion.idTaller', '=', 'taller.id')
+            ->join('vehiculo', 'certificacion.idVehiculo', '=', 'vehiculo.id')
+            ->join('servicio', 'certificacion.idServicio', '=', 'servicio.id')
+            ->join('tiposervicio', 'servicio.tipoServicio_idtipoServicio', '=', 'tiposervicio.id')
+
+            ->whereBetween('certificacion.created_at', [
                 $this->fechaInicio . ' 00:00:00',
                 $this->fechaFin . ' 23:59:59'
             ])
             ->get();
 
-        $resultados = ServiciosImportados::select(
-            'fecha',
-            'placa',
-            'tipoServicio',
-            'certificador',
-            'taller',
-            'precio'
-        )
-            ->whereBetween('fecha', [
-                $this->fechaInicio . ' 00:00:00',
-                $this->fechaFin . ' 23:59:59'
-            ])
-            ->get();
+        // Calcular el total de la columna "precio"
+        $totalPrecio = $certificaciones->sum('precio');
 
-        // Combinar resultados de ambas tablas
-        $resultados = $resultadosCertificacion->merge($resultados);
+        // Agregar el total a los resultados
+        //$certificaciones->totalPrecio = $totalPrecio;
 
-        // Ordenar resultados por el campo 'taller'
-        $resultados = $resultados->sortBy('taller');
 
-        $serviciosPorInspector = $resultados->groupBy(['certificador']);
-
-        $resultadosFinales = [];
-
-        foreach ($serviciosPorInspector as $certificador => $servicios) {
-            $totalAnuales = $servicios->where('tipoServicio', 2)->count();
-            $totalConversiones = $servicios->where('tipoServicio', 1)->count();
-            $totalDesmontes = $servicios->where('tipoServicio', 6)->count();
-            $totalModificacion = $servicios->where('tipoServicio', 5)->count(); 
-            $totalAnualGLP = $servicios->where('tipoServicio', 4)->count();
-            $totalConversionGLP = $servicios->where('tipoServicio', 3)->count();
-            $totalChipDeterioro = $servicios->where('tipoServicio', 11)->count();
-            $totalChipActivacion = $servicios->where('tipoServicio', 7)->count();
-            $totalDuplicadoGNV = $servicios->where('tipoServicio', 8)->count();
-            $totalDuplicadoGLP = $servicios->where('tipoServicio', 9)->count();
-            $totalConverChip = $servicios->where('tipoServicio', 10)->count();
-            $totalPreConverGNV = $servicios->where('tipoServicio', 12)->count();
-            $totalPrecio = $servicios->sum('precio');
-
-            $resultadosFinales[] = [
-                'certificador' => $certificador,
-                'totalAnuales' => $totalAnuales,
-                'totalConversiones' => $totalConversiones,
-                'totalDesmontes' => $totalDesmontes,
-                'totalModificacion' => $totalModificacion,
-                'totalAnualGLP' => $totalAnualGLP,
-                'totalConversionGLP' => $totalConversionGLP,
-                'totalChipDeterioro' => $totalChipDeterioro,
-                'totalChipActivacion' => $totalChipActivacion,
-                'totalDuplicadoGNV' => $totalDuplicadoGNV,
-                'totalDuplicadoGLP' => $totalDuplicadoGLP,
-                'totalConverChip' => $totalConverChip,
-                'totalPreConverGNV' => $totalPreConverGNV,
-                'totalPrecio' => $totalPrecio,
-                'detalles' => $servicios->toArray(),
-            ];
-        }
-
-        $this->resultados = $resultadosFinales;
+        $this->resultados = $certificaciones;
         $this->emit('resultadosCalculados', $this->resultados);
     }
 }

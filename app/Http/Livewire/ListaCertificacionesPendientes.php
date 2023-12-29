@@ -8,6 +8,7 @@ use App\Models\Certificacion;
 use App\Models\CertificacionPendiente;
 use App\Models\Expediente;
 use App\Models\Material;
+use App\Models\Servicio;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -45,7 +46,16 @@ class ListaCertificacionesPendientes extends Component
         $certi=$this->pendiente;
         $certi->Vehiculo->update(["combustible"=>$this->combustible,"pesoNeto"=>$this->pesoNeto]);
         //dd($certi);
-        $precio=0;
+        $aux = Servicio::where([['taller_idtaller', $certi->Taller->id], ['tipoServicio_idtipoServicio', 2]])->first(); // su existiera otro servicio pendiente se deberia agregar una validacion para activacion de chip(anual == 2)
+        if($aux){
+            $precio= $aux->precio;
+        }else{
+            $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "No se encontro precio invalido", "icono" => "warning"]);
+            return ;
+        }
+        //dd($aux);
+        
+
         if($certi->pagado>0){
             $precio=$certi->precio;
         }

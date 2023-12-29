@@ -129,7 +129,7 @@
             <tr>
                 <td style="padding: 0 5px 0 5px; text-align:center;">2</td>
                 <td>Placa de rodaje</td>
-                <td>{{ $carro->placa }}</td>
+                <td>{{ (isset($carro->placa) ? $carro->placa : 'EN TRAMITE') }}</td>
                 <td style="padding: 0 5px 0 5px; text-align:center;">10</td>
                 <td>Cilindros / Cilindrada</td>
                 <td>{{ (isset($carro->cilindros) ? $carro->cilindros : 'NE') . ' / ' . (isset($carro->cilindrada) ? $carro->cilindrada : 'NE') }}

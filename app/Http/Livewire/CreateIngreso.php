@@ -180,7 +180,7 @@ class CreateIngreso extends Component
     {
         $result = new Collection();
         $errorMessage = null;
-        if ($this->tipoMat == 1 || $this->tipoMat == 3 || $this->tipoMat == 24) {  //Agregue el 24 para tipomaterial modificacion
+        if ($this->tipoMat == 1 || $this->tipoMat == 3 || $this->tipoMat == 4) {  //Agregue el 4 para tipomaterial modificacion
             if ($this->numInicio && $this->anioActivo) {
                 $series = $this->creaColeccion($this->numInicio, $this->numFinal);
                 $materiales = Material::where([['idTipoMaterial', $this->tipoMat], ['añoActivo', $this->anioActivo]])->pluck('numSerie');

@@ -766,10 +766,13 @@ class PdfController extends Controller
                         "altura" => $this->devuelveDatoParseado($certificacion->Vehiculo->altura),
                         "qrCode" => $qrCode,
                     ];
+                    //dd($certificacion->Vehiculo);
                     $pdf = App::make('dompdf.wrapper');
                     $pdf->loadView('conversionGlp', $data);
+
                     return $pdf->stream($certificacion->Vehiculo->placa . '-' . $hoja->numSerie . '-anual-glp.pdf');
                 }
+                
                 return abort(404);
             }
         } else {

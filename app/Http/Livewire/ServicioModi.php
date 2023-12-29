@@ -268,10 +268,12 @@ class ServicioModi extends Component
 
     public function certificarmodificacion()
     {
+        $m = Material::where("numSerie", $this->numSugerido)->where("idTipoMaterial", 4)->first();
         $taller = Taller::findOrFail($this->taller);
         $servicio = Servicio::findOrFail($this->servicio);
         $hoja = $this->procesaFormato($this->numSugerido, $servicio->tipoServicio->id);
 
+        $usuario = User::find($m->idUsuario);
         if (!$hoja) {
             $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "No fue posible certificar", "icono" => "warning"]);
             return;
@@ -284,7 +286,13 @@ class ServicioModi extends Component
         }
 
 
-        $certi = Certificacion::certificarModi($taller, $servicio, $hoja, $this->vehiculo, Auth::user());
+        if (!$usuario) {
+            $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "Dueño de hoja invalido", "icono" => "warning"]);
+            return;
+        }
+
+        $certi = Certificacion::certificarModi($taller, $servicio, $hoja, $this->vehiculo, $usuario); //Auth::user()
+        
 
         if ($certi) {
             $this->estado = "certificado";
@@ -295,7 +303,7 @@ class ServicioModi extends Component
                 "certificado" => $hoja->numSerie,
                 "estado" => 1,
                 "idTaller" => $taller->id,
-                'usuario_idusuario' => Auth::id(),
+                'usuario_idusuario' => $usuario->id,//Auth::id()
                 'servicio_idservicio' => $servicio->id,
             ]);
 

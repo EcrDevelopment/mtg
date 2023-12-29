@@ -120,6 +120,7 @@ class CreateVehiculo extends Component
             $this->validate($rules);
         }
         $vehiculo=vehiculo::create([
+            "propietario"=>$this->propietario,
             "placa"=>$this->placa==""?null:strtoupper($this->placa),
             "categoria"=>strtoupper($this->categoria),
             "marca"=>$this->retornaNE($this->marca),
@@ -186,7 +187,8 @@ class CreateVehiculo extends Component
 
     public function actualizarVehiculo(){
         $rules=
-            [
+            [   
+                "vehiculo.propietario"=>"nullable",
                 "vehiculo.placa"=>"required|min:6|max:7",
                 "vehiculo.categoria"=>"nullable",
                 "vehiculo.marca"=>"required|min:2",

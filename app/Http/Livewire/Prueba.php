@@ -458,7 +458,9 @@ class Prueba extends Component
                     $certi = Certificacion::certificarGnvPre($taller, $servicio, $hoja, $this->vehiculo, Auth::user());
                     if ($certi) {
                         $this->estado = "certificado";
-                        $this->certificacion = $certi;
+                        $this->certificacion = $certi;                       
+                        
+
                         $this->emit("minAlert", ["titulo" => "¡EXCELENTE TRABAJO!", "mensaje" => "Tu certificado N°: " . $certi->Hoja->numSerie . " esta listo.", "icono" => "success"]);
                     } else {
                         $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "No fue posible certificar", "icono" => "warning"]);

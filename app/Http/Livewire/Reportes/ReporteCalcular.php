@@ -30,90 +30,6 @@ class ReporteCalcular extends Component
         ]);
     }
 
-    /*public function calcularReporte2()
-    {
-        $this->validate();
-
-        $resultados = ServiciosImportados::select(
-            'fecha',
-            'placa',
-            'tipoServicio',
-            'certificador',
-            'taller'
-        )
-            ->whereBetween('fecha', [
-                $this->fechaInicio . ' 00:00:00',
-                $this->fechaFin . ' 23:59:59'
-            ])
-            ->get();
-
-            $serviciosPorInspector = $resultados->groupBy('certificador');
-
-            $resultadosFinales = [];
-
-            foreach ($serviciosPorInspector as $certificador => $servicios) {
-                $totalAnuales = $servicios->where('tipoServicio', 2)->count();
-                $totalConversiones = $servicios->where('tipoServicio', 1)->count();
-                $totalDesmontes = $servicios->where('tipoServicio', 6)->count();
-        
-                $resultadosFinales[] = [
-                    'certificador' => $certificador,
-                    'totalAnuales' => $totalAnuales,
-                    'totalConversiones' => $totalConversiones,
-                    'totalDesmontes' => $totalDesmontes,
-                    'detalles' => $servicios->toArray(), // Opcional: Si necesitas los detalles de cada servicio
-                ];
-            }
-
-        $this->resultados = $resultadosFinales;
-        $this->emit('resultadosCalculados', $this->resultados);
-    }*/
-
-    /*public function calcularReporte()
-{
-    $this->validate();
-
-    $resultados = DB::table('certificacion')
-        ->select(
-            'certificacion.created_at as fecha',
-            'taller.nombre as nombreTaller',
-            'users.name as certificador',
-            'servicio.precio',
-            'certificacion.estado', // Añade más columnas según sea necesario
-        )
-        ->join('taller', 'certificacion.idTaller', '=', 'taller.id')
-        ->join('users', 'certificacion.idInspector', '=', 'users.id')
-        ->join('servicio', function ($join) {
-            $join->on('certificacion.idServicio', '=', 'servicio.id')
-                ->on('certificacion.idTaller', '=', 'servicio.taller_idtaller')
-                ->on('certificacion.idServicio', '=', 'servicio.tipoServicio_idtipoServicio');
-        })
-        ->whereBetween('certificacion.created_at', [
-            $this->fechaInicio . ' 00:00:00',
-            $this->fechaFin . ' 23:59:59'
-        ])
-        ->get();
-
-    $serviciosPorInspector = $resultados->groupBy('certificador');
-
-    $resultadosFinales = [];
-
-    foreach ($serviciosPorInspector as $certificador => $servicios) {
-        $totalPrecio = $servicios->sum('precio');
-        $totalServicios = $servicios->count();
-
-        $resultadosFinales[] = [
-            'certificador' => $certificador,
-            'totalPrecio' => $totalPrecio,
-            'totalServicios' => $totalServicios,
-            'detalles' => $servicios->toArray(),
-        ];
-    }
-
-    $this->resultados = $resultadosFinales;
-    $this->emit('resultadosCalculados', $this->resultados);
-}*/
-
     public function calcularReporte()
     {
         $this->validate();
@@ -143,16 +59,48 @@ class ReporteCalcular extends Component
                 $this->fechaInicio . ' 00:00:00',
                 $this->fechaFin . ' 23:59:59'
             ])
+            //->orWhere('tiposervicio.id', 11)// Incluye el tipo de servicio "Chip por deterioro"
+            ->orWhere(function ($query) {
+                // Incluir registros asociados al "Chip por deterioro"
+                $query->where('tiposervicio.id', 11) // Tipo de servicio "Chip por deterioro"
+                    ->whereIn('certificacion.id', function ($subquery) {
+                        $subquery->select('idCertificacion')
+                            ->from('certificacion_expediente');
+                    });
+            })
             ->get();
 
-        // Calcular el total de la columna "precio"
-        $totalPrecio = $certificaciones->sum('precio');
-
+        // Obtener chips consumidos y agregarlos a los resultados
+        $chipsConsumidos = $this->obtenerChipsConsumidos();
+        $certificaciones = $certificaciones->merge($chipsConsumidos);
+        
+        $totalPrecio = $certificaciones->sum('precio'); // Calcular el total de la columna "precio"
         // Agregar el total a los resultados
         //$certificaciones->totalPrecio = $totalPrecio;
 
-
         $this->resultados = $certificaciones;
         $this->emit('resultadosCalculados', $this->resultados);
+    }
+
+
+    public function obtenerChipsConsumidos()
+    {
+        return DB::table('material')
+            ->select(
+                'material.id',
+                'material.idUsuario',
+                'material.estado',
+                'material.ubicacion',
+                'material.grupo',
+                'material.updated_at',
+                'users.name as nombreInspector',
+            )
+            ->join('users', 'material.idUsuario', '=', 'users.id')
+            ->where([
+                ['material.estado', '=', 4], // Chips consumidos
+                ['material.idTipoMaterial', '=', 2], // Tipo de material CHIP
+                ['material.idUsuario', '=', auth()->id()], // Filtra por el usuario actualmente autenticado
+            ])
+            ->get();
     }
 }

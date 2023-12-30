@@ -9,6 +9,7 @@ use App\Models\Equipo;
 use App\Models\Expediente;
 use App\Models\Imagen;
 use App\Models\Material;
+use App\Models\TipoServicio;
 use App\Models\vehiculo;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
@@ -20,6 +21,9 @@ class FinalizarPreConversion extends Component
 
     public $placa,$idCertificacion,$certificacion,$conChip,$vehiculo,$open=false,$equipo;
     public $imagenes=[];
+
+    // Agregando para que solo me muestre para gnv y no glp
+    public $tipoServicio;
 
 
    
@@ -35,9 +39,12 @@ class FinalizarPreConversion extends Component
         ];
 
     public function mount(){
-        $this->conChip=1;
+        $this->conChip=0; //CAMBIE EL VALOR INICIAL PARA QUE ME MUESTRE DESACTIVADO DE 1 A 0
         $this->certificacion=Certificacion::find($this->idCertificacion);
         $this->vehiculo=vehiculo::find($this->certificacion->idVehiculo);
+        // Obtén el tipo de servicio
+        $tipoServicioId = $this->certificacion->Servicio->tipoServicio_idtipoServicio;
+        $this->tipoServicio = TipoServicio::find($tipoServicioId)->descripcion;
     }
 
     public function render()
@@ -57,9 +64,10 @@ class FinalizarPreConversion extends Component
                 if(isset($this->vehiculo)){
                     $chip->update(["estado"=>4,"ubicacion"=>"En poder del cliente","descripcion"=>"consumido"]);
                     $this->vehiculo->save();
+                    //dd($this->vehiculo);
                     $this->certificacion->update(["estado"=>1]);
                     $expe=Expediente::create([
-                        "placa"=>$this->certificacion->Vehiculo->placa,
+                        "placa"=>$this->vehiculo->placa,
                         "certificado"=>$this->certificacion->Hoja->numSerie,
                         "estado"=>1,
                         "idTaller"=>$this->certificacion->Taller->id,
@@ -80,9 +88,10 @@ class FinalizarPreConversion extends Component
             
             if(isset($this->vehiculo)){                               
                 $this->vehiculo->save();
+                //dd($this->vehiculo);
                 $this->certificacion->update(["estado"=>1]);
                 $expe=Expediente::create([
-                    "placa"=>$this->placa,
+                    "placa"=>$this->vehiculo->placa,
                     "certificado"=>$this->certificacion->Hoja->numSerie,
                     "estado"=>1,
                     "idTaller"=>$this->certificacion->Taller->id,

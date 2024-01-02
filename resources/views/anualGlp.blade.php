@@ -254,7 +254,7 @@
             Gas Licuado de Petróleo - GLP, del vehículo antes referido, no afectaran negativamente
             la seguridad del mismo, el tránsito terrestre, el medio ambiente o incumplen con las
             condiciones técnicas establecidas en la normativa vigente en la materia, según consta
-            en el expediente técnico N° {{ $numHoja . ' - ' . date('Y') }}
+            en el expediente técnico N° {{ $numHoja . ' - ' . $fechaCert->format('Y') }}
         </p>
         <!-- Agrega esto donde quieras mostrar el código QR -->
         @if (!empty($qrCode))

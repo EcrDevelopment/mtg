@@ -198,7 +198,7 @@
             antes referido, no afectaran negativamente la seguridad
             del mismo(**), el tránsito terrestre, el medio ambiente o incumplen con las condiciones técnicas
             establecidas en la normativa vigente en la materia(***),según el
-            expediente técnico N° {{ $hoja->numSerie }} - 2023, habilitándose al mismo para cargar Gas Natural
+            expediente técnico N° {{ $hoja->numSerie . ' - ' . $fechaCert->format('Y') }} , habilitándose al mismo para cargar Gas Natural
             vehicular-GNV, hasta el: {{ $fechaCert->format('d/m/') . ($fechaCert->format('Y') + 1) }}
         </p>
         <h6>OBSERVACIONES</h6>

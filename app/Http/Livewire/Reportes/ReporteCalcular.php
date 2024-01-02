@@ -59,48 +59,12 @@ class ReporteCalcular extends Component
                 $this->fechaInicio . ' 00:00:00',
                 $this->fechaFin . ' 23:59:59'
             ])
-            //->orWhere('tiposervicio.id', 11)// Incluye el tipo de servicio "Chip por deterioro"
-            ->orWhere(function ($query) {
-                // Incluir registros asociados al "Chip por deterioro"
-                $query->where('tiposervicio.id', 11) // Tipo de servicio "Chip por deterioro"
-                    ->whereIn('certificacion.id', function ($subquery) {
-                        $subquery->select('idCertificacion')
-                            ->from('certificacion_expediente');
-                    });
-            })
             ->get();
-
-        // Obtener chips consumidos y agregarlos a los resultados
-        //$chipsConsumidos = $this->obtenerChipsConsumidos();
-        //$certificaciones = $certificaciones->union($chipsConsumidos);
         
         $totalPrecio = $certificaciones->sum('precio'); // Calcular el total de la columna "precio"
-        // Agregar el total a los resultados
         //$certificaciones->totalPrecio = $totalPrecio;
 
         $this->resultados = $certificaciones;
         $this->emit('resultadosCalculados', $this->resultados);
-    }
-
-
-    public function obtenerChipsConsumidos()
-    {
-        return DB::table('material')
-            ->select(
-                'material.id',
-                'material.idUsuario',
-                'material.estado',
-                'material.ubicacion',
-                'material.grupo',
-                'material.updated_at',
-                'users.name as nombreInspector',
-            )
-            ->join('users', 'material.idUsuario', '=', 'users.id')
-            ->where([
-                ['material.estado', '=', 4], // Chips consumidos
-                ['material.idTipoMaterial', '=', 2], // Tipo de material CHIP
-                ['material.idUsuario', '=', auth()->id()], // Filtra por el usuario actualmente autenticado
-            ])
-            ->get();
     }
 }

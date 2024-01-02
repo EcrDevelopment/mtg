@@ -34,7 +34,7 @@ class CreateVehiculoGlp extends Component
         "placa"=>"nullable|min:6|max:10",
         "categoria"=>"nullable",
         "marca"=>"required|min:2",
-        "modelo"=>"required|min:2",
+        "modelo"=>"required", //|min:2
         "version"=>"nullable",
         "anioFab"=>"nullable|numeric|min:0",
         "numSerie"=>"nullable|min:2",
@@ -58,7 +58,7 @@ class CreateVehiculoGlp extends Component
         "vehiculo.placa"=>"required|min:6",
         "vehiculo.categoria"=>"nullable",
         "vehiculo.marca"=>"required|min:2",
-        "vehiculo.modelo"=>"required|min:2",
+        "vehiculo.modelo"=>"required",//|min:2
         "vehiculo.version"=>"nullable",
         "vehiculo.anioFab"=>"nullable|numeric|min:1900",
         "vehiculo.numSerie"=>"nullable|min:2",
@@ -87,7 +87,7 @@ class CreateVehiculoGlp extends Component
             "placa"=>"required|min:6|max:7",
             "categoria"=>"nullable",
             "marca"=>"required|min:2",
-            "modelo"=>"required|min:2",
+            "modelo"=>"required", //|min:2
             "version"=>"nullable",
             "anioFab"=>"nullable|numeric|min:0",
             "numSerie"=>"nullable|min:2",
@@ -183,7 +183,7 @@ class CreateVehiculoGlp extends Component
                 "vehiculo.placa"=>"required|min:6|max:7",
                 "vehiculo.categoria"=>"nullable",
                 "vehiculo.marca"=>"required|min:2",
-                "vehiculo.modelo"=>"required|min:2",
+                "vehiculo.modelo"=>"required", //|min:2
                 "vehiculo.version"=>"nullable",
                 "vehiculo.anioFab"=>"nullable|numeric|min:1900",
                 "vehiculo.numSerie"=>"nullable|min:2",

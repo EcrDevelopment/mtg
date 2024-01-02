@@ -89,7 +89,7 @@
     </header>
     <main>
         <h3>CERTIFICADO DE CONFORMIDAD DE CONVERSIÓN A GNV</h3>
-        <h5>{{ "Certificado N° ".$hoja->numSerie." - ".date("2023") }}</h5>
+        <h5>{{ "Certificado N° ".$hoja->numSerie." - ".$fechaCert->format('Y') }}</h5>
         <h4> {{"LA ENTIDAD CERTIFICADORA ".$empresa." CERTIFICA:"}}</h4>
         <p>Haber efectuado la evaluación de las condiciones de seguridad respecto de la conversión del sistema de combustión a
             Gas Natural Vehicular – GNV efectuada  por  el taller de  Conversión  Autorizado: {{$taller}}</p>

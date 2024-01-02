@@ -103,7 +103,7 @@
     </header>
     <main>
         <h3>CERTIFICADO DE INSPECCIÓN ANUAL DEL VEHÍCULO A GNV</h3>
-        <h5>{{ 'Certificado N° ' . $hoja->numSerie . ' - ' . date('2023') }}</h5>
+        <h5>{{ 'Certificado N° ' . $hoja->numSerie . ' - ' . $fechaCert->format('Y') }}</h5>{{--estaba asi y jalaba el año actual date('Y') se cambio para 2024 $fechaCert->format('Y')--}}
         <h4> {{ 'LA ENTIDAD CERTIFICADORA ' . $empresa . ' CERTIFICA:' }}</h4>
         <p>Haber efectuado la evaluación de las condiciones de seguridad del sistema de combustión a Gas Natural
             Vehicular – GNV del siguiente vehículo (*):</p>

@@ -157,69 +157,7 @@
                         @else
                             <p class="text-center text-gray-500">No hay certificaciones para este taller.</p>
                         @endif
-                    @endforeach
-                    <!-- Agrega este bloque para mostrar registros de "Chip por deterioro" -->
-                    @if ($certificacionesTaller->where('tiposervicio', 'Chip por deterioro')->isNotEmpty())
-                        <div class="flex flex-col my-4 py-4 rounded-md bg-white px-4 justify-center">
-                            <h2 class="text-indigo-600 text-xl font-bold mb-4">Registros de "Chip por deterioro"</h2>
-                            <div class="overflow-x-auto m-auto w-full" wire:ignore>
-                                <div class="inline-block min-w-full py-2 sm:px-6">
-                                    <div class="overflow-hidden">
-                                        <table
-                                            class="min-w-full border text-center text-sm font-light dark:border-neutral-500">
-                                            <thead class="border-b font-medium dark:border-neutral-500">
-                                                <tr class="bg-indigo-200">
-                                                    <th
-                                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                        ID</th>
-                                                    <th
-                                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                        Inspector
-                                                    </th>
-                                                    <th
-                                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                        Estado
-                                                    </th>
-                                                    <th
-                                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                        Ubicación
-                                                    </th>
-                                                    <th
-                                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                        Fecha
-                                                    </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($certificacionesTaller->where('tiposervicio', 'Chip por deterioro') as $key => $item)
-                                                <tr>
-                                                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                                        <div class="flex items-center">
-                                                            <p class="text-indigo-900 p-1 bg-indigo-200 rounded-md">
-                                                                {{ $item->id }}
-                                                                
-                                                            </p>
-                                                        </div>
-                                                    </td>
-                                                    <td class="px-6 py-4 whitespace-nowrap">{{ $item->nombreInspector }}</td>                                                    
-                                                    <td class="px-6 py-4 whitespace-nowrap">
-                                                        @if ($item->estado == 4)
-                                                            Consumido
-                                                        @else
-                                                            {{ $item->estado }}
-                                                        @endif
-                                                    </td>
-                                                    <td class="px-6 py-4 whitespace-nowrap">{{ $item->ubicacion }}</td>
-                                                    <td class="px-6 py-4 whitespace-nowrap">{{ \Carbon\Carbon::parse($item->updated_at)->format('d M Y') }}</td>
-                                                </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @endif
+                    @endforeach                    
                 </div>
             @empty
                 <div class="w-full text-center font-semibold text-gray-100 p-4 mb-4 border rounded-md bg-indigo-400 shadow-lg"

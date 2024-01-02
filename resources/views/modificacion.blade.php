@@ -107,7 +107,7 @@
     </header>
     <main>
         <h3>CERTIFICADO DE CONFORMIDAD DE MODIFICACIÓN</h3>
-        <h5>{{ 'Certificado N° ' . $hoja->numSerie . ' - ' . date('2023') }}</h5>
+        <h5>{{ 'Certificado N° ' . $hoja->numSerie . ' - ' . $fechaCert->format('Y') }}</h5>
         <h4> {{ 'LA ENTIDAD CERTIFICADORA ' . $empresa . ' CERTIFICA:' }}</h4>
         <p>Haber efectuado la evaluación técnica al vehículo de las siguientes características registrales:</p>
         <table>
@@ -253,7 +253,7 @@
             seguridad del mismo, el tránsito terrestre,
             el medio ambiente o incumplen con las condiciones técnicas establecidas en la normativa vigente en la
             materia, que está amparado en el
-            expediente N°{{ $hoja->numSerie . ' - ' . date('Y') }}
+            expediente N°{{ $hoja->numSerie . ' - ' . $fechaCert->format('Y') }}
         </p>
 
         <p>

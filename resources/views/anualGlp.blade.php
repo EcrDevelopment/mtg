@@ -108,7 +108,7 @@
             autorizada por el MTC mediante R.D. N° 0464-2023-MTC/17.03
         </p>
         <h3>CERTIFICADO DE INSPECCIÓN DE VEHÍCULO A GLP</h3>
-        <h5>{{ 'Certificado N° ' . $numHoja . ' - ' . date('Y') }}</h5>
+        <h5>{{ 'Certificado N° ' . $numHoja . ' - ' . date('2023') }}</h5>
         <h4> {{ 'LA ENTIDAD CERTIFICADORA ' . $empresa . ' CERTIFICA:' }}</h4>
         <p>
             Haber efectuado la evaluación de las condiciones de seguridad del sistema de combustión a

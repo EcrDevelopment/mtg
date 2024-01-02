@@ -72,13 +72,13 @@ class ReporteCalcular extends Component
 
         // Obtener chips consumidos y agregarlos a los resultados
         $chipsConsumidos = $this->obtenerChipsConsumidos();
-        $certificaciones = $certificaciones->merge($chipsConsumidos);
+        $certificaciones = $certificaciones->union($chipsConsumidos);
         
         $totalPrecio = $certificaciones->sum('precio'); // Calcular el total de la columna "precio"
         // Agregar el total a los resultados
         //$certificaciones->totalPrecio = $totalPrecio;
 
-        $this->resultados = $certificaciones;
+        $this->resultados = $certificaciones->all();
         $this->emit('resultadosCalculados', $this->resultados);
     }
 

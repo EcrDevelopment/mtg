@@ -151,13 +151,24 @@
                                                 </tr>
                                             </tbody>
                                         </table>
+                                        <div class="mt-4">
+                                            <ul class="grid grid-cols-2 gap-4">
+                                            @foreach ($certificacionesInspector->groupBy('tiposervicio') as $tipoServicio => $detalle)
+                                            <li class="flex items-center justify-between bg-gray-100 p-3 rounded-md shadow">
+                                                <span class="text-blue-400 font-bold">{{ "Cantidad de ". $tipoServicio }}</span>
+                                                <span class="text-green-500">{{ $detalle->count() }} servicios</span>
+                                            </li>
+                                            @endforeach
+                                        </ul>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
                         @else
                             <p class="text-center text-gray-500">No hay certificaciones para este taller.</p>
                         @endif
-                    @endforeach                    
+                    @endforeach
                 </div>
             @empty
                 <div class="w-full text-center font-semibold text-gray-100 p-4 mb-4 border rounded-md bg-indigo-400 shadow-lg"

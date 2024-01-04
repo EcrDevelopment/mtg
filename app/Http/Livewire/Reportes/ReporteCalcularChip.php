@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Reportes;
 
 use App\Models\Certificacion;
+use App\Models\Material;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\Taller;
@@ -12,13 +13,11 @@ use Livewire\Component;
 class ReporteCalcularChip extends Component
 {
     public $chipsConsumidos, $fechaInicio, $fechaFin;
-    public $inspectores, $talleres ;
+    public $inspectores, $talleres;
 
     public function mount()
     {
         $this->obtenerChipsConsumidos();
-        //$this->inspectores = Certificacion::groupBy('idInspector')->pluck('idInspector');
-        //$this->talleres = Certificacion::groupBy('idTaller')->pluck('idTaller');
         $this->inspectores = User::role(['inspector', 'supervisor'])->where('id', '!=', Auth::id())->orderBy('name')->get();
         $this->talleres = Taller::all()->sortBy('nombre');
     }
@@ -30,8 +29,8 @@ class ReporteCalcularChip extends Component
 
     public function obtenerChipsConsumidos()
     {
-        // Obtener chips consumidos para todos los inspectores
-        $this->chipsConsumidos = DB::table('material')
+        //dd($this->chipsConsumidos);
+       $this->chipsConsumidos = DB::table('material')
             ->select(
                 'material.id',
                 'material.idUsuario',
@@ -40,8 +39,13 @@ class ReporteCalcularChip extends Component
                 'material.grupo',
                 'material.updated_at',
                 'users.name as nombreInspector',
+                //'servicio.precio as precioServicio'
             )
             ->join('users', 'material.idUsuario', '=', 'users.id')
+            /*->join('serviciomaterial', 'material.id', '=', 'serviciomaterial.idMaterial')
+            ->join('certificacion', 'serviciomaterial.idCertificacion', '=', 'certificacion.id')
+            ->join('servicio', 'certificacion.idServicio', '=', 'servicio.id')*/
+
             ->where([
                 ['material.estado', '=', 4], // Chips consumidos
                 ['material.idTipoMaterial', '=', 2], // Tipo de material CHIP
@@ -50,6 +54,10 @@ class ReporteCalcularChip extends Component
                 $this->fechaInicio . ' 00:00:00',
                 $this->fechaFin . ' 23:59:59'
             ])
+            ->where(function ($query) {
+                $query->where('material.ubicacion', 'like', 'En poder del cliente %');
+            })
             ->get();
+            
     }
 }

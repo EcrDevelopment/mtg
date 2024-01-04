@@ -12,8 +12,8 @@
                 </div>
 
                 <div class="w-full  items-center md:flex md:flex-row md:justify-between ">
-                    
-                    <div class="flex bg-white items-center p-2 w-1/2 rounded-md mb-4 space-x-4">
+
+                    <div class="flex bg-gray-50 items-center p-2 rounded-md mb-4">
                         <span>Taller: </span>
                         <select wire:model="ta"
                             class="bg-gray-50 mx-2 border-indigo-500 rounded-md outline-none ml-1 block w-full truncate">
@@ -25,7 +25,7 @@
                             @endisset
                         </select>
                     </div>
-                    <div class="flex bg-white items-center p-2 w-1/2 rounded-md mb-4 space-x-4">
+                    <div class="flex bg-white items-center p-2 rounded-md mb-4">
                         <span>Inspector: </span>
                         <select wire:model="ins"
                             class="bg-gray-50 mx-2 border-indigo-500 rounded-md outline-none ml-1 block w-full truncate">
@@ -69,61 +69,97 @@
         </div>
 
         @if ($chipsConsumidos->isNotEmpty())
-        <div class="mt-4">
-            @foreach ($chipsConsumidos->groupBy('nombreInspector') as $inspector => $chips)
-                <div class="mb-4">
-                    <h3 class="text-indigo-600 text-xl font-bold mb-4">{{$inspector }}</h3>
+            <div class="mt-4">
+                @foreach ($chipsConsumidos->groupBy('nombreInspector') as $inspector => $chips)
+                    <div class="mb-4">
+                        <h3 class="text-indigo-600 text-xl font-bold mb-4">{{ $inspector }}</h3>
 
-                    <div class="overflow-x-auto m-auto w-full" wire:ignore>
-                        <div class="inline-block min-w-full py-2 sm:px-6">
-                            <div class="overflow-hidden">
-                                <table class="min-w-full border text-center text-sm font-light dark:border-neutral-500">
-                                    <thead class="border-b font-medium dark:border-neutral-500">
-                                        <tr class="bg-indigo-200">
-                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">ID</th>
-                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">Servicio</th>
-                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">Estado</th>
-                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">Ubicación</th>
-                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">Grupo</th>
-                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">Fecha de Actualización</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($chips as $chip)
-                                            <tr class="border-b dark:border-neutral-500 bg-orange-200">
-                                                <td class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">{{ $chip->id }}</td>
-                                                <td class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                    <div >
-                                                        @if (Str::startsWith($chip->ubicacion, 'En poder del cliente '))
-                                                            <p class="text-sm leading-none text-gray-600 ml-2 p-2 bg-blue-200 rounded-full">
-                                                                Chip por deterioro
-                                                            </p> 
-                                                        @else
-                                                            <p class="text-sm leading-none text-gray-600 ml-2 p-2 bg-green-200 rounded-full">
-                                                                Conversión a GNV + chip
-                                                            </p>
-                                                        @endif
-                                                    </div>
-                                                </td>
-
-                                                <td class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">@if ($chip->estado == 4)
-                                                    Consumido
-                                                @else
-                                                    {{ $chip->estado }}
-                                                @endif</td>
-                                                <td class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">{{ $chip->ubicacion }}</td>
-                                                <td class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">{{ $chip->grupo }}</td>
-                                                <td class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">{{ $chip->updated_at }}</td>
+                        <div class="overflow-x-auto m-auto w-full" wire:ignore>
+                            <div class="inline-block min-w-full py-2 sm:px-6">
+                                <div class="overflow-hidden">
+                                    <table
+                                        class="min-w-full border text-center text-sm font-light dark:border-neutral-500">
+                                        <thead class="border-b font-medium dark:border-neutral-500">
+                                            <tr class="bg-indigo-200">
+                                                <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">ID
+                                                </th>
+                                                <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
+                                                    Servicio</th>
+                                                <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
+                                                    Estado</th>
+                                                <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
+                                                    Ubicación</th>
+                                                <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
+                                                    Grupo</th>
+                                                <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
+                                                    Fecha</th>
+                                                <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
+                                                    Precio</th>
                                             </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($chips as $chip)
+                                                <tr class="border-b dark:border-neutral-500 bg-orange-200">
+                                                    <td
+                                                        class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                        {{ $chip->id }}</td>
+                                                    <td
+                                                        class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                        <div>
+                                                            @if (Str::startsWith($chip->ubicacion, 'En poder del cliente '))
+                                                                <p>
+                                                                    Chip por deterioro
+                                                                </p>
+                                                            @else
+                                                                <p>
+                                                                    Conversión a GNV + chip
+                                                                </p>
+                                                            @endif
+                                                        </div>
+                                                    </td>
+
+                                                    <td
+                                                        class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                        @if ($chip->estado == 4)
+                                                            <span class="text-red-600">Consumido</span>
+                                                        @else
+                                                            <span class="text-green-600">No consumido</span>
+                                                        @endif
+                                                    </td>
+                                                    <td
+                                                        class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                        {{ $chip->ubicacion }}</td>
+                                                    <td
+                                                        class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                        {{ $chip->grupo }}</td>
+                                                    <td
+                                                        class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                        {{ \Carbon\Carbon::parse($chip->updated_at)->format('d-m-Y') }}
+                                                    </td>
+                                                    <td
+                                                        class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                        {{10}}
+                                                    </td>
+
+                                                </tr>
+                                            @endforeach
+                                            <tr class="border-b dark:border-neutral-500 bg-green-200">
+                                                <td colspan="6"
+                                                    class="border-r px-6 py-3 dark:border-neutral-500 font-bold text-right">
+                                                    Total:
+                                                </td>
+                                                <td class="border-r px-6 py-3 dark:border-neutral-500 font-bold">
+                                                    {{ number_format($chips->sum('precio'), 2) }}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            @endforeach
-        </div>
-    @endif
+                @endforeach
+            </div>
+        @endif
     </div>
 </div>

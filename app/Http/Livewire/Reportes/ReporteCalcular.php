@@ -10,7 +10,7 @@ use Livewire\Component;
 
 class ReporteCalcular extends Component
 {
-    public $fechaInicio, $fechaFin, $resultados, $talleres, $inspectores;
+    public $fechaInicio, $fechaFin, $resultados, $talleres, $inspectores, $totalPrecio, $cantidades;
 
     protected $rules = [
         "fechaInicio" => 'required|date',
@@ -61,10 +61,18 @@ class ReporteCalcular extends Component
             ])
             ->get();
         
+        $cantidades = $certificaciones->groupBy(['nombre', 'tiposervicio'])->map(function ($items) {
+            return [
+                'cantidad' => $items->count(),
+            ];
+        });
+
         $totalPrecio = $certificaciones->sum('precio'); // Calcular el total de la columna "precio"
         //$certificaciones->totalPrecio = $totalPrecio;
 
         $this->resultados = $certificaciones;
-        $this->emit('resultadosCalculados', $this->resultados);
+        $this->cantidades = $cantidades;
+        $this->totalPrecio = $totalPrecio;
+        $this->emit('resultadosCalculados', $this->resultados, $this->cantidades, $this->totalPrecio);
     }
 }

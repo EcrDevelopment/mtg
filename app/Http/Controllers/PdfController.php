@@ -1091,6 +1091,7 @@ class PdfController extends Controller
             if ($dupli->servicio == 1) {
                 $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
                 $fechaCert = $duplicado->created_at;
+                $fecha2 = $fechaCert->format('Y');
                 //$fechaAntiguo=$antiguo->created_at;
                 $fecha = $fechaCert->format('d') . ' días del mes de ' . $meses[$fechaCert->format('m') - 1] . ' del ' . $fechaCert->format('Y') . '.';
                 $chip = $duplicado->vehiculo->Equipos->where("idTipoEquipo", 1)->first();
@@ -1104,6 +1105,7 @@ class PdfController extends Controller
 
                 $data = [
                     "fecha" => $fecha,
+                    "fecha2" => $fecha2,
                     "empresa" => "MOTORGAS COMPANY S.A.",
                     "carro" => $duplicado->Vehiculo,
                     "taller" => $duplicado->Duplicado->taller,

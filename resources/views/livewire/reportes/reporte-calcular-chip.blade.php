@@ -81,7 +81,9 @@
                                         class="min-w-full border text-center text-sm font-light dark:border-neutral-500">
                                         <thead class="border-b font-medium dark:border-neutral-500">
                                             <tr class="bg-indigo-200">
-                                                <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">ID
+                                                <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">#
+                                                </th>
+                                                <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">CHIP
                                                 </th>
                                                 <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
                                                     Servicio</th>
@@ -98,8 +100,11 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($chips as $chip)
+                                            @foreach ($chips as $key => $chip)
                                                 <tr class="border-b dark:border-neutral-500 bg-orange-200">
+                                                    <td
+                                                        class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                        {{ $key + 1}}</td>
                                                     <td
                                                         class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
                                                         {{ $chip->id }}</td>
@@ -121,9 +126,9 @@
                                                     <td
                                                         class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
                                                         @if ($chip->estado == 4)
-                                                            <span class="text-red-600">Consumido</span>
+                                                            <span>Consumido</span>
                                                         @else
-                                                            <span class="text-green-600">No consumido</span>
+                                                            <span>No consumido</span>
                                                         @endif
                                                     </td>
                                                     <td
@@ -138,22 +143,31 @@
                                                     </td>
                                                     <td
                                                         class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                        {{10}}
+                                                        {{ $chip->precioServicio }}
                                                     </td>
 
                                                 </tr>
                                             @endforeach
                                             <tr class="border-b dark:border-neutral-500 bg-green-200">
-                                                <td colspan="6"
+                                                <td colspan="7"
                                                     class="border-r px-6 py-3 dark:border-neutral-500 font-bold text-right">
                                                     Total:
                                                 </td>
                                                 <td class="border-r px-6 py-3 dark:border-neutral-500 font-bold">
-                                                    {{ number_format($chips->sum('precio'), 2) }}
+                                                    {{ number_format($chips->sum('precioServicio'), 2) }}
                                                 </td>
                                             </tr>
                                         </tbody>
                                     </table>
+                                    <div class="mt-4">
+                                        <ul class="grid grid-cols-2 gap-4">
+                                                <li
+                                                    class="flex items-center justify-between bg-gray-100 p-3 rounded-md shadow">
+                                                    <span class="text-blue-400">{{ 'Cantidad de Chip por deterioro'}}</span>
+                                                    <span class="text-green-500">{{$chips->count()}} servicios</span>
+                                                </li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>

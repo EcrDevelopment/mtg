@@ -66,7 +66,7 @@
         <p>Le enviamos el siguiente material de trabajo por parte de la empresa <strong>{{$empresa}}</strong> </p>
         <ol>        
             @foreach ($materiales as $key=>$material)                
-                @if ($material["tipo"]=="FORMATO GNV" || $material["tipo"]=="FORMATO GLP")
+                @if ($material["tipo"]=="FORMATO GNV" || $material["tipo"]=="FORMATO GLP" || $material["tipo"]=="MODIFICACION")
                     <li>{{$material["tipo"]}} - {{$material["cantidad"]." Unds"}} - 
                     (
                         @if(count($material["series"]))
@@ -90,7 +90,7 @@
             @endforeach  
             @foreach ($cambios as $key=>$cambio)
             <li>
-                @if ($cambio["tipo"]=="FORMATO GNV" || $cambio["tipo"]=="FORMATO GLP")                    
+                @if ($cambio["tipo"]=="FORMATO GNV" || $cambio["tipo"]=="FORMATO GLP" || $material["tipo"]=="MODIFICACION")                    
                     {{$cambio["tipo"]}} - {{$cambio["cantidad"]." Unds"}} - 
                     (
                         @if(count($cambio["series"]))
@@ -120,7 +120,7 @@
             @endforeach 
 
             @foreach ($prestamos as $key=>$material)                
-                @if ($material["tipo"]=="FORMATO GNV" || $material["tipo"]=="FORMATO GLP")
+                @if ($material["tipo"]=="FORMATO GNV" || $material["tipo"]=="FORMATO GLP" || $material["tipo"]=="MODIFICACION")
                     <li>{{$material["tipo"]}} - {{$material["cantidad"]." Unds"}} - 
                     (
                         @if(count($material["series"]))

@@ -155,7 +155,7 @@
                                             <ul class="grid grid-cols-2 gap-4">
                                             @foreach ($certificacionesInspector->groupBy('tiposervicio') as $tipoServicio => $detalle)
                                             <li class="flex items-center justify-between bg-gray-100 p-3 rounded-md shadow">
-                                                <span class="text-blue-400 font-bold">{{ "Cantidad de ". $tipoServicio }}</span>
+                                                <span class="text-blue-400">{{ "Cantidad de ". $tipoServicio }}</span>
                                                 <span class="text-green-500">{{ $detalle->count() }} servicios</span>
                                             </li>
                                             @endforeach

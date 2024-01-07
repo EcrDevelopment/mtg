@@ -9,8 +9,8 @@
         @if ($this->tipoServicio->id==13)
         <div class="mb-2">
             <x-jet-label value="Propietario:" />
-            <x-jet-input type="text" class="w-full" wire:model="propietario"   maxlength="245" />
-            <x-jet-input-error for="propietario" />
+            <x-jet-input type="text" class="w-full" wire:model="vehiculo.propietario"   maxlength="245" />
+            <x-jet-input-error for="vehiculo.propietario" />
         </div>
         @endif
         <div class="grid grid-cols-1 gap-8 sm:grid-cols-3">
@@ -22,7 +22,7 @@
             </div>
             --}}
             <div class="hidden">
-                {{$this->vehiculo->placa??$this->noPlaca=1}}
+                {{$this->noPlaca}}
             </div>
 
             <div class="flex flex-row items-center space-x-2 justify-center">
@@ -31,6 +31,7 @@
                     <x-jet-input type="text" class="w-full" wire:model="vehiculo.placa"  maxlength="7" />
                     <x-jet-input-error for="vehiculo.placa" />
                 </div>
+                
                 <div class="w-2/6 mt-4">
                     <input wire:model="noPlaca" id="checkbox1" type="checkbox"
                         value="1"
@@ -39,6 +40,7 @@
                             En trámite
                         </label>
                 </div>
+                
             </div>
             <div>
                 <x-jet-label value="Categoria:" />

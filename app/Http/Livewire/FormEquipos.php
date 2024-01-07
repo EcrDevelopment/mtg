@@ -25,6 +25,7 @@ class FormEquipos extends Component
         "equipo.modelo" => "required|min:2",
         "equipo.capacidad" => "required|min:3",
         "equipo.fechaFab" => "required|date",
+        "equipo.peso" => "required|numeric",
     ];
 
     protected $listeners = ['render', 'delete'];
@@ -179,14 +180,13 @@ class FormEquipos extends Component
         $this->validate([
             "equipo.numSerie" => "required|min:1",
             "equipo.marca" => "required|min:1",
-            "equipo.capacidad" => "required|numeric|min:1",
-            "equipo.peso" => "required|numeric|min:1",
-            "equipo.fechaFab" => "required|date"
+            "equipo.modelo" => "required|min:1",
         ]);
 
 
         $this->equipo->numSerie = strtoupper($this->equipo->numSerie);
         $this->equipo->marca = strtoupper($this->equipo->marca);
+        $this->equipo->modelo = strtoupper($this->equipo->modelo);
         $this->equipo->save();
 
 

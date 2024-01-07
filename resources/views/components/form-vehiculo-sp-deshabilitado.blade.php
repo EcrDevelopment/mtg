@@ -4,10 +4,18 @@
         <i class="fas fa-check-circle fa-lg"></i>
     </div>
     <div class="mt-2 mb-6 px-8 py-2">
+        @if ($this->tipoServicio->id==13)
+        <div class="mb-2">
+            <x-jet-label value="Propietario:" />
+            <x-jet-input type="text" class="w-full" wire:model="vehiculo.propietario"   disabled />
+            <x-jet-input-error for="vehiculo.propietario" />
+        </div>
+        @endif
         <div class="grid grid-cols-1 gap-8 sm:grid-cols-3">
+            
             <div>
                 <x-jet-label value="Placa:" />
-                <x-jet-input type="text" class="w-full" wire:model="vehiculo.placa" maxlength="6" disabled/>
+                <x-jet-input type="text" class="w-full" wire:model="vehiculo.placa" disabled/>
                 <x-jet-input-error for="placa" />
             </div>
             <div>

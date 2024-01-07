@@ -37,7 +37,7 @@
                                 <div>
                                     <i class="fas fa-car"></i>
                                 </div>
-                                <div>{{ $veh->placa }}</div>
+                                <div>{{ $veh->numMotor }}</div>
                                 <div>{{ $veh->marca }}</div>
                                 <div>{{ $veh->modelo }}</div>
                                 <div class="px-2 text-xs text-slate-600">

@@ -40,7 +40,8 @@ class ReporteCalcularGasol extends Component
             'tipoServicio',
             'certificador',
             'taller',
-            'precio'
+            'precio',
+            'serie',
         )
             ->whereBetween('fecha', [
                 $this->fechaInicio . ' 00:00:00',
@@ -48,38 +49,8 @@ class ReporteCalcularGasol extends Component
             ])
             ->get();
 
-
-        $resultados = $resultados->sortBy('taller');
-        $resultadosFinales = [];
-        $taller = null; // Inicializar $taller
-
-        foreach ($resultados->groupBy(['taller', 'certificador']) as $tallerCertificador => $servicios) {
-            // Manejo de certificador nulo
-            $certificador = $tallerCertificador;
-            if (strpos($tallerCertificador, '|') !== false) {
-                list($taller, $certificador) = explode('|', $tallerCertificador);
-            }
-
-            if (!isset($resultadosFinales[$taller])) {
-                $resultadosFinales[$taller] = [];
-            }
-
-            $totalAnuales = $servicios->where('tipoServicio', 2)->count();
-            $totalConversiones = $servicios->where('tipoServicio', 1)->count();
-            $totalDesmontes = $servicios->where('tipoServicio', 6)->count();
-            $totalPrecio = $servicios->sum('precio');
-
-            $resultadosFinales[$taller][] = [
-                'certificador' => $certificador,
-                'totalAnuales' => $totalAnuales,
-                'totalConversiones' => $totalConversiones,
-                'totalDesmontes' => $totalDesmontes,
-                'totalPrecio' => $totalPrecio,
-                'detalles' => $servicios->toArray(),
-            ];
-        }
-
-        $this->resultados = $resultadosFinales;
+        $this->resultados = $resultados;
         $this->emit('resultadosCalculados', $this->resultados);
     }
+
 }

@@ -70,13 +70,7 @@
             @forelse ($resultados->groupBy('idTaller') as $taller => $certificacionesTaller)
                 <div class="flex flex-col my-4 py-4 rounded-md bg-white px-4 justify-center">
                     <h2 class="text-indigo-600 text-xl font-bold mb-4">{{ $certificacionesTaller[0]->taller }}</h2>
-                    {{--
-                        <div class="m-auto flex justify-center items-center bg-gray-300 rounded-md w-full p-4">
-                            <button wire:click="exportarExcel"
-                                class="bg-green-400 px-6 py-4 w-1/3 text-sm rounded-md text-sm text-white font-semibold tracking-wide cursor-pointer ">
-                                <p class="truncate"><i class="fa-solid fa-file-excel fa-lg"></i> Desc. Excel </p>
-                            </button>
-                        </div> --}}
+                    
                     @foreach ($certificacionesTaller->groupBy('idInspector') as $inspector => $certificacionesInspector)
                         <h3 class="text-red-600  font-bold mb-2">{{ '✔️ ' . $certificacionesInspector[0]->nombre }}</h3>
                         @if ($certificacionesInspector->count() > 0)
@@ -105,8 +99,16 @@
                                                     </th>
                                                     <th scope="col"
                                                         class="border-r px-6 py-4 dark:border-neutral-500">
+                                                        Estado
+                                                    </th>
+                                                    <th scope="col"
+                                                        class="border-r px-6 py-4 dark:border-neutral-500">
                                                         Precio
                                                     </th>
+                                                    <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
+                                                        <input type="checkbox" wire:model="selectAll">
+                                                        Seleccionar Todo
+                                                    </th>                                                    
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -133,33 +135,62 @@
                                                         <td
                                                             class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
                                                             {{ \Carbon\Carbon::parse($item->created_at)->format('d M Y') }}
+                                                        </td>                                                        
+                                                        <td
+                                                            class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                            @if ($item->pagado == 0)
+                                                                Sin cobrar
+                                                            @elseif ($detalle->tipoServicio == 1)
+                                                                Cobrado
+                                                            @else
+                                                                N/A
+                                                            @endif
                                                         </td>
                                                         <td
                                                             class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                            {{ $item->precio }}</td>
+                                                            {{ $item->precio }}
+                                                        </td>
+                                                        <td class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                            <input type="checkbox" wire:model="selectedItems" value="{{ $item->id }}">
+                                                        </td>
                                                     </tr>
                                                 @endforeach
 
                                                 <tr class="border-b dark:border-neutral-500 bg-green-200">
-                                                    <td colspan="5"
+                                                    <td colspan="6"
                                                         class="border-r px-6 py-3 dark:border-neutral-500 font-bold text-right">
                                                         Total: {{-- ({{ $certificacionesInspector[0]->nombre }}) --}}
                                                     </td>
                                                     <td class="border-r px-6 py-3 dark:border-neutral-500 font-bold">
                                                         {{ number_format($certificacionesInspector->sum('precio'), 2) }}
                                                     </td>
+                                                    <td >
+                                                        <div class="flex justify-center  space-x-2">
+                                                            <a 
+                                                            wire:click=""
+                                                            class="group flex py-2 px-2 text-center rounded-md bg-blue-300 font-bold text-white cursor-pointer hover:bg-blue-400 hover:animate-pulse" >
+                                                                <i class="fas fa-edit"></i>
+                                                                <span class="group-hover:opacity-100 transition-opacity bg-gray-800 px-1 text-sm text-gray-100 rounded-md absolute left-1/2-translate-x-1/2 translate-y-full opacity-0 m-4 mx-auto">
+                                                                    Actualizar
+                                                                </span>
+                                                            </a>
+                                                        </div>
+                                                    </td>
                                                 </tr>
                                             </tbody>
                                         </table>
                                         <div class="mt-4">
                                             <ul class="grid grid-cols-2 gap-4">
-                                            @foreach ($certificacionesInspector->groupBy('tiposervicio') as $tipoServicio => $detalle)
-                                            <li class="flex items-center justify-between bg-gray-100 p-3 rounded-md shadow">
-                                                <span class="text-blue-400">{{ "Cantidad de ". $tipoServicio }}</span>
-                                                <span class="text-green-500">{{ $detalle->count() }} servicios</span>
-                                            </li>
-                                            @endforeach
-                                        </ul>
+                                                @foreach ($certificacionesInspector->groupBy('tiposervicio') as $tipoServicio => $detalle)
+                                                    <li
+                                                        class="flex items-center justify-between bg-gray-100 p-3 rounded-md shadow">
+                                                        <span
+                                                            class="text-blue-400">{{ 'Cantidad de ' . $tipoServicio }}</span>
+                                                        <span class="text-green-500">{{ $detalle->count() }}
+                                                            servicios</span>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
                                         </div>
 
                                     </div>

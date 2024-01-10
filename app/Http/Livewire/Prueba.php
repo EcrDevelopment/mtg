@@ -79,7 +79,9 @@ class Prueba extends Component
     public function updatedTaller($val)
     {
         if ($val) {
-            $this->servicios = Servicio::where("taller_idtaller", $val)->get();
+            $this->servicios = Servicio::where("taller_idtaller", $val)
+            ->where("estado", 1) // Agregue esto para que muestre solo estado 1
+            ->get();
             $this->servicio = "";
         } else {
             $this->reset(["servicios", "servicio"]);

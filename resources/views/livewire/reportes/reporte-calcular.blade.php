@@ -69,8 +69,11 @@
         @if (isset($resultados))
             @forelse ($resultados->groupBy('idTaller') as $taller => $certificacionesTaller)
                 <div class="flex flex-col my-4 py-4 rounded-md bg-white px-4 justify-center">
-                    <h2 class="text-indigo-600 text-xl font-bold mb-4">{{ $certificacionesTaller[0]->taller }}</h2>
-                    
+                    {{-- {{ dd($certificacionesTaller) }} --}}
+                    <h2 class="text-indigo-600 text-xl font-bold mb-4">
+                        {{ $certificacionesTaller[0]->taller }}
+                    </h2>
+
                     @foreach ($certificacionesTaller->groupBy('idInspector') as $inspector => $certificacionesInspector)
                         <h3 class="text-red-600  font-bold mb-2">{{ '✔️ ' . $certificacionesInspector[0]->nombre }}</h3>
                         @if ($certificacionesInspector->count() > 0)
@@ -105,10 +108,12 @@
                                                         class="border-r px-6 py-4 dark:border-neutral-500">
                                                         Precio
                                                     </th>
-                                                    <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
-                                                        <input type="checkbox" wire:model="selectAll">
+                                                    <th scope="col"
+                                                        class="border-r px-6 py-4 dark:border-neutral-500">
+                                                        <input type="checkbox" wire:model="selectAll"
+                                                            wire:click="selectAll">
                                                         Seleccionar Todo
-                                                    </th>                                                    
+                                                    </th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -135,23 +140,31 @@
                                                         <td
                                                             class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
                                                             {{ \Carbon\Carbon::parse($item->created_at)->format('d M Y') }}
-                                                        </td>                                                        
+                                                        </td>
                                                         <td
                                                             class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                            @if ($item->pagado == 0)
-                                                                Sin cobrar
-                                                            @elseif ($detalle->tipoServicio == 1)
-                                                                Cobrado
+                                                            {{-- --}}
+                                                            @if (property_exists($item, 'pagado'))
+                                                                @if ($item->pagado == 0)
+                                                                    Sin cobrar
+                                                                @elseif ($item->pagado == 1)
+                                                                    Cobrado
+                                                                @else
+                                                                    Cert. Pendiente
+                                                                @endif
                                                             @else
-                                                                N/A
+                                                                Cert. Pendiente
                                                             @endif
+
                                                         </td>
                                                         <td
                                                             class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
                                                             {{ $item->precio }}
                                                         </td>
-                                                        <td class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                            <input type="checkbox" wire:model="selectedItems" value="{{ $item->id }}">
+                                                        <td
+                                                            class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                            <input type="checkbox" wire:model="selectedItems"
+                                                                value="selectedItems">
                                                         </td>
                                                     </tr>
                                                 @endforeach
@@ -164,13 +177,13 @@
                                                     <td class="border-r px-6 py-3 dark:border-neutral-500 font-bold">
                                                         {{ number_format($certificacionesInspector->sum('precio'), 2) }}
                                                     </td>
-                                                    <td >
+                                                    <td>
                                                         <div class="flex justify-center  space-x-2">
-                                                            <a 
-                                                            wire:click=""
-                                                            class="group flex py-2 px-2 text-center rounded-md bg-blue-300 font-bold text-white cursor-pointer hover:bg-blue-400 hover:animate-pulse" >
+                                                            <a wire:click="actualizarCertificaciones"
+                                                                class="group flex py-2 px-2 text-center rounded-md bg-blue-300 font-bold text-white cursor-pointer hover:bg-blue-400 hover:animate-pulse">
                                                                 <i class="fas fa-edit"></i>
-                                                                <span class="group-hover:opacity-100 transition-opacity bg-gray-800 px-1 text-sm text-gray-100 rounded-md absolute left-1/2-translate-x-1/2 translate-y-full opacity-0 m-4 mx-auto">
+                                                                <span
+                                                                    class="group-hover:opacity-100 transition-opacity bg-gray-800 px-1 text-sm text-gray-100 rounded-md absolute left-1/2-translate-x-1/2 translate-y-full opacity-0 m-4 mx-auto">
                                                                     Actualizar
                                                                 </span>
                                                             </a>

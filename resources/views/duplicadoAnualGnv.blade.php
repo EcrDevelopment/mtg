@@ -130,7 +130,10 @@
                 <td>{{$carro->version}}</td>
                 <td style="padding: 0 5px 0 5px; text-align:center;">13</td>
                 <td>Largo / Ancho / Alto(m)</td>
-                <td>{{(isset($carro->largo)?  bcdiv($carro->largo, '1', 2) : 'NE').' / '.(isset($carro->ancho)? bcdiv($carro->ancho, '1', 2) : 'NE').' / '.(isset($carro->altura)? bcdiv($carro->altura, '1', 2) : 'NE')}}</td>
+                <td>{{(isset($carro->largo)?  $carro->largo : 'NE').' / '.(isset($carro->ancho)? $carro->ancho : 'NE').' / '.(isset($carro->altura)? $carro->altura : 'NE')}}</td>
+                {{--
+                <td>{{(isset($carro->largo)?  bcdiv($carro->largo, '1', 3) : 'NE').' / '.(isset($carro->ancho)? bcdiv($carro->ancho, '1', 3) : 'NE').' / '.(isset($carro->altura)? bcdiv($carro->altura, '1', 3) : 'NE')}}</td>
+                --}}
             </tr>
             <tr>
                 <td style="padding: 0 5px 0 5px; text-align:center;">6</td>

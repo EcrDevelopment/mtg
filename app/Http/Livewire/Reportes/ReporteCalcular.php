@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Reportes;
 
 use App\Models\Certificacion;
+use App\Models\CertificacionPendiente;
 use App\Models\ServiciosImportados;
 use App\Models\Taller;
 use App\Models\TipoServicio;
@@ -66,9 +67,9 @@ class ReporteCalcular extends Component
             ])
             ->get();
 
-        // Obtener certificados pendientes
         $certificadosPendientes = DB::table('certificados_pendientes')
             ->select(
+                'certificados_pendientes.id',
                 'certificados_pendientes.idTaller',
                 'certificados_pendientes.idInspector',
                 'certificados_pendientes.idVehiculo',
@@ -94,40 +95,81 @@ class ReporteCalcular extends Component
             ->get();
 
 
-        $resultados = $certificaciones->concat($certificadosPendientes); // Combinar los resultados  
-        // Actualizar el estado 'pagado' de los elementos seleccionados
-        if (!empty($this->selectedItems)) {
-            Certificacion::whereIn('id', $this->selectedItems)->update(['pagado' => 1]);
-        }
-        // Restablecer los checkboxes
-        $this->selectAll = false;
-        $this->selectedItems = [];
+        
+        $resultados = $certificaciones->concat($certificadosPendientes);       
         $cantidades = $resultados->groupBy(['nombre', 'tiposervicio'])->map(function ($items) {
             return [
                 'cantidad' => $items->count(),
             ];
         });
-
-        /*$cantidades = $certificaciones->groupBy(['nombre', 'tiposervicio'])->map(function ($items) {
-            return [
-                'cantidad' => $items->count(),
-            ];
-        });*/
-
-        $totalPrecio = $resultados->sum('precio'); // Calcular el total de la columna "precio"
+        
+        $totalPrecio = $resultados->sum('precio');
         $this->resultados = $resultados;
         $this->cantidades = $cantidades;
         $this->totalPrecio = $totalPrecio;
-        // Emitir evento para actualizar la interfaz
         $this->emit('resultadosCalculados', $this->resultados, $this->cantidades, $this->totalPrecio);
 
-        /*
-        $totalPrecio = $certificaciones->sum('precio'); // Calcular el total de la columna "precio"
-        //$certificaciones->totalPrecio = $totalPrecio;
+    }
 
-        $this->resultados = $certificaciones;
-        $this->cantidades = $cantidades;
-        $this->totalPrecio = $totalPrecio;
-        $this->emit('resultadosCalculados', $this->resultados, $this->cantidades, $this->totalPrecio);*/
+    /*public function calcularReporte()
+    {
+        $this->validate();
+
+        $certificaciones = Certificacion::with(['Inspector', 'Taller', 'Vehiculo', 'Servicio.tipoServicio'])
+            ->whereBetween('created_at', [
+                $this->fechaInicio . ' 00:00:00',
+                $this->fechaFin . ' 23:59:59'
+            ])
+            ->get();
+
+        $certificadosPendientes = CertificacionPendiente::with(['Inspector', 'Taller', 'Vehiculo', 'Servicio.tipoServicio'])
+            ->where('estado', 1)
+            ->whereNull('idCertificacion')
+            ->whereBetween('created_at', [
+                $this->fechaInicio . ' 00:00:00',
+                $this->fechaFin . ' 23:59:59'
+            ])
+            ->get();
+
+        $resultados = $certificaciones->concat($certificadosPendientes);
+
+        $this->resultados = $resultados->groupBy('idTaller');
+
+        $this->cantidades = $resultados->groupBy(['Inspector.name', 'Servicio.tipoServicio.descripcion'])->map(function ($items) {
+            return [
+                'cantidad' => $items->count(),
+            ];
+        });
+
+        $this->totalPrecio = $resultados->sum('precio');
+    }*/
+
+
+
+    public function toggleSelectAll()
+    {
+        $this->selectAll = !$this->selectAll;
+
+        if ($this->selectAll) {
+            $this->selectedItems = $this->resultados->flatten()->pluck('id')->map(function ($id) {
+                return (string)$id;
+            })->toArray();
+        } else {
+            $this->selectedItems = [];
+        }
+    }
+
+    public function actualizarCertificaciones()
+    {
+        if (!empty($this->selectedItems)) {
+            Certificacion::whereIn('id', $this->selectedItems)->update(['pagado' => 1]);
+
+            // Actualizar los resultados después de la actualización
+            $this->calcularReporte();
+        }
+
+        // Restablecer el estado de selección
+        $this->selectAll = false;
+        $this->selectedItems = [];
     }
 }

@@ -48,7 +48,7 @@ class FormModificacion extends Component
         "numSerie" => "nullable|min:2",
         "numMotor" => "nullable|min:2",
         "cilindros" => "nullable|numeric|min:1",
-        "cilindrada" => "nullable|numeric|min:1",
+        "cilindrada" => "nullable", //|numeric|min:1
         "combustible" => "nullable|min:2",
         "ejes" => "nullable|numeric|min:1",
         "ruedas" => "nullable|numeric|min:1",
@@ -80,7 +80,7 @@ class FormModificacion extends Component
         "vehiculo.numSerie" => "nullable|min:2",
         "vehiculo.numMotor" => "nullable|min:2",
         "vehiculo.cilindros" => "nullable|numeric|min:1",
-        "vehiculo.cilindrada" => "nullable|numeric|min:1",
+        "vehiculo.cilindrada" => "nullable",//|numeric|min:1
         "vehiculo.combustible" => "nullable|min:2",
         "vehiculo.ejes" => "nullable|numeric|min:1",
         "vehiculo.ruedas" => "nullable|numeric|min:1",
@@ -118,7 +118,7 @@ class FormModificacion extends Component
             "numSerie" => "nullable|min:2",
             "numMotor" => "nullable|min:2",
             "cilindros" => "nullable|numeric|min:1",
-            "cilindrada" => "nullable|numeric|min:1",
+            "cilindrada" => "nullable",//|numeric|min:1
             "combustible" => "nullable|min:2",
             "ejes" => "nullable|numeric|min:1",
             "ruedas" => "nullable|numeric|min:1",
@@ -239,7 +239,7 @@ class FormModificacion extends Component
                 "vehiculo.numSerie" => "nullable|min:2",
                 "vehiculo.numMotor" => "nullable|min:2",
                 "vehiculo.cilindros" => "nullable|numeric|min:1",
-                "vehiculo.cilindrada" => "nullable|numeric|min:1",
+                "vehiculo.cilindrada" => "nullable",//|numeric|min:1
                 "vehiculo.combustible" => "nullable|min:2",
                 "vehiculo.ejes" => "nullable|numeric|min:1",
                 "vehiculo.ruedas" => "nullable|numeric|min:1",

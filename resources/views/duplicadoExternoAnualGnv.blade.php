@@ -89,7 +89,7 @@
     </header>  
     <main>        
         <h3>CERTIFICADO DE INSPECCIÓN ANUAL DEL VEHÍCULO A GNV</h3>
-        <h5>{{ "Certificado N° ".$hoja->numSerie." - ".date('Y') }}</h5>
+        <h5>{{ "Certificado N° ".$hoja->numSerie." - ".$fechaCert->format('Y') }}</h5>
         <h4> {{"LA ENTIDAD CERTIFICADORA ".$empresa." CERTIFICA:"}}</h4>     
         <p>Haber  efectuado la  evaluación  de las  condiciones  de seguridad del sistema  de combustión a Gas Natural Vehicular  –  GNV del  siguiente   vehículo (*):</p>        
         <table>
@@ -171,7 +171,7 @@
             </ol>
         <p>Consiste por el presente documento que el sistema de combustible  a Gas Natural Vehicular GNV, del vehículo antes referido, no afectaran negativamente la seguridad
              del mismo(**), el tránsito terrestre, el medio ambiente o incumplen con las condiciones técnicas establecidas en la normativa vigente en la materia(***),según el
-              expediente técnico   N° {{$hoja->numSerie}} - 2023,  habilitándose al mismo para cargar  Gas  Natural  vehicular-GNV,  hasta  el: {{$fechaAntiguo->format("d/m/").($fechaAntiguo->format("Y")+1)}} 
+              expediente técnico   N° {{$hoja->numSerie.'-'.$fechaCert->format('Y')}},  habilitándose al mismo para cargar  Gas  Natural  vehicular-GNV,  hasta  el: {{$fechaAntiguo->format("d/m/").($fechaAntiguo->format("Y")+1)}} 
         </p>
         <h6>OBSERVACIONES</h6>
             <ul>

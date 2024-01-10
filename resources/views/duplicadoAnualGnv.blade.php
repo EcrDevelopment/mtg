@@ -173,7 +173,7 @@
             </ol>
         <p>Consiste por el presente documento que el sistema de combustible  a Gas Natural Vehicular GNV, del vehículo antes referido, no afectaran negativamente la seguridad
              del mismo(**), el tránsito terrestre, el medio ambiente o incumplen con las condiciones técnicas establecidas en la normativa vigente en la materia(***),según el
-              expediente técnico   N° {{$hoja->numSerie}} - 2023,  habilitándose al mismo para cargar  Gas  Natural  vehicular-GNV,  hasta  el: {{$fechaAntiguo->format("d/m/").($fechaAntiguo->format("Y")+1)}} 
+              expediente técnico   N° {{$hoja->numSerie.'-'.$fechaCert->format('Y')}},  habilitándose al mismo para cargar  Gas  Natural  vehicular-GNV,  hasta  el: {{$fechaAntiguo->format("d/m/").($fechaAntiguo->format("Y")+1)}} 
         </p>
         <h6>OBSERVACIONES</h6>
             <ul>

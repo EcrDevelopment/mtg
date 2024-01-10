@@ -21,6 +21,7 @@ class CertificacionPendiente extends Model
     'estado',
     'idCertificacion',
     "idExpediente",
+    'precio',
     'pagado',    
     'created_at',
     'updated_at',        

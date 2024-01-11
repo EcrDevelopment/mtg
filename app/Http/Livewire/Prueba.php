@@ -448,6 +448,34 @@ class Prueba extends Component
         }
     }
 
+    /*public function certificarChipDeterioro(){
+        
+        $taller = Taller::findOrFail($this->taller);
+        $servicio = Servicio::findOrFail($this->servicio);
+        $chip = $this->chip;
+
+
+        if (!isset($this->vehiculo)) {
+            $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "Debes ingresar un vehículo válido para poder certificar", "icono" => "warning"]);
+            return;
+
+        }
+
+        $certi = Certificacion::certificarChipDeterioro($taller, $servicio, $chip, $this->vehiculo, Auth::user());
+
+        if ($certi) {
+            $this->estado = "certificado";
+            $this->certificacion = $certi;
+
+            // Agrega la fecha al modelo Certificacion
+            $certi->update(['created_at' => $this->fechaCertificacion]);
+
+            $this->emit("minAlert", ["titulo" => "¡EXCELENTE TRABAJO!", "mensaje" => "Tu certificado N°: " . $certi. " está listo.", "icono" => "success"]);
+        } else {
+            $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "No fue posible certificar", "icono" => "warning"]);
+        }
+    }*/
+
     public function certificarPreconver()
     {
         $taller = Taller::findOrFail($this->taller);

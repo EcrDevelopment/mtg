@@ -610,6 +610,32 @@ class Certificacion extends Model
         }
     }
 
+    /*public function certificarChipDeterioro(Taller $taller, Servicio $servicio,Material $chip, vehiculo $vehiculo, User $inspector){
+
+        $cert = Certificacion::create([
+            "idVehiculo" => $vehiculo->id,
+            "idTaller" => $taller->id,
+            "idInspector" => $inspector->id,
+            "idServicio" => $servicio->id,
+            "estado" => 1,
+            "precio" => $servicio->precio,
+            "pagado" => 0,
+        ]);
+        if ($cert) {
+            //cambia el estado de la hoja a consumido
+            $chip->update(["estado" => 4, "ubicacion" => "En poder del cliente"]);
+            //crea y guarda el servicio y material usado en esta certificacion
+            $servM = ServicioMaterial::create([
+                "idMaterial" => $chip->id,
+                "idCertificacion" => $cert->id
+            ]);
+            //retorna el certificado
+            return $cert;
+        } else {
+            return null;
+        }
+    }*/
+
 
     public static function certificarGnvPre(Taller $taller, Servicio $servicio, Material $hoja, vehiculo $vehiculo, User $inspector)
     {

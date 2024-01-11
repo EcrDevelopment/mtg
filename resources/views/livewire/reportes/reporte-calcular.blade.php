@@ -110,8 +110,8 @@
                                                     </th>
                                                     <th scope="col"
                                                         class="border-r px-6 py-4 dark:border-neutral-500">
-                                                        <input type="checkbox" wire:model="selectAll"
-                                                            wire:click="selectAll">
+                                                        <input type="checkbox" wire:model="selectAll.{{ $taller }}"
+                                                            wire:click="toggleSelectAll('{{ $taller }}')">
                                                         Seleccionar Todo
                                                     </th>
                                                 </tr>
@@ -175,7 +175,7 @@
                                                         Total: {{-- ({{ $certificacionesInspector[0]->nombre }}) --}}
                                                     </td>
                                                     <td class="border-r px-6 py-3 dark:border-neutral-500 font-bold">
-                                                        {{ number_format($certificacionesInspector->sum('precio'), 2) }}
+                                                        {{ number_format($certificacionesInspector->where('pagado', 0)->sum('precio'), 2) }}
                                                     </td>
                                                     <td>
                                                         <div class="flex justify-center  space-x-2">
@@ -195,12 +195,14 @@
                                         <div class="mt-4">
                                             <ul class="grid grid-cols-2 gap-4">
                                                 @foreach ($certificacionesInspector->groupBy('tiposervicio') as $tipoServicio => $detalle)
+                                                    {{--Filtrar las entradas donde pagado sea igual a 0--}}
+                                                    @php                                                        
+                                                        $detalleSinPagados = $detalle->where('pagado', 0);
+                                                    @endphp
                                                     <li
                                                         class="flex items-center justify-between bg-gray-100 p-3 rounded-md shadow">
-                                                        <span
-                                                            class="text-blue-400">{{ 'Cantidad de ' . $tipoServicio }}</span>
-                                                        <span class="text-green-500">{{ $detalle->count() }}
-                                                            servicios</span>
+                                                        <span class="text-blue-400">{{ 'Cantidad de ' . $tipoServicio }}</span>
+                                                        <span class="text-green-500">{{ $detalleSinPagados->count() }} servicios</span>
                                                     </li>
                                                 @endforeach
                                             </ul>

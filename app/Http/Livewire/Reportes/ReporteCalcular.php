@@ -25,6 +25,10 @@ class ReporteCalcular extends Component
     {
         $this->inspectores = ServiciosImportados::groupBy('certificador')->pluck('certificador');
         $this->talleres = ServiciosImportados::groupBy('taller')->pluck('taller');
+        // Inicializar $selectAll para cada grupo de resultados
+        foreach ($this->talleres as $taller) {
+            $this->selectAll[$taller] = false;
+        }
     }
 
     public function render()
@@ -95,20 +99,19 @@ class ReporteCalcular extends Component
             ->get();
 
 
-        
-        $resultados = $certificaciones->concat($certificadosPendientes);       
-        $cantidades = $resultados->groupBy(['nombre', 'tiposervicio'])->map(function ($items) {
+
+        $resultados = $certificaciones->concat($certificadosPendientes);
+        /*$cantidades = $resultados->groupBy(['nombre', 'tiposervicio'])->map(function ($items) {
             return [
                 'cantidad' => $items->count(),
             ];
-        });
-        
+        });*/
+
         $totalPrecio = $resultados->sum('precio');
         $this->resultados = $resultados;
-        $this->cantidades = $cantidades;
+        //$this->cantidades = $cantidades;
         $this->totalPrecio = $totalPrecio;
         $this->emit('resultadosCalculados', $this->resultados, $this->cantidades, $this->totalPrecio);
-
     }
 
     /*public function calcularReporte()
@@ -146,16 +149,18 @@ class ReporteCalcular extends Component
 
 
 
-    public function toggleSelectAll()
+    public function toggleSelectAll($taller)
     {
-        $this->selectAll = !$this->selectAll;
+        $this->selectAll[$taller] = !$this->selectAll[$taller];
 
-        if ($this->selectAll) {
-            $this->selectedItems = $this->resultados->flatten()->pluck('id')->map(function ($id) {
-                return (string)$id;
-            })->toArray();
+        $currentGroupIds = $this->resultados->where('idTaller', $taller)->flatten()->pluck('id')->map(function ($id) {
+            return (string) $id;
+        })->toArray();
+
+        if ($this->selectAll[$taller]) {
+            $this->selectedItems = array_merge($this->selectedItems, $currentGroupIds);
         } else {
-            $this->selectedItems = [];
+            $this->selectedItems = array_diff($this->selectedItems, $currentGroupIds);
         }
     }
 

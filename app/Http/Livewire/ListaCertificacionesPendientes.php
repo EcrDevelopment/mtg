@@ -75,6 +75,8 @@ class ListaCertificacionesPendientes extends Component
             $certi->update(["idCertificacion"=>$certif->id]);
             //Se cambia la fecha de certificacion por la fecha en que se registro el certificado pendiente
             $certif->update(["created_at"=>$certi->created_at]);
+            // Actualizar el campo pagado a 1 en la certificación
+            $certif->update(['pagado' => 1]); // agregue esto para ya me aparezca como cobrado
             //Agrega a la cola de trabajo la carga de los archivos de certificacion
             guardarArchivosEnExpediente::dispatch($expe,$certif);
             //cambia el estado de la certificacion a realizado

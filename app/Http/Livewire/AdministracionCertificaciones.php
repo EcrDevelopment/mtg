@@ -28,7 +28,7 @@ class AdministracionCertificaciones extends Component
     public $documentos = [];
     public $files = [];
 
-    protected $listeners = ['render', 'delete', 'anular'];
+    protected $listeners = ['render', 'delete', 'anular', 'deleteChip'];
 
     protected $queryString = [
         'cant' => ['except' => '10'],
@@ -130,7 +130,20 @@ class AdministracionCertificaciones extends Component
         }
     }
 
+    public function deleteChip(Certificacion $certificacion)
+    {
 
+        if ($certificacion->chipMaterial) {
+            //dd($certificacion->chipMaterial);
+            $certificacion->chipMaterial->update(['ubicacion'=>'En poder de '.$certificacion->Inspector->nombre, 'descripcion' => null , 'idUsuario' => $certificacion->Inspector->id, 'estado' => 3]);
+            $certificacion->delete();
+        } else {
+            if ($certificacion->delete()) {
+                $this->emitTo('administracion-certificaciones', 'render');
+                $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "Se elimino tu servicio pero no se cambio el estado de su formato", "icono" => "warning"]);
+            }
+        }
+    }
 
 
     public function generarRuta($cer)

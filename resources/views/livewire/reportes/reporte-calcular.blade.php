@@ -112,7 +112,7 @@
                                                         class="border-r px-6 py-4 dark:border-neutral-500">
                                                         <input type="checkbox" wire:model="selectAll.{{ $taller }}"
                                                             wire:click="toggleSelectAll('{{ $taller }}')">
-                                                        Seleccionar Todo
+                                                        Todo
                                                     </th>
                                                 </tr>
                                             </thead>

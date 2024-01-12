@@ -448,7 +448,7 @@ class Prueba extends Component
         }
     }
 
-    /*public function certificarChipDeterioro(){
+   /* public function certificarChipDeterioro(){
         
         $taller = Taller::findOrFail($this->taller);
         $servicio = Servicio::findOrFail($this->servicio);

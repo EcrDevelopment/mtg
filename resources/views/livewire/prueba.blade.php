@@ -969,7 +969,7 @@
             @break
 
             @case(11)
-                @livewire('chip-por-deterioro')
+                @livewire('chip-por-deterioro', ['taller'=> $this->taller, 'servicio'=> $this->servicio,])
                 {{--
                 @if ($estado)
                     @switch($estado)

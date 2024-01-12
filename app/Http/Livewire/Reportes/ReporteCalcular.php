@@ -79,6 +79,7 @@ class ReporteCalcular extends Component
                 'certificados_pendientes.idVehiculo',
                 'certificados_pendientes.idServicio',
                 'certificados_pendientes.created_at',
+                'certificados_pendientes.pagado',
                 'certificados_pendientes.precio',
                 'users.name as nombre',
                 'taller.nombre as taller',
@@ -99,14 +100,13 @@ class ReporteCalcular extends Component
             ->get();
 
 
-
         $resultados = $certificaciones->concat($certificadosPendientes);
         /*$cantidades = $resultados->groupBy(['nombre', 'tiposervicio'])->map(function ($items) {
             return [
                 'cantidad' => $items->count(),
             ];
         });*/
-
+        dd($resultados);
         $totalPrecio = $resultados->sum('precio');
         $this->resultados = $resultados;
         //$this->cantidades = $cantidades;

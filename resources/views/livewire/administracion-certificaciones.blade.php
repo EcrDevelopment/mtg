@@ -358,11 +358,20 @@
                                             role="menu" aria-orientation="vertical" aria-labelledby="menu-button"
                                             tabindex="-1">
                                             <div class="" role="none">
+                                                @if($certificacion->Servicio->tipoServicio->id == 11)
+                                                <a wire:click="$emit('deleteCertificacionChip',{{ $certificacion->id }})"
+                                                    class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center rounded-t-md hover:cursor-pointer">
+                                                    <i class="fas fa-trash"></i>
+                                                    <span>Eliminar servicio</span>
+                                                </a>  
+                                                @else
                                                 <a wire:click="$emit('deleteCertificacion',{{ $certificacion->id }})"
                                                     class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center rounded-t-md hover:cursor-pointer">
                                                     <i class="fas fa-trash"></i>
                                                     <span>Eliminar servicio</span>
                                                 </a>
+                                                    
+                                                @endif
                                             </div>
                                             <div class="" role="none">
                                                 <a wire:click="$emit('anularCertificacion',{{ $certificacion->id }})"
@@ -557,6 +566,30 @@
                     if (result.isConfirmed) {
 
                         Livewire.emitTo('administracion-certificaciones', 'delete', certificacionId);
+
+                        Swal.fire(
+                            'Listo!',
+                            'Servicio eliminado correctamente.',
+                            'success'
+                        )
+                    }
+                })
+            });
+        </script>
+        <script>
+            Livewire.on('deleteCertificacionChip', certificacionId => {
+                Swal.fire({
+                    title: '¿Estas seguro de eliminar este servicio?',
+                    text: "una vez eliminado este registro, no podras recuperarlo.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Si, eliminar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                        Livewire.emitTo('administracion-certificaciones', 'deleteChip', certificacionId);
 
                         Swal.fire(
                             'Listo!',

@@ -186,7 +186,7 @@ class AsignacionMateriales extends Component
         $conteo=array_count_values($mat);        
         foreach($tipos as $tipo){
             if(isset($conteo[$tipo->id])){  
-                    if($tipo->id==1 || $tipo->id==3){
+                    if($tipo->id==1 || $tipo->id==3 || $tipo->id==4){ //agregue esto para modificacion
                         $series=$this->calculaSeries($materiales,$tipo->id);
                         array_push($end,array("tipo"=>$tipo->descripcion,"cantidad"=>$conteo[$tipo->id],"inicio"=>$series["inicio"],"fin"=>$series["fin"])); 
                     }else{
@@ -201,7 +201,7 @@ class AsignacionMateriales extends Component
 
     public function calculaSeries($articulos,$tipo){
         $aux=[]; 
-        if($tipo ==1 || $tipo==3){
+        if($tipo ==1 || $tipo==3 || $tipo==4){ //agregue esto para modificacion
             foreach($articulos as $articulo){
                 if($articulo->idTipoMaterial==$tipo){
                     array_push($aux,$articulo);

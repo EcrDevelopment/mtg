@@ -201,7 +201,7 @@ class AgregarArticuloPrestamo extends Component
 
     public function validaSeries(){
         $result= new Collection();
-        if($this->tipoM==1 || $this->tipoM==3 | $this->tipoM==4){
+        if($this->tipoM==1 || $this->tipoM==3 || $this->tipoM==4){
             if($this->numInicio && $this->numFinal){
                 $series=$this->creaColeccion($this->numInicio,$this->numFinal);
                 $mat=$this->disponibles->pluck('numSerie');

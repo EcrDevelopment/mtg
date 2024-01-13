@@ -106,7 +106,7 @@ class ReporteCalcular extends Component
                 'cantidad' => $items->count(),
             ];
         });*/
-        dd($resultados);
+        //dd($resultados);
         $totalPrecio = $resultados->sum('precio');
         $this->resultados = $resultados;
         //$this->cantidades = $cantidades;

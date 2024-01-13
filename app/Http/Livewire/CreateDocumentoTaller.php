@@ -17,18 +17,26 @@ class CreateDocumentoTaller extends Component
     public  $taller,$idTaller;
     public $addDocument=false;
 
-    public $tiposDocumentos,$tipoSel,$documento,$fechaInicial,$fechaCaducidad,$tiposDisponibles,$empleado;    
+    public $tiposDocumentos,$tipoSel,$documento,$fechaInicial,$fechaCaducidad,$tiposDisponibles,$empleado;  
+    public $combustible;  
+    public $combustibleSeleccionado = false;
 
     protected $rules=[
         "tipoSel"=>"required|numeric|min:1",
         "documento"=>"required|mimes:pdf",
         "fechaInicial"=>"required|date",
-        "fechaCaducidad"=>"required|date",        
+        "fechaCaducidad"=>"required|date",   
+        "combustible" => "required|in:GNV,GLP",     
     ];
 
     public function updated($nameProperty){
 
         $this->validateOnly($nameProperty);
+    }
+
+    public function updatedCombustible()
+    {
+    $this->combustibleSeleccionado = true;
     }
 
     public function mount(){
@@ -55,6 +63,10 @@ class CreateDocumentoTaller extends Component
 
         $this->validate();
 
+        if ($this->combustibleSeleccionado) {
+            $combustibleElegido = $this->combustibleSeleccionado;
+        }
+
         if($this->tipoSel==9){
             $this->validate(["empleado"=>"required|string"]);
         }
@@ -75,6 +87,7 @@ class CreateDocumentoTaller extends Component
             'idDocumento'=>$documento_guardado->id,
             'idTaller'=>$this->idTaller,
             'estado'=>1,
+            'combustible' => $this->combustible,
         ]);
         $this->emitTo('editar-taller','refrescaTaller'); 
         $this->emitTo('documentos-taller','resetTaller'); 

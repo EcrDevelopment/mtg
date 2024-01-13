@@ -14,53 +14,70 @@
         </x-slot>
         <x-slot name="content">
 
+
             <div class="mb-4">
-                <x-jet-label value="tipo de documento:" />
-                <select wire:model="tipoSel" class="bg-gray-50 border-indigo-500 rounded-md outline-none w-full">
-                    <option value="">Seleccione</option>
-                    {{--
+                <x-jet-label value="Combustible:" />
+                <select wire:model="combustible" class="bg-gray-50 border-indigo-500 rounded-md outline-none w-full">
+                    <option value="GNV">GNV</option>
+                    <option value="GLP">GLP</option>
+                </select>
+                <x-jet-input-error for="combustible" />
+            </div>
+
+            @if ($combustibleSeleccionado)
+                <div class="mb-4">
+                    <x-jet-label value="tipo de documento:" />
+                    <select wire:model="tipoSel" class="bg-gray-50 border-indigo-500 rounded-md outline-none w-full">
+                        <option value="">Seleccione</option>
+                        {{--
                     @foreach ($tiposDocumentos as $tipo)
                         <option value="{{ $tipo->id }}">{{ $tipo->nombreTipo }}</option>
                     @endforeach
                     --}}
-                    @if (isset($tiposDisponibles))
-                        @foreach ($tiposDisponibles as $tipo)
-                            @if ($tipo['estado'] == 1)
-                                <option value="{{ $tipo['id'] }}">{{ $tipo['nombre'] }}</option>
-                                {{--
+                        @if (isset($tiposDisponibles))
+                            @foreach ($tiposDisponibles as $tipo)
+                                @if ($tipo['estado'] == 1)
+                                    <option value="{{ $tipo['id'] }}">{{ $tipo['nombre'] }}</option>
+                                    {{--
                             @else
                                 <option value="{{ $tipo['id'] }}" disabled>{{ $tipo['nombre'] }}</option>
                             --}}
-                            @endif
-                        @endforeach
-                    @endif
-                </select>
-                <x-jet-input-error for="tipoSel" />
-            </div>
-            <div class="mb-4">
-                <x-jet-label value="Fecha de inicio:" />
-                <x-date-picker wire:model="fechaInicial" placeholder="Fecha de inicio" class="bg-gray-50 border-indigo-500 rounded-md outline-none w-full"/>    
-                <x-jet-input-error for="fechaInicial" />
-            </div>
+                                @endif
+                            @endforeach
+                        @endif
+                    </select>
+                    <x-jet-input-error for="tipoSel" />
+                </div>
 
-            <div class="mb-4">
-                <x-jet-label value="Fecha de Caducidad:" />
-                <x-date-picker wire:model="fechaCaducidad" placeholder="Fecha de Fin" class="bg-gray-50 border-indigo-500 rounded-md outline-none w-full"/>
-                <x-jet-input-error for="fechaCaducidad" />
-            </div>
-            @if ($tipoSel== 9)
-            <div class="mb-4">
-                <x-jet-label value="Empleado:" />
-                <x-jet-input type="text" class="w-full" wire:model="empleado"/>
-                <x-jet-input-error for="empleado" />
-            </div>
+                <div class="mb-4">
+                    <x-jet-label value="Fecha de inicio:" />
+                    <x-date-picker wire:model="fechaInicial" placeholder="Fecha de inicio"
+                        class="bg-gray-50 border-indigo-500 rounded-md outline-none w-full" />
+                    <x-jet-input-error for="fechaInicial" />
+                </div>
+
+                <div class="mb-4">
+                    <x-jet-label value="Fecha de Caducidad:" />
+                    <x-date-picker wire:model="fechaCaducidad" placeholder="Fecha de Fin"
+                        class="bg-gray-50 border-indigo-500 rounded-md outline-none w-full" />
+                    <x-jet-input-error for="fechaCaducidad" />
+                </div>
+
+                @if ($tipoSel == 9)
+                    <div class="mb-4">
+                        <x-jet-label value="Empleado:" />
+                        <x-jet-input type="text" class="w-full" wire:model="empleado" />
+                        <x-jet-input-error for="empleado" />
+                    </div>
+                @endif
+
+                <div class="mb-4">
+                    <x-jet-label value="Archivo:" class="font-bold" />
+                    <x-file-pond name="documento" id="documento" wire:model="documento"
+                        acceptedFileTypes="['application/pdf',]" aceptaVarios="false" />
+                    <x-jet-input-error for="documento" />
+                </div>
             @endif
-
-            <div class="mb-4">
-                <x-jet-label value="Archivo:" class="font-bold" />
-                <x-file-pond name="documento" id="documento" wire:model="documento" acceptedFileTypes="['application/pdf',]" aceptaVarios="false" />    
-                <x-jet-input-error for="documento" />
-            </div>
 
 
         </x-slot>

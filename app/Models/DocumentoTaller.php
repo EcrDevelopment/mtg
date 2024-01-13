@@ -15,5 +15,6 @@ class DocumentoTaller extends Model
         "idDocumento",
         "idTaller",
         "estado",
+        "combustible",
     ];
 }

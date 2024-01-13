@@ -67,15 +67,17 @@
         </div>
 
         @if (isset($resultados))
-            @forelse ($resultados->groupBy('idTaller') as $taller => $certificacionesTaller)
-                <div class="flex flex-col my-4 py-4 rounded-md bg-white px-4 justify-center">
+          {{--  @forelse ($resultados->groupBy('idTaller') as $taller => $certificacionesTaller) --}}
+                
                     {{-- {{ dd($certificacionesTaller) }} --}}
+                    {{--
                     <h2 class="text-indigo-600 text-xl font-bold mb-4">
                         {{ $certificacionesTaller[0]->taller }}
                     </h2>
-
-                    @foreach ($certificacionesTaller->groupBy('idInspector') as $inspector => $certificacionesInspector)
-                        <h3 class="text-red-600  font-bold mb-2">{{ '✔️ ' . $certificacionesInspector[0]->nombre }}</h3>
+                    --}}
+                    @foreach ($resultados->groupBy('idInspector') as $inspector => $certificacionesInspector)
+                    <div class="bg-gray-200  px-8 py-4 rounded-xl w-full mt-8">
+                        <h2 class="text-indigo-600 text-xl font-bold mb-4">{{$certificacionesInspector[0]->nombre }}</h2>                        
                         @if ($certificacionesInspector->count() > 0)
                             <div class="overflow-x-auto m-auto w-full" wire:ignore>
                                 <div class="inline-block min-w-full py-2 sm:px-6">
@@ -89,7 +91,7 @@
                                                     </th>
                                                     <th scope="col"
                                                         class="border-r px-6 py-4 dark:border-neutral-500">
-                                                        Inspector</th>
+                                                        Taller</th>
                                                     <th scope="col"
                                                         class="border-r px-6 py-4 dark:border-neutral-500">
                                                         Vehículo</th>
@@ -108,12 +110,14 @@
                                                         class="border-r px-6 py-4 dark:border-neutral-500">
                                                         Precio
                                                     </th>
+                                                    {{--
                                                     <th scope="col"
                                                         class="border-r px-6 py-4 dark:border-neutral-500">
                                                         <input type="checkbox" wire:model="selectAll.{{ $taller }}"
                                                             wire:click="toggleSelectAll('{{ $taller }}')">
                                                         Todo
                                                     </th>
+                                                    --}}
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -125,11 +129,7 @@
 
                                                         <td
                                                             class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                            @if (is_array($item))
-                                                                {{ $item['totalPrecio'] }}
-                                                            @else
-                                                                {{ $item->nombre }}
-                                                            @endif
+                                                            {{$item->taller}}
                                                         </td>
                                                         <td
                                                             class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
@@ -161,11 +161,13 @@
                                                             class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
                                                             {{ $item->precio }}
                                                         </td>
+                                                        {{--
                                                         <td
                                                             class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
                                                             <input type="checkbox" wire:model="selectedItems"
                                                                 value="selectedItems">
                                                         </td>
+                                                        --}}
                                                     </tr>
                                                 @endforeach
 
@@ -177,6 +179,7 @@
                                                     <td class="border-r px-6 py-3 dark:border-neutral-500 font-bold">
                                                         {{ number_format($certificacionesInspector->where('pagado', 0)->sum('precio'), 2) }}
                                                     </td>
+                                                    {{--
                                                     <td>
                                                         <div class="flex justify-center  space-x-2">
                                                             <a wire:click="actualizarCertificaciones"
@@ -189,6 +192,7 @@
                                                             </a>
                                                         </div>
                                                     </td>
+                                                    --}}
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -214,14 +218,17 @@
                         @else
                             <p class="text-center text-gray-500">No hay certificaciones para este taller.</p>
                         @endif
+                    </div>
                     @endforeach
-                </div>
+                
+                {{--
             @empty
                 <div class="w-full text-center font-semibold text-gray-100 p-4 mb-4 border rounded-md bg-indigo-400 shadow-lg"
                     wire:loading.class="hidden">
                     No se encontraron resultados.
                 </div>
             @endforelse
+            --}}
         @endif
     </div>
 </div>

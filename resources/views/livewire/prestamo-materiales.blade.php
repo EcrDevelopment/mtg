@@ -40,7 +40,7 @@
                             @livewire('agregar-articulo-prestamo',["disponibles"=>$disponibles], key($disponibles->count()))            
                         @endif
                     </div>
-                    {{var_export($seleccionados)}}
+                    {{--{{var_export($seleccionados)}}--}}
                     <x-jet-input-error for="articulos" />
                     <div class="m-4">
                         @if (count($articulos))

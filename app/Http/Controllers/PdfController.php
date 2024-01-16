@@ -741,7 +741,8 @@ class PdfController extends Controller
         if (Certificacion::findOrFail($id)) {
             $certificacion = Certificacion::find($id);
             if ($certificacion->Servicio->tipoServicio->id) {
-                if ($certificacion->Servicio->tipoServicio->id == 13) {
+                if ($certificacion->Servicio->tipoServicio->id == 13) //este es el error
+                {
                     $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
                     $fechaCert = $certificacion->created_at;
                     $fecha = $fechaCert->format('d') . ' días del mes de ' . $meses[$fechaCert->format('m') - 1] . ' del ' . $fechaCert->format('Y') . '.';
@@ -749,7 +750,7 @@ class PdfController extends Controller
                     $equipos = $certificacion->Vehiculo->Equipos->where("idTipoEquipo", ">", 3)->sortBy("idTipoEquipo");
                     $cargaUtil = $this->calculaCargaUtil($certificacion->Vehiculo->pesoBruto, $certificacion->Vehiculo->pesoNeto);
                     // Genera el código QR
-                    $urlDelDocumento = 'www.motorgasperu.com' . route('verPdfInicialGlp', $id, false); // Reemplaza 'certificadoAnualGnv' con el nombre correcto de tu ruta
+                    $urlDelDocumento = 'www.motorgasperu.com' . route('verPdfPreInicialGlp', $id, false); //tu ruta es para inicial no para preconver 
                     $qrCode = QrCode::size(70)->generate($urlDelDocumento);
                     $data = [
                         "fecha" => $fecha,

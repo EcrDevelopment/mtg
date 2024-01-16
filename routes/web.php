@@ -103,6 +103,10 @@ Route::get('/certificado-anual-glp/{id}/temp', [PdfController::class, 'generaPdf
 // Rutas para QR (ver PDF) Inicial-GLP
 Route::get('/certificado-inicial-glp/{id}/temp', [PdfController::class, 'generaPdfInicialGlp'])->name("verPdfInicialGlp");
 
+// Rutas para QR (ver PDF) PRE-Inicial-GLP
+Route::get('/certificado-Pre-inicial-glp/{id}/temp', [PdfController::class, 'generaPdfPreGlp'])->name("verPdfPreInicialGlp");
+
+
 //Rutas para QR (ver PDF) Modificacion
 Route::get('/certificado-modificacion/{id}/temp', [PdfController::class, 'generaPdfModificacion'])->name("verPdfModificacion");
 

@@ -135,7 +135,7 @@ class AdministracionCertificaciones extends Component
 
         if ($certificacion->chipMaterial) {
             //dd($certificacion->chipMaterial);
-            $certificacion->chipMaterial->update(['ubicacion'=>'En poder de '.$certificacion->Inspector->nombre, 'descripcion' => null , 'idUsuario' => $certificacion->Inspector->id, 'estado' => 3]);
+            $certificacion->chipMaterial->update(['ubicacion' => 'En poder de ' . $certificacion->Inspector->nombre, 'descripcion' => null, 'idUsuario' => $certificacion->Inspector->id, 'estado' => 3]);
             $certificacion->delete();
         } else {
             if ($certificacion->delete()) {
@@ -193,12 +193,16 @@ class AdministracionCertificaciones extends Component
 
     public function edit(Certificacion $cert)
     {
-       // dd($cert);
-        $cert_ex= CertifiacionExpediente::where('idCertificacion',$cert->id)->first();
-        
-       // dd($cert_ex);
+        // dd($cert);
+        $cert_ex = CertifiacionExpediente::where('idCertificacion', $cert->id)->first();
+         
+        // Verificar si $cert_ex es nulo o si no tiene idExpediente
+        if (!$cert_ex || is_null($cert_ex->idExpediente)) {
+            $this->emit('showErrorMessage', 'Este servicio no tiene expediente.');
+            return;
+        }
 
-        $expediente=Expediente::findOrFail($cert_ex->idExpediente);
+        $expediente = Expediente::findOrFail($cert_ex->idExpediente);
         if ($expediente->estado == 2) {
             $this->pasaDatosExpediente($expediente);
             $this->editando = true;
@@ -208,8 +212,7 @@ class AdministracionCertificaciones extends Component
         }
     }
 
-    // Esta función se llama para cargar datos del expediente en el modal de edición.
-    public function pasaDatosExpediente(Expediente $expediente)
+    public function pasaDatosExpediente(Expediente $expediente) //cargar datos del expediente
     {
         $this->expediente = $expediente;
         $this->files = Imagen::where('Expediente_idExpediente', '=', $expediente->id)->whereIn('extension', ['jpg', 'jpeg', 'png', 'gif', 'tif', 'tiff', 'bmp'])->get();

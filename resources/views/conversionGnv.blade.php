@@ -232,6 +232,8 @@
                         BI COMBUSTIBLE GNV
                     @elseif ($carro->combustible === 'DIESEL')
                         DUAL GNV
+                    @elseif ($carro->combustible === 'GLP')
+                        GNV
                     @else
                         {{$carro->combustible}}
                     @endif

@@ -139,7 +139,7 @@
             <tr>
                 <td style="padding: 0 5px 0 5px; text-align:center;">6</td>
                 <td>Año fabricación</td>
-                <td>{{($carro->anioFab??'0')}}</td>
+                <td>{{($carro->anioFab??'NE')}}</td>
                 <td style="padding: 0 5px 0 5px; text-align:center;">14</td>
                 <td>Color(es)</td>
                 <td>{{$carro->color}}</td>

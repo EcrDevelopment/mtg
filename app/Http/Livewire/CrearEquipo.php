@@ -144,7 +144,7 @@ class CrearEquipo extends Component
         $equipo->combustible = 'GLP';
         $equipo->save();
 
-        $this->reset(["equipoSerie", "equipoMarca", "equipoModelo","tipoEquipo"]);
+        $this->reset(["equipoSerie", "equipoMarca", "equipoModelo", "tipoEquipo"]);
         $this->open = false;
         $this->emit("minAlert", ["titulo" => "BUEN TRABAJO!", "mensaje" => "El " . $equipo->tipo->nombre . " con serie " . $equipo->numSerie . " se añadio Correctamente", "icono" => "success"]);
 
@@ -192,7 +192,7 @@ class CrearEquipo extends Component
         $equipo->combustible = 'GLP';
         //array_push($this->equipos,$equipo);
         $equipo->save();
-        $this->reset(["equipoSerie", "equipoMarca", "equipoModelo","tipoEquipo"]);
+        $this->reset(["equipoSerie", "equipoMarca", "equipoModelo", "tipoEquipo"]);
         $this->open = false;
         $this->emit("minAlert", ["titulo" => "BUEN TRABAJO!", "mensaje" => "El " . $equipo->tipo->nombre . " con serie " . $equipo->numSerie . " se añadio Correctamente", "icono" => "success"]);
 
@@ -245,7 +245,7 @@ class CrearEquipo extends Component
     public function listaTiposDisponibles()
     {
         $serviciosGnv = [1, 2, 7, 8, 10, 12];
-        $serviciosGlp = [3, 4, 9,13];
+        $serviciosGlp = [3, 4, 9, 13];
         if (in_array($this->tipoServicio->id, $serviciosGnv)) {
             $this->listaEquiposTipoGnv();
         }
@@ -273,7 +273,9 @@ class CrearEquipo extends Component
         $tiposDisponibles = TipoEquipo::all()->filter(function ($value) {
             return $value->id > 3;
         })->map(function ($tip) {
-            $estado = ($tip->id == 3) ? 1 : ($this->cuentaDis($tip->id) >= 1 ? 0 : 1);
+            //dd($tip);
+            //$estado = ($tip->id == 3) ? 1 : ($this->cuentaDis($tip->id) >= 1 ? 0 : 1);
+            $estado = 1 ;
             return ["id" => $tip->id, "nombre" => $tip->nombre, "estado" => $estado];
         });
 

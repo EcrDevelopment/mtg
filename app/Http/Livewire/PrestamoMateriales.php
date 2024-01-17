@@ -64,7 +64,7 @@ class PrestamoMateriales extends Component
     }
 
     public function deleteArticulo($id){
-        if($this->articulos[$id]["tipo"]==1 || $this->articulos[$id]["tipo"]==3){
+        if($this->articulos[$id]["tipo"]==1 || $this->articulos[$id]["tipo"]==3 || $this->articulos[$id]["tipo"]==4){
             $formatosSeleccionados = $this->creaColeccion($this->articulos[$id]["inicio"], $this->articulos[$id]["final"]);
             $this->agregaMaterialesAdisponibles($this->buscaMateriales($formatosSeleccionados,$this->articulos[$id]["tipo"]));
             $this->quitaDeMaterialesSeleccionados($this->buscaMateriales($formatosSeleccionados,$this->articulos[$id]["tipo"]));
@@ -108,6 +108,7 @@ class PrestamoMateriales extends Component
             //para modificacion
             case 4:
                 $formatosSeleccionados = $this->creaColeccion($articulo["inicio"], $articulo["final"]);
+               // dd($this->buscaMateriales($formatosSeleccionados,$articulo["tipo"]));
                 $this->agregaMaterialesAseleccionados( $this->buscaMateriales($formatosSeleccionados,$articulo["tipo"]));
                 $this->quitaDeMaterialesDisponibles( $this->buscaMateriales($formatosSeleccionados,$articulo["tipo"]));
             break;
@@ -167,27 +168,32 @@ class PrestamoMateriales extends Component
         $dispo = new Collection();
         switch ($tipo) {
             case 1:
-                $dispo = $this->todo->filter(function ($item) use ($nuevaLista) {
-                    if (in_array($item->numSerie, $nuevaLista->all()))//Valida que el numero de serie exista en nuestro inventario
+                $dispo = $this->todo->filter(function ($item) use ($nuevaLista, $tipo) {
+                    if (in_array($item->numSerie, $nuevaLista->all())&& $item->idTipoMaterial  == $tipo)//Valida que el numero de serie exista en nuestro inventario
                     {
                         return $item;
                     }
                 });
             break;
             case 3:
-                $dispo = $this->todo->filter(function ($item) use ($nuevaLista) {
-                    if (in_array($item->numSerie, $nuevaLista->all())) {
+                $dispo = $this->todo->filter(function ($item) use ($nuevaLista, $tipo) {
+                    if (in_array($item->numSerie, $nuevaLista->all())&& $item->idTipoMaterial  == $tipo) {
                         return $item;
                     }
                 });
             break;
             //para modificacion
+
             case 4:
-                $dispo = $this->todo->filter(function ($item) use ($nuevaLista) {
-                    if (in_array($item->numSerie, $nuevaLista->all())) {
+                //dd($this->todo);
+                $dispo = $this->todo->filter(function ($item) use ($nuevaLista, $tipo) {
+                    //
+                    if (in_array($item->numSerie, $nuevaLista->all())&& $item->idTipoMaterial  == $tipo) { 
+                       // dd($item);
                         return $item;
                     }
                 });
+
             break;
             default:
                 # code...

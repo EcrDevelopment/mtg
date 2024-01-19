@@ -61,296 +61,225 @@
             </div>
         </div>
 
-        @if ($certificaciones->count())
+        <div class="w-full overflow-x-auto table-responsive"> 
+            @if ($certificaciones->count())
 
-            <table class="w-full whitespace-nowrap">
-                <thead class="bg-slate-600 border-b font-bold text-white">
-                    <tr>
-                        <th scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left">
-                            #
-                        </th>
-                        <th scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left">
-                            Inspector
-                        </th>
-                        <th scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left">
-                            Taller
-                        </th>
-                        <th scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left">
-                            Servicio
-                        </th>
-                        <th scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left">
-                            Precio
-                        </th>
+                <table class="w-full whitespace-nowrap">
+                    <thead class="bg-slate-600 border-b font-bold text-white">
+                        <tr>
+                            <th scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left">
+                                #
+                            </th>
+                            <th scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left">
+                                Inspector
+                            </th>
+                            <th scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left">
+                                Taller
+                            </th>
+                            <th scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left">
+                                Servicio
+                            </th>
+                            <th scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left">
+                                Precio
+                            </th>
 
-                        <th scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left">
-                            Placa
-                        </th>
-                        <th scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left">
-                            N° Formato
-                        </th>
-                        <th scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left">
-                            Fecha
-                        </th>
+                            <th scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left">
+                                Placa
+                            </th>
+                            <th scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left">
+                                N° Formato
+                            </th>
+                            <th scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left">
+                                Fecha
+                            </th>
 
-                        <th scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left">
-                            Estado
-                        </th>
+                            <th scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left">
+                                Estado
+                            </th>
 
-                        <th scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left">
-                            Documentos
-                        </th>
-                        <th scope="col" class="text-sm font-medium font-semibold text-white py-4 text-left">
-                            Fotos
-                        </th>
-                        <th scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left">
+                            <th scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left">
+                                Documentos
+                            </th>
+                            <th scope="col" class="text-sm font-medium font-semibold text-white py-4 text-left">
+                                Fotos
+                            </th>
+                            <th scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left">
 
-                        </th>
+                            </th>
 
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($certificaciones as $certificacion)
-                        <tr tabindex="0"
-                            class="focus:outline-none h-16 border border-slate-300 rounded hover:bg-gray-200">
-                            <td class="pl-5">
-                                <div class="flex items-center">
-                                    <div
-                                        class="bg-indigo-200 rounded-sm w-5 h-5 flex flex-shrink-0 justify-center items-center relative text-indigo-900">
-                                        {{ $certificacion->id }}
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="pl-2">
-                                <div class="flex items-center">
-                                    <p class="text-sm font-medium leading-none text-gray-600 mr-2">
-                                        {{ $certificacion->inspector->name ?? 'NE-MODI'}}
-                                    </p>
-                                </div>
-                            </td>
-                            <td class="pl-2">
-                                <div class="flex items-center">
-                                    <p class="text-sm leading-none text-gray-600 ml-2">
-                                        {{ $certificacion->taller->nombre }}</p>
-                                </div>
-                            </td>
-                            <td class="pl-2">
-                                <div class="flex items-center">
-                                    @switch($certificacion->Servicio->tipoServicio->id)
-                                        @case(1)
-                                            <p class="text-sm leading-none text-gray-600 ml-2 p-2 bg-green-200 rounded-full">
-                                                Conversion a GNV
-                                            </p>
-                                        @break
-
-                                        @case(2)
-                                            <p class="text-sm leading-none text-gray-600 ml-2 p-2 bg-green-200 rounded-full">
-                                                Revision anual GNV
-                                            </p>
-                                        @break
-
-                                        @case(3)
-                                            <p class="text-sm leading-none text-gray-600 ml-2 p-2 bg-orange-200 rounded-full">
-                                                Conversion a GLP
-                                            </p>
-                                        @break
-
-                                        @case(4)
-                                            <p class="text-sm leading-none text-gray-600 ml-2 p-2 bg-orange-200 rounded-full">
-                                                Revision anual GLP
-                                            </p>
-                                        @break
-                                        @case(5)
-                                            <p class="text-sm leading-none text-gray-600 ml-2 p-2 bg-blue-200 rounded-full">
-                                                Modificación
-                                            </p>
-                                        @break
-
-                                        @case(8)
-                                            <p class="text-sm leading-none text-gray-600 ml-2 p-2 bg-green-200 rounded-full">
-                                                Duplicado GNV
-                                            </p>
-                                        @break
-
-                                        @case(9)
-                                            <p class="text-sm leading-none text-gray-600 ml-2 p-2 bg-orange-200 rounded-full">
-                                                Duplicado GNV
-                                            </p>
-                                        @break
-
-                                        @case(10)
-                                            <p class="text-sm leading-none text-gray-600 ml-2 p-2 bg-green-200 rounded-full">
-                                                Conversion a GNV + chip
-                                            </p>
-                                        @break
-
-                                        @case(12)
-                                            <p class="text-sm leading-none text-gray-600 ml-2 p-2 bg-green-200 rounded-full">
-                                                {{ $certificacion->Servicio->tipoServicio->descripcion }}
-                                            </p>
-                                        @break
-
-                                        @case(13)
-                                            <p class="text-sm leading-none text-gray-600 ml-2 p-2 bg-orange-200 rounded-full">
-                                                {{ $certificacion->Servicio->tipoServicio->descripcion }}
-                                            </p>
-                                        @break
-
-                                        @default
-                                            <p class="text-sm leading-none text-gray-600 ml-2">
-                                                No se encontro datos
-                                            </p>
-                                    @endswitch
-
-                                </div>
-                            </td>
-                            <td class="">
-                                <div class="flex items-center">
-                                    <p class="text-sm leading-none text-gray-600 ml-2">
-                                        {{ 'S/. ' . $certificacion->precio }}
-                                    </p>
-                                </div>
-                            </td>
-                            <td class="pl-2">
-                                <div class="flex items-center">
-                                    <p class="text-sm font-bold  text-indigo-700 ml-2">
-                                        {{ $certificacion->placa ?? 'N/A' }}</p>
-                                </div>
-                            </td>
-                            @if (isset($certificacion->Hoja->numSerie))
-                                <td class="">
-                                    <div class="flex items-center justify-center">
-                                        <p class="text-sm font-semibold  text-gray-600 p-1 bg-orange-100 rounded-full">
-                                            {{ $certificacion->Hoja->numSerie }}</p>
-                                    </div>
-                                </td>
-                            @else
-                                <td class="">
-                                    <div class="flex items-center justify-center">
-                                        <p class="text-sm font-semibold  text-gray-600 p-1 bg-orange-100 rounded-full">
-                                            Sin datos</p>
-                                    </div>
-                                </td>
-                            @endif
-
-                            <td class="pl-2">
-                                <p class="text-gray-600 "> {{ $certificacion->created_at->format('d/m/Y  h:i a') }}
-                                </p>
-                            </td>
-
-                            <td class="">
-                                <div class="flex items-center justify-center">
-                                    @switch($certificacion->estado)
-                                        @case(1)
-                                            <i class="far fa-check-circle fa-lg" style="color: forestgreen;"></i>
-                                        @break
-
-                                        @case(2)
-                                            <i class="far fa-times-circle fa-lg" style="color: red;"></i>
-                                        @break
-
-                                        @case(3)
-                                            <i class="fa-regular fa-circle-pause fa-lg text-amber-400"></i>
-                                        @break
-
-                                        @default
-                                    @endswitch
-                                </div>
-                            </td>
-                            <td>
-                                <div class="relative px-5 text-center" x-data="{ menu: false }">
-                                    <button type="button" x-on:click="menu = ! menu" id="menu-button"
-                                        aria-expanded="true" aria-haspopup="true" data-te-ripple-init
-                                        data-te-ripple-color="light"
-                                        class="hover:animate-pulse inline-block rounded-full bg-amber-400 p-2 uppercase leading-normal text-white shadow-md transition duration-150 ease-in-out hover:bg-amber-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-amber-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-amber-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                            fill="currentColor" class="h-4 w-4">
-                                            <path fill-rule="evenodd"
-                                                d="M19.5 21a3 3 0 003-3V9a3 3 0 00-3-3h-5.379a.75.75 0 01-.53-.22L11.47 3.66A2.25 2.25 0 009.879 3H4.5a3 3 0 00-3 3v12a3 3 0 003 3h15zm-6.75-10.5a.75.75 0 00-1.5 0v4.19l-1.72-1.72a.75.75 0 00-1.06 1.06l3 3a.75.75 0 001.06 0l3-3a.75.75 0 10-1.06-1.06l-1.72 1.72V10.5z"
-                                                clip-rule="evenodd" />
-                                        </svg>
-                                    </button>
-                                    <div x-show="menu" x-on:click.away="menu = false"
-                                        class="origin-top-right absolute right-12 mt-2 w-56 rounded-md shadow-lg bg-gray-300 ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none z-40"
-                                        role="menu" aria-orientation="vertical" aria-labelledby="menu-button"
-                                        tabindex="-1">
-                                        <div class="" role="none">
-                                            <a href="{{ $certificacion->rutaVistaCertificado }}" target="__blank"
-                                                rel="noopener noreferrer"
-                                                class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center rounded-t-md hover:cursor-pointer">
-                                                <i class="fas fa-eye"></i>
-                                                <span>Ver Certificado.</span>
-                                            </a>
-
-                                            @if ($certificacion->Servicio->tipoServicio->id != 8)
-                                                <a href="{{ $certificacion->rutaDescargaCertificado }}"
-                                                target="__blank" rel="noopener noreferrer"
-                                                class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center hover:cursor-pointer">
-                                            @else
-                                                <a href="{{ $certificacion->rutaDescargaCertificado }}"
-                                                target="__blank" rel="noopener noreferrer"
-                                                class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between rounded-b-md items-center hover:cursor-pointer">
-                                            @endif
-                                            <i class="fas fa-download"></i>
-                                            <span>desc. Certificado</span>
-                                            </a>
-                                            @if ($certificacion->Servicio->tipoServicio->id == 1)
-                                                <a href="{{ route('preConversionGnv', [$certificacion->id]) }}"
-                                                    target="__blank" rel="noopener noreferrer"
-                                                    class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center hover:cursor-pointer">
-                                                    <i class="fas fa-eye"></i>
-                                                    <span>Ver Preconversion.</span>
-                                                </a>
-                                            @endif
-                                            @if ($certificacion->Servicio->tipoServicio->id != 8)
-                                                <a href="{{ $certificacion->rutaVistaFt }}" target="__blank"
-                                                    rel="noopener noreferrer"
-                                                    class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center hover:cursor-pointer">
-                                                    <i class="fas fa-eye"></i>
-                                                    <span>Ver Ficha Tec.</span>
-                                                </a>
-                                                <a href="{{ $certificacion->rutaDescargaFt }}" target="__blank"
-                                                    rel="noopener noreferrer"
-                                                    class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center hover:cursor-pointer">
-                                                    <i class="fas fa-download"></i>
-                                                    <span>desc. Ficha Tec.</span>
-                                                </a>
-                                                <a href="{{$certificacion->rutaVistaCheckListArriba}}"
-                                                    target="__blank" rel="noopener noreferrer"
-                                                    class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center hover:cursor-pointer">
-                                                    <i class="fas fa-eye"></i>
-                                                    <span>CheckList Arriba</span>
-                                                </a>
-                                                <a href="{{$certificacion->rutaVistaCheckListAbajo}}"
-                                                    target="__blank" rel="noopener noreferrer"
-                                                    class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white rounded-b-md justify-between items-center hover:cursor-pointer">
-                                                    <i class="fas fa-eye"></i>
-                                                    <span>CheckList Abajo</span>
-                                                </a>
-                                            @endif
-
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($certificaciones as $certificacion)
+                            <tr tabindex="0"
+                                class="focus:outline-none h-16 border border-slate-300 rounded hover:bg-gray-200">
+                                <td class="pl-5">
+                                    <div class="flex items-center">
+                                        <div
+                                            class="bg-indigo-200 rounded-sm w-5 h-5 flex flex-shrink-0 justify-center items-center relative text-indigo-900">
+                                            {{ $certificacion->id }}
                                         </div>
                                     </div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="flex justify-end">
-                                    <a wire:click="edit({{ $certificacion->id }})"
-                                        class="py-2 px-2 text-center rounded-md bg-indigo-300 font-bold text-black cursor-pointer hover:bg-indigo-400">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
-                                </div>
-                            </td>
-                            <td class="pl-4">
-                                <div class="relative flex justify-center px-5">
-                                    <div class="inline-block text-left" x-data="{ menu: false }">
-                                        <button x-on:click="menu = ! menu" type="button"
-                                            class="flex items-center text-gray-400 hover:text-gray-600 focus:outline-none"
-                                            id="menu-button" aria-expanded="true" aria-haspopup="true">
-                                            <span class="sr-only"></span>
-                                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg"
-                                                viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                                <path
-                                                    d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                                </td>
+                                <td class="pl-2">
+                                    <div class="flex items-center">
+                                        <p class="text-sm font-medium leading-none text-gray-600 mr-2">
+                                            {{ $certificacion->inspector->name ?? 'NE-MODI' }}
+                                        </p>
+                                    </div>
+                                </td>
+                                <td class="pl-2">
+                                    <div class="flex items-center">
+                                        <p class="text-sm leading-none text-gray-600 ml-2">
+                                            {{ $certificacion->taller->nombre }}</p>
+                                    </div>
+                                </td>
+                                <td class="pl-2">
+                                    <div class="flex items-center">
+                                        @switch($certificacion->Servicio->tipoServicio->id)
+                                            @case(1)
+                                                <p
+                                                    class="text-sm leading-none text-gray-600 ml-2 p-2 bg-green-200 rounded-full">
+                                                    Conversion a GNV
+                                                </p>
+                                            @break
+
+                                            @case(2)
+                                                <p
+                                                    class="text-sm leading-none text-gray-600 ml-2 p-2 bg-green-200 rounded-full">
+                                                    Revision anual GNV
+                                                </p>
+                                            @break
+
+                                            @case(3)
+                                                <p
+                                                    class="text-sm leading-none text-gray-600 ml-2 p-2 bg-orange-200 rounded-full">
+                                                    Conversion a GLP
+                                                </p>
+                                            @break
+
+                                            @case(4)
+                                                <p
+                                                    class="text-sm leading-none text-gray-600 ml-2 p-2 bg-orange-200 rounded-full">
+                                                    Revision anual GLP
+                                                </p>
+                                            @break
+
+                                            @case(5)
+                                                <p class="text-sm leading-none text-gray-600 ml-2 p-2 bg-blue-200 rounded-full">
+                                                    Modificación
+                                                </p>
+                                            @break
+
+                                            @case(8)
+                                                <p
+                                                    class="text-sm leading-none text-gray-600 ml-2 p-2 bg-green-200 rounded-full">
+                                                    Duplicado GNV
+                                                </p>
+                                            @break
+
+                                            @case(9)
+                                                <p
+                                                    class="text-sm leading-none text-gray-600 ml-2 p-2 bg-orange-200 rounded-full">
+                                                    Duplicado GNV
+                                                </p>
+                                            @break
+
+                                            @case(10)
+                                                <p
+                                                    class="text-sm leading-none text-gray-600 ml-2 p-2 bg-green-200 rounded-full">
+                                                    Conversion a GNV + chip
+                                                </p>
+                                            @break
+
+                                            @case(12)
+                                                <p
+                                                    class="text-sm leading-none text-gray-600 ml-2 p-2 bg-green-200 rounded-full">
+                                                    {{ $certificacion->Servicio->tipoServicio->descripcion }}
+                                                </p>
+                                            @break
+
+                                            @case(13)
+                                                <p
+                                                    class="text-sm leading-none text-gray-600 ml-2 p-2 bg-orange-200 rounded-full">
+                                                    {{ $certificacion->Servicio->tipoServicio->descripcion }}
+                                                </p>
+                                            @break
+
+                                            @default
+                                                <p class="text-sm leading-none text-gray-600 ml-2">
+                                                    No se encontro datos
+                                                </p>
+                                        @endswitch
+
+                                    </div>
+                                </td>
+                                <td class="">
+                                    <div class="flex items-center">
+                                        <p class="text-sm leading-none text-gray-600 ml-2">
+                                            {{ 'S/. ' . $certificacion->precio }}
+                                        </p>
+                                    </div>
+                                </td>
+                                <td class="pl-2">
+                                    <div class="flex items-center">
+                                        <p class="text-sm font-bold  text-indigo-700 ml-2">
+                                            {{ $certificacion->placa ?? 'N/A' }}</p>
+                                    </div>
+                                </td>
+                                @if (isset($certificacion->Hoja->numSerie))
+                                    <td class="">
+                                        <div class="flex items-center justify-center">
+                                            <p
+                                                class="text-sm font-semibold  text-gray-600 p-1 bg-orange-100 rounded-full">
+                                                {{ $certificacion->Hoja->numSerie }}</p>
+                                        </div>
+                                    </td>
+                                @else
+                                    <td class="">
+                                        <div class="flex items-center justify-center">
+                                            <p
+                                                class="text-sm font-semibold  text-gray-600 p-1 bg-orange-100 rounded-full">
+                                                Sin datos</p>
+                                        </div>
+                                    </td>
+                                @endif
+
+                                <td class="pl-2">
+                                    <p class="text-gray-600 "> {{ $certificacion->created_at->format('d/m/Y  h:i a') }}
+                                    </p>
+                                </td>
+
+                                <td class="">
+                                    <div class="flex items-center justify-center">
+                                        @switch($certificacion->estado)
+                                            @case(1)
+                                                <i class="far fa-check-circle fa-lg" style="color: forestgreen;"></i>
+                                            @break
+
+                                            @case(2)
+                                                <i class="far fa-times-circle fa-lg" style="color: red;"></i>
+                                            @break
+
+                                            @case(3)
+                                                <i class="fa-regular fa-circle-pause fa-lg text-amber-400"></i>
+                                            @break
+
+                                            @default
+                                        @endswitch
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="relative px-5 text-center" x-data="{ menu: false }">
+                                        <button type="button" x-on:click="menu = ! menu" id="menu-button"
+                                            aria-expanded="true" aria-haspopup="true" data-te-ripple-init
+                                            data-te-ripple-color="light"
+                                            class="hover:animate-pulse inline-block rounded-full bg-amber-400 p-2 uppercase leading-normal text-white shadow-md transition duration-150 ease-in-out hover:bg-amber-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-amber-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-amber-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                fill="currentColor" class="h-4 w-4">
+                                                <path fill-rule="evenodd"
+                                                    d="M19.5 21a3 3 0 003-3V9a3 3 0 00-3-3h-5.379a.75.75 0 01-.53-.22L11.47 3.66A2.25 2.25 0 009.879 3H4.5a3 3 0 00-3 3v12a3 3 0 003 3h15zm-6.75-10.5a.75.75 0 00-1.5 0v4.19l-1.72-1.72a.75.75 0 00-1.06 1.06l3 3a.75.75 0 001.06 0l3-3a.75.75 0 10-1.06-1.06l-1.72 1.72V10.5z"
+                                                    clip-rule="evenodd" />
                                             </svg>
                                         </button>
                                         <div x-show="menu" x-on:click.away="menu = false"
@@ -358,53 +287,137 @@
                                             role="menu" aria-orientation="vertical" aria-labelledby="menu-button"
                                             tabindex="-1">
                                             <div class="" role="none">
-                                                @if($certificacion->Servicio->tipoServicio->id == 11)
-                                                <a wire:click="$emit('deleteCertificacionChip',{{ $certificacion->id }})"
+                                                <a href="{{ $certificacion->rutaVistaCertificado }}" target="__blank"
+                                                    rel="noopener noreferrer"
                                                     class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center rounded-t-md hover:cursor-pointer">
-                                                    <i class="fas fa-trash"></i>
-                                                    <span>Eliminar servicio</span>
-                                                </a>  
-                                                @else
-                                                <a wire:click="$emit('deleteCertificacion',{{ $certificacion->id }})"
-                                                    class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center rounded-t-md hover:cursor-pointer">
-                                                    <i class="fas fa-trash"></i>
-                                                    <span>Eliminar servicio</span>
+                                                    <i class="fas fa-eye"></i>
+                                                    <span>Ver Certificado.</span>
                                                 </a>
-                                                    
+
+                                                @if ($certificacion->Servicio->tipoServicio->id != 8)
+                                                    <a href="{{ $certificacion->rutaDescargaCertificado }}"
+                                                        target="__blank" rel="noopener noreferrer"
+                                                        class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center hover:cursor-pointer">
+                                                    @else
+                                                        <a href="{{ $certificacion->rutaDescargaCertificado }}"
+                                                            target="__blank" rel="noopener noreferrer"
+                                                            class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between rounded-b-md items-center hover:cursor-pointer">
                                                 @endif
-                                            </div>
-                                            <div class="" role="none">
-                                                <a wire:click="$emit('anularCertificacion',{{ $certificacion->id }})"
-                                                    class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center rounded-b-md hover:cursor-pointer">
-                                                    <i class="fas fa-eraser"></i>
-                                                    <span>Anular servicio</span>
+                                                <i class="fas fa-download"></i>
+                                                <span>desc. Certificado</span>
                                                 </a>
+                                                @if ($certificacion->Servicio->tipoServicio->id == 1)
+                                                    <a href="{{ route('preConversionGnv', [$certificacion->id]) }}"
+                                                        target="__blank" rel="noopener noreferrer"
+                                                        class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center hover:cursor-pointer">
+                                                        <i class="fas fa-eye"></i>
+                                                        <span>Ver Preconversion.</span>
+                                                    </a>
+                                                @endif
+                                                @if ($certificacion->Servicio->tipoServicio->id != 8)
+                                                    <a href="{{ $certificacion->rutaVistaFt }}" target="__blank"
+                                                        rel="noopener noreferrer"
+                                                        class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center hover:cursor-pointer">
+                                                        <i class="fas fa-eye"></i>
+                                                        <span>Ver Ficha Tec.</span>
+                                                    </a>
+                                                    <a href="{{ $certificacion->rutaDescargaFt }}" target="__blank"
+                                                        rel="noopener noreferrer"
+                                                        class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center hover:cursor-pointer">
+                                                        <i class="fas fa-download"></i>
+                                                        <span>desc. Ficha Tec.</span>
+                                                    </a>
+                                                    <a href="{{ $certificacion->rutaVistaCheckListArriba }}"
+                                                        target="__blank" rel="noopener noreferrer"
+                                                        class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center hover:cursor-pointer">
+                                                        <i class="fas fa-eye"></i>
+                                                        <span>CheckList Arriba</span>
+                                                    </a>
+                                                    <a href="{{ $certificacion->rutaVistaCheckListAbajo }}"
+                                                        target="__blank" rel="noopener noreferrer"
+                                                        class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white rounded-b-md justify-between items-center hover:cursor-pointer">
+                                                        <i class="fas fa-eye"></i>
+                                                        <span>CheckList Abajo</span>
+                                                    </a>
+                                                @endif
+
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr class="h-3"></tr>
-                    @endforeach
-                </tbody>
-            </table>
+                                </td>
+                                <td>
+                                    <div class="flex justify-end">
+                                        <a wire:click="edit({{ $certificacion->id }})"
+                                            class="py-2 px-2 text-center rounded-md bg-indigo-300 font-bold text-black cursor-pointer hover:bg-indigo-400">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                                <td class="pl-4">
+                                    <div class="relative flex justify-center px-5">
+                                        <div class="inline-block text-left" x-data="{ menu: false }">
+                                            <button x-on:click="menu = ! menu" type="button"
+                                                class="flex items-center text-gray-400 hover:text-gray-600 focus:outline-none"
+                                                id="menu-button" aria-expanded="true" aria-haspopup="true">
+                                                <span class="sr-only"></span>
+                                                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg"
+                                                    viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                    <path
+                                                        d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                                                </svg>
+                                            </button>
+                                            <div x-show="menu" x-on:click.away="menu = false"
+                                                class="origin-top-right absolute right-12 mt-2 w-56 rounded-md shadow-lg bg-gray-300 ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none z-40"
+                                                role="menu" aria-orientation="vertical"
+                                                aria-labelledby="menu-button" tabindex="-1">
+                                                <div class="" role="none">
+                                                    @if ($certificacion->Servicio->tipoServicio->id == 11)
+                                                        <a wire:click="$emit('deleteCertificacionChip',{{ $certificacion->id }})"
+                                                            class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center rounded-t-md hover:cursor-pointer">
+                                                            <i class="fas fa-trash"></i>
+                                                            <span>Eliminar servicio</span>
+                                                        </a>
+                                                    @else
+                                                        <a wire:click="$emit('deleteCertificacion',{{ $certificacion->id }})"
+                                                            class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center rounded-t-md hover:cursor-pointer">
+                                                            <i class="fas fa-trash"></i>
+                                                            <span>Eliminar servicio</span>
+                                                        </a>
+                                                    @endif
+                                                </div>
+                                                <div class="" role="none">
+                                                    <a wire:click="$emit('anularCertificacion',{{ $certificacion->id }})"
+                                                        class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center rounded-b-md hover:cursor-pointer">
+                                                        <i class="fas fa-eraser"></i>
+                                                        <span>Anular servicio</span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="h-3"></tr>
+                        @endforeach
+                    </tbody>
+                </table>
 
-            @if ($certificaciones->hasPages())
-                <div class="w-full  py-2 overflow-x-auto">
-                    <div
-                        class="inline-block min-w-full shadow-lg border border-slate-300 bg-slate-500/ overflow-hidden">
-                        <div class="py-4 px-2 bg-white ">
-                            {{ $certificaciones->withQueryString()->links() }}
+                @if ($certificaciones->hasPages())
+                    <div class="w-full  py-2 overflow-x-auto">
+                        <div
+                            class="inline-block min-w-full shadow-lg border border-slate-300 bg-slate-500/ overflow-hidden">
+                            <div class="py-4 px-2 bg-white ">
+                                {{ $certificaciones->withQueryString()->links() }}
+                            </div>
                         </div>
                     </div>
+                @endif
+            @else
+                <div class="p-4 w-full bg-indigo-300 items-center flex justify-center">
+                    <p class="text-indigo-900 font-bold">No se encontro ningúna certificación</p>
                 </div>
             @endif
-        @else
-            <div class="p-4 w-full bg-indigo-300 items-center flex justify-center">
-                <p class="text-indigo-900 font-bold">No se encontro ningúna certificación</p>
-            </div>
-        @endif
+        </div>
 
     </x-table-administracion-certificaciones>
 

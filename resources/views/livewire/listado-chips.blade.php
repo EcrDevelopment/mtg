@@ -11,63 +11,81 @@
             </x-slot>
             <x-slot name="contenido">
                 @if ($chipsConsumidos->count() > 0)
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
+                    <table class="w-full whitespace-nowrap">
+                        <thead class="bg-slate-600 border-b font-bold text-white">
                             <tr>
-                                <th
-                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    ID</th>
-                                <th
-                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left">
+                                    #
+                                </th>
+                                <th scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left">
                                     Inspector
                                 </th>
-                                <th
-                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left">
+                                    ID
+                                </th>                                
+                                <th scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left">
                                     Servicio
                                 </th>
                                 {{-- para agregar placa o id
                                 <th
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Placa / Id
-                                </th>--}}
-                                <th
-                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                </th> --}}
+                                <th scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left">
                                     Estado
                                 </th>
-                                <th
-                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left">
                                     Ubicación
                                 </th>
-                                <th
-                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left">
                                     Grupo
                                 </th>
-                                <th
-                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Fecha
-                                </th>
+                                <th scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left" wire:click="sortBy('updated_at')">
+                                Fecha
+                                @if ($sort == 'updated_at')
+                                    @if ($direction == 'asc')
+                                        <i class="fas fa-sort-numeric-up-alt float-right mt-0.5"></i>
+                                    @else
+                                        <i class="fas fa-sort-numeric-down-alt float-right mt-0.5"></i>
+                                    @endif
+                                @else
+                                    <i class="fas fa-sort float-right mt-0.5"></i>
+                                @endif
+                            </th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             @foreach ($chipsConsumidos as $key => $chip)
-                                <tr>
-                                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <tr tabindex="0" class="focus:outline-none h-12 border border-slate-300 rounded hover:bg-gray-200">
+                                    <td class="pl-5">
                                         <div class="flex items-center">
-                                            <p class="text-indigo-900 p-1 bg-indigo-200 rounded-md">
-                                                {{ $chip->id }}{{--{{$key + 1}}--}}
-                                                
-                                            </p>
+                                            <div
+                                                class="bg-indigo-200 rounded-sm w-5 h-5 flex flex-shrink-0 justify-center items-center relative text-indigo-900">
+                                                {{ $key + 1 }}
+                                            </div>
                                         </div>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $chip->nombreInspector }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        {{ $chip->nombreInspector }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <p class="text-yellow-900 p-1 bg-yellow-200 rounded-md">
+                                                {{ $chip->id }}
+
+                                            </p>
+                                        </div>
+                                    </td>                                    
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
                                             @if (Str::startsWith($chip->ubicacion, 'En poder del cliente '))
-                                                <p class="text-sm leading-none text-gray-600 ml-2 p-2 bg-blue-200 rounded-full">
+                                                <p
+                                                    class="text-sm leading-none text-gray-600 ml-2 p-2 bg-blue-200 rounded-full">
                                                     Chip por deterioro
-                                                </p> 
+                                                </p>
                                             @else
-                                                <p class="text-sm leading-none text-gray-600 ml-2 p-2 bg-green-200 rounded-full">
+                                                <p
+                                                    class="text-sm leading-none text-gray-600 ml-2 p-2 bg-green-200 rounded-full">
                                                     Conversión a GNV + chip
                                                 </p>
                                             @endif
@@ -87,11 +105,15 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $chip->ubicacion }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $chip->grupo }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ \Carbon\Carbon::parse($chip->updated_at)->format('d M Y') }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        {{ \Carbon\Carbon::parse($chip->updated_at)->format('d M Y') }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
+                    <div class="mt-4">
+                        {{ $chipsConsumidos->links() }}
+                    </div>
                 @else
                     <p>No hay chips consumidos por inspectores.</p>
                 @endif

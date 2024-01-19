@@ -1191,6 +1191,10 @@
                         @case('esperando')
                             <div class="max-w-5xl m-auto bg-white rounded-lg shadow-md my-4 py-4">
                                 <div class="my-2 flex flex-row justify-evenly items-center">
+                                    <div>
+                                        <x-jet-input type="date" class="" wire:model="fechaCertificacion" />
+                                        <x-jet-input-error for="fechaCertificacion" />
+                                    </div>
                                     <button wire:click="certificarPreconverGlp" wire:loading.attr="disabled"
                                         wire.target="certificarPreconverGlp"
                                         class="hover:cursor-pointer border border-indigo-500 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 sm:mt-0 inline-flex items-center justify-center px-6 py-3 bg-indigo-400 hover:bg-indigo-500 focus:outline-none rounded">

@@ -80,8 +80,8 @@ class Prueba extends Component
     {
         if ($val) {
             $this->servicios = Servicio::where("taller_idtaller", $val)
-            ->where("estado", 1) // Agregue esto para que muestre solo estado 1
-            ->get();
+                ->where("estado", 1) // Agregue esto para que muestre solo estado 1
+                ->get();
             $this->servicio = "";
         } else {
             $this->reset(["servicios", "servicio"]);
@@ -186,7 +186,7 @@ class Prueba extends Component
                 $hoja = Material::where([['numSerie', $serie], ['idTipoMaterial', 3], ['estado', 3], ['idUsuario', Auth::id()]])->first();
                 return $hoja;
                 break;
-            //para modificacion
+                //para modificacion
             case 5:
                 $hoja = Material::where([['numSerie', $serie], ['idTipoMaterial', 4], ['estado', 3], ['idUsuario', Auth::id()]])->first();
                 return $hoja;
@@ -415,15 +415,14 @@ class Prueba extends Component
         if (!isset($this->vehiculo)) {
             $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "Debes ingresar un vehículo válido para poder certificar", "icono" => "warning"]);
             return;
-
         }
 
         $certi = Certificacion::certificarModi($taller, $servicio, $hoja, $this->vehiculo, Auth::user());
 
         if ($certi) {
             $this->estado = "certificado";
-            $this->certificacion = $certi;      
-            
+            $this->certificacion = $certi;
+
             $expe = Expediente::create([
                 "placa" => $this->vehiculo->placa,
                 "certificado" => $hoja->numSerie,
@@ -448,7 +447,7 @@ class Prueba extends Component
         }
     }
 
-   /* public function certificarChipDeterioro(){
+    /* public function certificarChipDeterioro(){
         
         $taller = Taller::findOrFail($this->taller);
         $servicio = Servicio::findOrFail($this->servicio);
@@ -488,8 +487,8 @@ class Prueba extends Component
                     $certi = Certificacion::certificarGnvPre($taller, $servicio, $hoja, $this->vehiculo, Auth::user());
                     if ($certi) {
                         $this->estado = "certificado";
-                        $this->certificacion = $certi;                       
-                        
+                        $this->certificacion = $certi;
+
 
                         $this->emit("minAlert", ["titulo" => "¡EXCELENTE TRABAJO!", "mensaje" => "Tu certificado N°: " . $certi->Hoja->numSerie . " esta listo.", "icono" => "success"]);
                     } else {
@@ -517,6 +516,9 @@ class Prueba extends Component
                         $this->estado = "certificado";
                         $this->certificacion = $certi;
                         $this->emit("minAlert", ["titulo" => "¡EXCELENTE TRABAJO!", "mensaje" => "Tu certificado N°: " . $certi->Hoja->numSerie . " esta listo.", "icono" => "success"]);
+
+                        // Agrega la fecha al modelo Certificacion
+                        $certi->update(['created_at' => $this->fechaCertificacion]);
                     } else {
                         $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "No fue posible certificar", "icono" => "warning"]);
                     }
@@ -535,7 +537,7 @@ class Prueba extends Component
         return $chip;
     }
 
-  /*
+    /*
     public function certificarConChip()
     {
         $taller = Taller::findOrFail($this->taller);
@@ -650,9 +652,15 @@ class Prueba extends Component
     {
     }
 
-    public function refrescaVe()
+    /*public function refrescaVe()
     {
         $this->vehiculo->refresh();
+    }*/
+    public function refrescaVe()
+    {
+        if ($this->vehiculo) {
+            $this->vehiculo->refresh();
+        }
     }
 
     public function duplicarCertificado()

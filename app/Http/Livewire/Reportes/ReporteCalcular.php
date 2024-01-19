@@ -49,6 +49,7 @@ class ReporteCalcular extends Component
                 'certificacion.idInspector',
                 'certificacion.idVehiculo',
                 'certificacion.idServicio',
+                'certificacion.estado',
                 'certificacion.created_at',
                 'certificacion.precio',
                 'certificacion.pagado',

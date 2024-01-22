@@ -68,101 +68,111 @@
 
         @if (isset($resultados))
             @if ($resultados->count())
-                <div class="my-4 py-4 rounded-md bg-white px-4">
-                    @foreach ($resultados->groupBy('taller') as $taller => $detallePorTaller)
+
+                {{-- @foreach ($resultados->groupBy('taller') as $taller => $detallePorTaller)
                         <div class="mb-8">
-                            <h2 class="text-indigo-600 text-xl font-bold mb-4">{{ $taller }}</h2>
-                            @foreach ($detallePorTaller->groupBy('certificador') as $certificador => $detallePorCertificador)
-                                <h1 class="text-gray-600 text-lg ">{{ $certificador }}</h1>
-                                <div class="overflow-x-auto m-auto w-full" wire:ignore>
-                                    <div class="inline-block min-w-full py-2 sm:px-6">
-                                        <div class="overflow-hidden">
-                                            <table
-                                                class="min-w-full border text-center text-sm font-light dark:border-neutral-500">
-                                                <thead class="border-b font-medium dark:border-neutral-500">
-                                                    <tr class="bg-indigo-200">
-                                                        <th scope="col"
-                                                            class="border-r px-6 py-4 dark:border-neutral-500">#</th>
-                                                        <th scope="col"
-                                                            class="border-r px-6 py-4 dark:border-neutral-500">Placa
-                                                        </th>
-                                                        <th scope="col"
-                                                            class="border-r px-6 py-4 dark:border-neutral-500">Serie
-                                                        </th>
-                                                        <th scope="col"
-                                                            class="border-r px-6 py-4 dark:border-neutral-500">Tipo
-                                                            Servicio</th>
-                                                        <th scope="col"
-                                                            class="border-r px-6 py-4 dark:border-neutral-500">Fecha
-                                                        </th>
-                                                        {{--
+                            <h2 class="text-indigo-600 text-xl font-bold mb-4">{{ $taller }}</h2> --}}
+
+                @foreach ($resultados->groupBy('certificador') as $certificador => $detallePorCertificador)
+                    <div class="bg-gray-200  px-8 py-4 rounded-xl w-full mt-8">
+                        <h2 class="text-indigo-600 text-xl font-bold mb-4"> {{ $certificador }} </h2>
+                        <div class="overflow-x-auto m-auto w-full" wire:ignore>
+                            <div class="inline-block min-w-full py-2 sm:px-6">
+                                <div class="overflow-hidden">
+                                    <table
+                                        class="min-w-full border text-center text-sm font-light dark:border-neutral-500">
+                                        <thead class="border-b font-medium dark:border-neutral-500">
+                                            <tr class="bg-indigo-200">
+                                                <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">#
+                                                </th>
+                                                <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
+                                                    Taller
+                                                </th>
+                                                <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
+                                                    Placa
+                                                </th>
+                                                <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
+                                                    Serie
+                                                </th>
+                                                <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
+                                                    Tipo
+                                                    Servicio</th>
+                                                <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
+                                                    Fecha
+                                                </th>
+                                                {{--
                                                         <th scope="col"
                                                             class="border-r px-6 py-4 dark:border-neutral-500">Precio
                                                         </th>
                                                         --}}
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach ($detallePorCertificador as $key => $detalle)
-                                                        <tr class="border-b dark:border-neutral-500 bg-orange-200">
-                                                            <td
-                                                                class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                                {{ $key + 1 }}    
-                                                            </td>
-                                                            <td
-                                                                class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                                {{ $detalle->placa ?? 'En tramite' }}
-                                                            </td>
-                                                            <td
-                                                                class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                                {{ $detalle->serie ?? 'N/A' }}
-                                                            </td>
-                                                            <td
-                                                                class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                                @if ($detalle->tipoServicio == 1)
-                                                                    Conversion GNV
-                                                                @elseif ($detalle->tipoServicio == 2)
-                                                                    Anual GNV
-                                                                @elseif ($detalle->tipoServicio == 6)
-                                                                    Desmonte
-                                                                @else
-                                                                    N/A
-                                                                @endif
-                                                            </td>
-                                                            <td
-                                                                class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                                {{ $detalle->fecha ?? 'N/A' }}
-                                                            </td>
-                                                            {{--
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($detallePorCertificador as $key => $detalle)
+                                                <tr class="border-b dark:border-neutral-500 bg-orange-200">
+                                                    <td
+                                                        class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                        {{ $key + 1 }}
+                                                    </td>
+                                                    <td
+                                                        class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                        {{ $detalle->taller ?? 'N/A' }}
+                                                    </td>
+                                                    <td
+                                                        class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                        {{ $detalle->placa ?? 'En tramite' }}
+                                                    </td>
+                                                    <td
+                                                        class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                        {{ $detalle->serie ?? 'N/A' }}
+                                                    </td>
+                                                    <td
+                                                        class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                        @if ($detalle->tipoServicio == 1)
+                                                            Conversion GNV
+                                                        @elseif ($detalle->tipoServicio == 2)
+                                                            Anual GNV
+                                                        @elseif ($detalle->tipoServicio == 6)
+                                                            Desmonte
+                                                        @else
+                                                            N/A
+                                                        @endif
+                                                    </td>
+                                                    <td
+                                                        class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                        {{ $detalle->fecha ?? 'N/A' }}
+                                                    </td>
+                                                    {{--
                                                             <td
                                                                 class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
                                                                 {{ $detalle->precio ?? 'N/A' }}
                                                             </td>
                                                             --}}
-                                                        </tr>
-                                                    @endforeach
-                                                </tbody>
-                                            </table>
-                                            <div class="mt-4">
-                                                <ul class="grid grid-cols-2 gap-4">
-                                                    @foreach ($detallePorCertificador->groupBy('tiposervicio') as $tipoServicio => $cant)    
-                                                    @php
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                    <div class="mt-4">
+                                        <ul class="grid grid-cols-2 gap-4">
+                                            @foreach ($detallePorCertificador->groupBy('tiposervicio') as $tipoServicio => $cant)
+                                                @php
                                                     $tipo = is_string($tipoServicio) ? json_decode($tipoServicio) : $tipoServicio;
-                                                @endphp                                               
-                                                        <li class="flex items-center justify-between bg-gray-100 p-3 rounded-md shadow">
-                                                            <span class="text-blue-400">{{ 'Cantidad de ' . $tipo->descripcion}}</span>
-                                                            <span class="text-green-500">{{ $cant->count() }} servicios</span>
-                                                        </li>
-                                                    @endforeach
-                                                </ul>
-                                            </div>
-                                        </div>
+                                                @endphp
+                                                <li
+                                                    class="flex items-center justify-between bg-gray-100 p-3 rounded-md shadow">
+                                                    <span
+                                                        class="text-blue-400">{{ 'Cantidad de ' . $tipo->descripcion }}</span>
+                                                    <span class="text-green-500">{{ $cant->count() }} servicios</span>
+                                                </li>
+                                            @endforeach
+                                        </ul>
                                     </div>
                                 </div>
-                            @endforeach
+                            </div>
                         </div>
-                    @endforeach
-                </div>
+                    </div>
+                @endforeach
+                {{-- @endforeach --}}
             @else
                 <div class="w-full text-center font-semibold text-gray-100 p-4 mb-4 border rounded-md bg-indigo-400 shadow-lg"
                     wire:loading.class="hidden">

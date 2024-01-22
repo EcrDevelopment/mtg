@@ -491,6 +491,7 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
                                         x-transition:leave-end="opacity-0 max-h-0"
                                         class="mt-2 divide-y-2 divide-gray-600 overflow-hidden text-sm font-medium bg-gray-600 text-white shadow-inner"
                                         aria-label="submenu">
+                                        
                                         @can('reportes.reporteGeneralGnv')
                                             <x-jet-responsive-nav-link class="text-sm"
                                                 href="{{ route('reportes.reporteGeneralGnv') }}" :active="request()->routeIs('reportes.reporteGeneralGnv')">
@@ -520,6 +521,18 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
                                             <x-jet-responsive-nav-link class="text-sm truncate"
                                                 href="{{ route('reportes.reporteDocumentosTaller') }}" :active="request()->routeIs('reportes.reporteDocumentosTaller')">
                                                 Reporte de Documentos a vencer
+                                            </x-jet-responsive-nav-link>
+                                        @endcan
+                                        @can('reportes.reporteCalcularGasol')
+                                            <x-jet-responsive-nav-link class="text-sm truncate"
+                                                href="{{ route('reportes.reporteCalcularGasol') }}" :active="request()->routeIs('reportes.reporteCalcularGasol')">
+                                                Reporte Gasolution
+                                            </x-jet-responsive-nav-link>
+                                        @endcan
+                                        @can('reportes.reporteCalcular')
+                                            <x-jet-responsive-nav-link class="text-sm truncate"
+                                                href="{{ route('reportes.reporteCalcular') }}" :active="request()->routeIs('reportes.reporteCalcular')">
+                                                Reporte MTC
                                             </x-jet-responsive-nav-link>
                                         @endcan
 

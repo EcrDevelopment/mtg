@@ -162,7 +162,7 @@
                 <td>{{(isset($cargaUtil)? $cargaUtil : 'NE')}}</td>
             </tr>
         </table>
-        <h5 style="background-color:goldenrod;">DATOS DE LOS EQUIPOS DE GNV</h5>
+        <h5 style="background-color:goldenrod;">DATOS DE LOS EQUIPOS DE GLP</h5>
         <!-- DATOS DE LOS EQUIPOS -->
             <table>
                 <tr>

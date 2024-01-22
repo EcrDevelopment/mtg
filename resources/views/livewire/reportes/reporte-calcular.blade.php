@@ -30,7 +30,7 @@
                             <option value="">SELECCIONE</option>
                             @isset($inspectores)
                                 @foreach ($inspectores as $inspector)
-                                    <option value="{{ $inspector }}">{{ $inspector }}</option>
+                                <option value="{{ $inspector->id }}">{{ $inspector->name }}</option>
                                 @endforeach
                             @endisset
                         </select>

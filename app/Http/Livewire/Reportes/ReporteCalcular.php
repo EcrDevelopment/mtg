@@ -23,12 +23,8 @@ class ReporteCalcular extends Component
 
     public function mount()
     {
-        $this->inspectores = ServiciosImportados::groupBy('certificador')->pluck('certificador');
-        $this->talleres = ServiciosImportados::groupBy('taller')->pluck('taller');
-        // Inicializar $selectAll para cada grupo de resultados
-        foreach ($this->talleres as $taller) {
-            $this->selectAll[$taller] = false;
-        }
+        //$this->inspectores = ServiciosImportados::groupBy('certificador')->pluck('certificador');
+        //$this->talleres = ServiciosImportados::groupBy('taller')->pluck('taller');
     }
 
     public function render()

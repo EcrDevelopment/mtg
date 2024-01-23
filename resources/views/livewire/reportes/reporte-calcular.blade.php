@@ -28,11 +28,9 @@
                         <select wire:model="ins"
                             class="bg-gray-50 mx-2 border-indigo-500 rounded-md outline-none ml-1 block w-full truncate">
                             <option value="">SELECCIONE</option>
-                            @isset($inspectores)
                                 @foreach ($inspectores as $inspector)
                                 <option value="{{ $inspector->id }}">{{ $inspector->name }}</option>
                                 @endforeach
-                            @endisset
                         </select>
                     </div>
                     <div class="flex items-center space-x-2">
@@ -196,7 +194,9 @@
                                                 </td>
                                                 <td class="border-r px-6 py-3 dark:border-neutral-500 font-bold">
                                                     {{ number_format(
-                                                        $certificacionesInspector->where('pagado', 0)->where('estado', 1)->sum('precio'),
+                                                        $certificacionesInspector->where('pagado', 0)
+                                                                                ->whereIn('estado', [1, 3])
+                                                                                ->sum('precio'),
                                                         2,
                                                     ) }}
                                                 </td>
@@ -222,7 +222,8 @@
                                             @foreach ($certificacionesInspector->groupBy('tiposervicio') as $tipoServicio => $detalle)
                                                 {{-- Filtrar las entradas donde pagado sea igual a 0 --}}
                                                 @php
-                                                    $detalleSinPagados = $detalle->where('pagado', 0)->where('estado', 1);
+                                                    $detalleSinPagados = $detalle->where('pagado', 0)
+                                                                                ->whereIn('estado', [1, 3]);
                                                 @endphp
                                                 <li
                                                     class="flex items-center justify-between bg-gray-100 p-3 rounded-md shadow">

@@ -22,6 +22,7 @@ class ReporteCalcular extends Component
         "fechaInicio" => 'required|date',
         "fechaFin" => 'required|date',
         //"ins" => 'numeric',
+        //'taller' => 'nullable|numeric', 
     ];
 
     public function mount()
@@ -65,9 +66,12 @@ class ReporteCalcular extends Component
             ->join('servicio', 'certificacion.idServicio', '=', 'servicio.id')
             ->join('tiposervicio', 'servicio.tipoServicio_idtipoServicio', '=', 'tiposervicio.id')
             ->where(function ($query) {
-                if(!empty($this->ins) && !empty($this->taller)){
-                $query->where('certificacion.idInspector', $this->ins)
-                      ->orWhere('certificacion.idTaller', $this->taller);
+                if (!empty($this->ins)) {
+                    $query->where('certificacion.idInspector', $this->ins);
+                }
+    
+                if (!empty($this->taller)) {
+                    $query->where('certificacion.idTaller', $this->taller);
                 }
             })
             ->whereBetween('certificacion.created_at', [
@@ -101,10 +105,13 @@ class ReporteCalcular extends Component
             ->where('certificados_pendientes.estado', 1)
             ->whereNull('certificados_pendientes.idCertificacion')
             ->where(function ($query) {
-                if(!empty($this->ins) && !empty($this->taller)){
-                    $query->where('certificados_pendientes.idInspector', $this->ins)
-                      ->orWhere('certificados_pendientes.idTaller', $this->taller);
-                }                
+                if (!empty($this->ins)) {
+                    $query->where('certificados_pendientes.idInspector', $this->ins);
+                }
+    
+                if (!empty($this->taller)) {
+                    $query->where('certificados_pendientes.idTaller', $this->taller);
+                }               
             })
             ->whereBetween('certificados_pendientes.created_at', [
                 $this->fechaInicio . ' 00:00:00',
@@ -121,42 +128,7 @@ class ReporteCalcular extends Component
         //$this->cantidades = $cantidades;
         $this->totalPrecio = $totalPrecio;
         $this->emit('resultadosCalculados', $this->resultados, $this->cantidades, $this->totalPrecio);
-    }
-
-    /*public function calcularReporte()
-    {
-        $this->validate();
-
-        $certificaciones = Certificacion::with(['Inspector', 'Taller', 'Vehiculo', 'Servicio.tipoServicio'])
-            ->whereBetween('created_at', [
-                $this->fechaInicio . ' 00:00:00',
-                $this->fechaFin . ' 23:59:59'
-            ])
-            ->get();
-
-        $certificadosPendientes = CertificacionPendiente::with(['Inspector', 'Taller', 'Vehiculo', 'Servicio.tipoServicio'])
-            ->where('estado', 1)
-            ->whereNull('idCertificacion')
-            ->whereBetween('created_at', [
-                $this->fechaInicio . ' 00:00:00',
-                $this->fechaFin . ' 23:59:59'
-            ])
-            ->get();
-
-        $resultados = $certificaciones->concat($certificadosPendientes);
-
-        $this->resultados = $resultados->groupBy('idTaller');
-
-        $this->cantidades = $resultados->groupBy(['Inspector.name', 'Servicio.tipoServicio.descripcion'])->map(function ($items) {
-            return [
-                'cantidad' => $items->count(),
-            ];
-        });
-
-        $this->totalPrecio = $resultados->sum('precio');
-    }*/
-
-
+    } 
 
     public function toggleSelectAll($taller)
     {

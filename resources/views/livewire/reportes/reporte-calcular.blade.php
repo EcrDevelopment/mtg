@@ -18,7 +18,7 @@
                             <option value="">SELECCIONE</option>
                             @isset($talleres)
                                 @foreach ($talleres as $taller)
-                                    <option value="{{ $taller }}">{{ $taller }}</option>
+                                    <option value="{{ $taller->id }}">{{ $taller->nombre }}</option>
                                 @endforeach
                             @endisset
                         </select>
@@ -77,6 +77,7 @@
                     --}}
             @foreach ($resultados->groupBy('idInspector') as $inspector => $certificacionesInspector)
                 <div class="bg-gray-200  px-8 py-4 rounded-xl w-full mt-8">
+                    {{--{{dd($certificacionesInspector)}}--}}
                     <h2 class="text-indigo-600 text-xl font-bold mb-4">{{ $certificacionesInspector[0]->nombre }}</h2>
                     @if ($certificacionesInspector->count() > 0)
                         <div class="overflow-x-auto m-auto w-full" wire:ignore>
@@ -116,6 +117,7 @@
                                                     --}}
                                             </tr>
                                         </thead>
+                                        
                                         <tbody>
                                             @foreach ($certificacionesInspector as $key => $item)
                                                 <tr class="border-b dark:border-neutral-500 bg-orange-200">
@@ -152,7 +154,8 @@
                                                                     <i class="fa-regular fa-circle-pause fa-lg text-amber-400"></i>
                                                                 @break
                     
-                                                                @default
+                                                                @default 
+                                                                NA
                                                             @endswitch
                                                         </div>
                                                     </td>

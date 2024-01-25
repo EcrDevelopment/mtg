@@ -18,7 +18,7 @@
                             <option value="">SELECCIONE</option>
                             @isset($talleres)
                                 @foreach ($talleres as $taller)
-                                    <option value="{{ $taller }}">{{ $taller }}</option>
+                                    <option value="{{ $taller->id }}">{{ $taller->nombre }}</option>
                                 @endforeach
                             @endisset
                         </select>
@@ -28,11 +28,9 @@
                         <select wire:model="ins"
                             class="bg-gray-50 mx-2 border-indigo-500 rounded-md outline-none ml-1 block w-full truncate">
                             <option value="">SELECCIONE</option>
-                            @isset($inspectores)
                                 @foreach ($inspectores as $inspector)
-                                    <option value="{{ $inspector }}">{{ $inspector }}</option>
+                                <option value="{{ $inspector->id }}">{{ $inspector->name }}</option>
                                 @endforeach
-                            @endisset
                         </select>
                     </div>
                     <div class="flex items-center space-x-2">
@@ -69,12 +67,19 @@
         @if (isset($resultados))
             @if ($resultados->count())
 
+            <div class="m-auto flex justify-center items-center bg-gray-200 rounded-md w-full p-4 mt-2">
+                <button wire:click=""
+                    class="bg-green-400 px-6 py-4 w-1/3 text-sm rounded-md text-sm text-white font-semibold tracking-wide cursor-pointer ">
+                    <p class="truncate"><i class="fa-solid fa-file-excel fa-lg"></i> Desc. Excel </p>
+                </button>
+            </div>
+
                 {{-- @foreach ($resultados->groupBy('taller') as $taller => $detallePorTaller)
                         <div class="mb-8">
                             <h2 class="text-indigo-600 text-xl font-bold mb-4">{{ $taller }}</h2> --}}
 
                 @foreach ($resultados->groupBy('certificador') as $certificador => $detallePorCertificador)
-                    <div class="bg-gray-200  px-8 py-4 rounded-xl w-full mt-8">
+                    <div class="bg-gray-200  px-8 py-4 rounded-xl w-full mt-2">
                         <h2 class="text-indigo-600 text-xl font-bold mb-4"> {{ $certificador }} </h2>
                         <div class="overflow-x-auto m-auto w-full" wire:ignore>
                             <div class="inline-block min-w-full py-2 sm:px-6">

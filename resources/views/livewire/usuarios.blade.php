@@ -5,10 +5,10 @@
                 <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
                     <div class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
                         <div class="overflow-x-auto">
-                            <table class="min-w-full leading-normal rounded-md">
-                                <thead>
+                            <table class="w-full whitespace-nowrap">
+                                <thead class="bg-slate-600 border-b font-bold text-white">
                                     <tr>
-                                        <th class=" w-24 cursor-pointer hover:font-bold hover:text-indigo-500 px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
+                                        <th scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left"
                                             wire:click="order('id')">
                                             Id
                                             @if ($sort == 'id')
@@ -21,7 +21,7 @@
                                                 <i class="fas fa-sort float-right mt-0.5"></i>
                                             @endif
                                         </th>
-                                        <th class="cursor-pointer hover:font-bold hover:text-indigo-500  px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
+                                        <th scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left"
                                             wire:click="order('name')">
                                             Nombre
                                             @if ($sort == 'name')
@@ -34,7 +34,7 @@
                                                 <i class="fas fa-sort float-right mt-0.5"></i>
                                             @endif
                                         </th>
-                                        <th class="cursor-pointer hover:font-bold hover:text-indigo-500 px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
+                                        <th scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left"
                                             wire:click="order('email')">
                                             correo
                                             @if ($sort == 'email')
@@ -47,7 +47,7 @@
                                                 <i class="fas fa-sort float-right mt-0.5"></i>
                                             @endif
                                         </th>
-                                        <th class="cursor-pointer hover:font-bold hover:text-indigo-500 px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
+                                        <th scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left"
                                             wire:click="order('celular')">
                                             celular
                                             @if ($sort == 'celular')
@@ -60,7 +60,7 @@
                                                 <i class="fas fa-sort float-right mt-0.5"></i>
                                             @endif
                                         </th>
-                                        <th class="cursor-pointer hover:font-bold hover:text-indigo-500 px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
+                                        <th scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left"
                                             wire:click="order('rutaFirma')">
                                             FIRMA
                                             @if ($sort == 'rutaFirma')
@@ -102,48 +102,48 @@
                                     </th>      
                                     --}}
                                         <th
-                                            class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left">
                                             Rol
                                         </th>
                                         <th
-                                            class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left">
                                             Acciones
                                         </th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody class="bg-white divide-y divide-gray-200">
                                     @foreach ($usuarios as $item)
-                                        <tr>
-                                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                        <tr tabindex="0" class="focus:outline-none h-16 border border-slate-300 rounded hover:bg-gray-300">
+                                            <td class="pl-5">
                                                 <div class="flex items-center">
                                                     <p class="text-indigo-900 p-1 bg-indigo-200 rounded-md">
                                                         {{ strtoupper($item->id) }}
                                                     </p>
                                                 </div>
                                             </td>
-                                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                            <td class="pl-2">
                                                 <div class="flex items-center">
                                                     <p
-                                                        class="text-slate-900 font-semibold whitespace-no-wrap uppercase">
+                                                    class="text-sm font-medium leading-none text-gray-600 mr-2">
                                                         {{ $item->name }}
                                                     </p>
                                                 </div>
                                             </td>
-                                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                            <td class="pl-2">
                                                 <div class="flex items-center">
-                                                    <p class="text-gray-900 whitespace-no-wrap">
+                                                    <p class="text-sm leading-none text-gray-600 ml-2">
                                                         {{ $item->email }}
                                                     </p>
                                                 </div>
                                             </td>
-                                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                            <td class="pl-2">
                                                 <div class="flex items-center">
-                                                    <p class="text-gray-900 whitespace-no-wrap">
+                                                    <p class="text-sm leading-none text-gray-600 ml-2">
                                                        {{ $item->celular??'Sin datos'}}
                                                     </p>
                                                 </div>
                                             </td>
-                                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                            <td class="pl-2">
                                                 <div class="flex items-center justify-center">
                                                     <p class="text-gray-900 whitespace-no-wrap text-center">
                                                         @if ($item->rutaFirma)
@@ -154,9 +154,9 @@
                                                     </p>
                                                 </div>
                                             </td>
-                                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                            <td class="pl-2">
                                                 <div class="flex items-center">
-                                                    <p class="text-gray-900 whitespace-no-wrap">
+                                                    <p class="text-sm leading-none text-gray-600 ml-2">
                                                         @if ($item->roles)
                                                             @foreach ($item->roles as $rol)
                                                                 <span>{{ $rol->name }}</span>
@@ -165,7 +165,7 @@
                                                     </p>
                                                 </div>
                                             </td>
-                                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                            <td class="pl-2">
                                                 <div class="flex items-center justify-center">
                                                     <p class="text-gray-900 whitespace-no-wrap">
                                                         <button wire:click="editarUsuario({{ $item->id }})"

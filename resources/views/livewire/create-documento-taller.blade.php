@@ -18,6 +18,7 @@
             <div class="mb-4">
                 <x-jet-label value="Combustible:" />
                 <select wire:model="combustible" class="bg-gray-50 border-indigo-500 rounded-md outline-none w-full">
+                    <option value="">SELECCIONE</option>
                     <option value="GNV">GNV</option>
                     <option value="GLP">GLP</option>
                 </select>

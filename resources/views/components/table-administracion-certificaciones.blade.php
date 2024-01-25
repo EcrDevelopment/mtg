@@ -1,10 +1,10 @@
 <div class="sm:px-6 w-full">
     <!--- more free and premium Tailwind CSS components at https://tailwinduikit.com/ --->
-    <div class="px-4 md:px-10 py-4 md:py-7">
+    <div class="px-4 md:px-10 py-4 md:py-7 mt-4">
         <div class="flex items-center justify-between">
-                <p tabindex="0" class="focus:outline-none text-base sm:text-lg md:text-xl lg:text-2xl font-bold leading-normal text-gray-800">
+                <h2 tabindex="0" class="focus:outline-none text-base sm:text-lg md:text-xl lg:text-2xl font-bold leading-normal text-indigo-500">
                     TODAS LAS CERTIFICACIONES
-                </p>
+                </h2>
             
             <div
                 class="py-3 px-4 flex items-center text-sm font-medium leading-none text-gray-600 bg-gray-200 hover:bg-gray-300 cursor-pointer rounded">

@@ -50,6 +50,7 @@ use App\Http\Livewire\Tablas\Tiposservicios;
 use App\Http\Livewire\Usuarios;
 use App\Http\Livewire\VistaEliminacion;
 use App\Http\Livewire\VistaSolicitudAnul;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -66,6 +67,9 @@ use App\Http\Livewire\VistaSolicitudAnul;
 Route::get('/', function () {
     return redirect()->to('/login');
 });*/
+
+//Route::get('register',[Auth::class, 'showLoginForm'])->name('register');
+
 
 Route::get('/', function () {
     return view('index');

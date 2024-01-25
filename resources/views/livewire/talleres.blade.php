@@ -6,9 +6,9 @@
                     <div class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
                         <div class="overflow-x-auto">
                             <table class="min-w-full leading-normal rounded-md">
-                                <thead>
+                                <thead class="bg-slate-600 border-b font-bold text-white">
                                     <tr>
-                                        <th class=" w-24 cursor-pointer hover:font-bold hover:text-indigo-500 px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
+                                        <th scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left"
                                             wire:click="order('id')">
                                             Id
                                             @if ($sort == 'id')
@@ -21,7 +21,7 @@
                                                 <i class="fas fa-sort float-right mt-0.5"></i>
                                             @endif
                                         </th>
-                                        <th class="cursor-pointer hover:font-bold hover:text-indigo-500  px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
+                                        <th scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left"
                                             wire:click="order('nombre')">
                                             Nombre    
                                             @if ($sort == 'nombre')
@@ -34,7 +34,7 @@
                                                 <i class="fas fa-sort float-right mt-0.5"></i>
                                             @endif
                                         </th>
-                                        <th class="cursor-pointer hover:font-bold hover:text-indigo-500 px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
+                                        <th scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left"
                                             wire:click="order('direccion')">
                                             Dirección
                                             @if ($sort == 'direccion')
@@ -47,7 +47,7 @@
                                                 <i class="fas fa-sort float-right mt-0.5"></i>
                                             @endif
                                         </th>
-                                        <th class="cursor-pointer hover:font-bold hover:text-indigo-500 px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
+                                        <th scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left"
                                             wire:click="order('ruc')">
                                             Ruc
                                             @if ($sort == 'ruc')
@@ -60,7 +60,7 @@
                                                 <i class="fas fa-sort float-right mt-0.5"></i>
                                             @endif
                                         </th>    
-                                        <th class="cursor-pointer hover:font-bold hover:text-indigo-500 px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
+                                        <th scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left"
                                             wire:click="order('idDistrito')">
                                             Distrito
                                             @if ($sort == 'idDistrito')
@@ -74,41 +74,41 @@
                                             @endif
                                         </th>                                         
                                         <th
-                                            class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left">
                                             Acciones
                                         </th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody class="bg-white divide-y divide-gray-300"> 
                                     @foreach ($talleres as $item)
-                                        <tr>
-                                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                        <tr tabindex="0" class="focus:outline-none h-16 border border-slate-300 rounded hover:bg-gray-200">
+                                            <td class="pl-5">
                                                 <div class="flex items-center">
-                                                    <p class="text-gray-900 ">
+                                                    <p class="bg-indigo-200 rounded-sm w-5 h-5 flex flex-shrink-0 justify-center items-center relative text-indigo-900">
                                                         {{ strtoupper($item->id) }}
                                                     </p>
                                                 </div>
                                             </td>
-                                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                            <td class="pl-2">
                                                 <div class="flex items-center">
-                                                    <p class="text-gray-900 whitespace-no-wrap">
+                                                    <p class="text-sm font-medium leading-none text-gray-600 mr-2">
                                                         {{ $item->nombre }}
                                                     </p>
                                                 </div>
                                             </td>                                            
-                                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                                <p class="text-gray-900 whitespace-no-wrap">{{ $item->direccion }}</p>
+                                            <td class="pl-2">
+                                                <p class="text-sm leading-none text-gray-600 ml-2">{{ $item->direccion }}</p>
                                             </td>
-                                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                            <td class="pl-2">
                                                 <div class="flex items-center">
-                                                    <p class="text-gray-900 whitespace-no-wrap">
+                                                    <p class="text-sm leading-none text-gray-600 ml-2">
                                                         {{ $item->ruc }}
                                                     </p>
                                                 </div>
                                             </td>     
-                                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                            <td class="pl-2">
                                                 <div class="flex items-center">
-                                                    <p class="text-gray-900 whitespace-no-wrap">
+                                                    <p class="text-sm leading-none text-gray-600 ml-2">
                                                         @if(isset($item->Distrito->distrito))
                                                             {{ $item->Distrito->distrito }}
                                                         @else
@@ -120,7 +120,7 @@
                                            
                                                                                       
 
-                                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                            <td class="pl-2">
                                                 {{-- @livewire('edit-usuario', ['usuario' => $usuario], key($usuario->id)) --}}
                                                 <div class="flex justify-end space-x-2">
                                                     <a 

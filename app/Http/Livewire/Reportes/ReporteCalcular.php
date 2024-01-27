@@ -9,6 +9,10 @@ use App\Models\Taller;
 use App\Models\TipoServicio;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use App\Exports\ReporteCalcularExport;
+use Illuminate\Support\Facades\Cache;
+use Maatwebsite\Excel\Facades\Excel;
+
 use Livewire\Component;
 
 class ReporteCalcular extends Component
@@ -124,8 +128,7 @@ class ReporteCalcular extends Component
         $resultados = $certificaciones->concat($certificadosPendientes);
         $totalPrecio = $resultados->sum('precio');
         $this->resultados = $resultados;
-        //dd($resultados);
-        //$this->cantidades = $cantidades;
+        Cache::put('reporteCalcular', $this->resultados, now()->addMinutes(10));
         $this->totalPrecio = $totalPrecio;
         $this->emit('resultadosCalculados', $this->resultados, $this->cantidades, $this->totalPrecio);
     } 
@@ -157,5 +160,16 @@ class ReporteCalcular extends Component
         // Restablecer el estado de selección
         $this->selectAll = false;
         $this->selectedItems = [];
+    }
+
+
+    public function exportarExcel()
+    {
+        $data = Cache::get('reporteCalcular');
+
+        if ($data) {
+            $fecha = now()->format('d-m-Y');
+            return Excel::download(new ReporteCalcularExport($data), 'ReporteCalcular' . $fecha . '.xlsx');
+        }
     }
 }

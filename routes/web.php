@@ -30,6 +30,7 @@ use App\Http\Livewire\ImportarDesmontes;
 use App\Http\Livewire\ListaCertificaciones;
 use App\Http\Livewire\ListaCertificacionesPendientes;
 use App\Http\Livewire\ListadoChips;
+use App\Http\Livewire\Logona;
 use App\Http\Livewire\NotificacionesPendientes;
 use App\Http\Livewire\PrestamoMateriales;
 use App\Http\Livewire\Prueba;
@@ -198,6 +199,11 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified'])
     Route::get('/Tablas/TiposDeServicios',Tiposservicios::class)->name('table.tiposServicio');
 
     Route::get('/documentosTaller',PruebaDocumentosTaller::class)->name('documentosTaller');
+
+
+    //Ruta para los logos
+    Route::get('/Logona',Logona::class)->name('Logona');
+
 
 
 

@@ -28,9 +28,9 @@
                         <select wire:model="ins"
                             class="bg-gray-50 mx-2 border-indigo-500 rounded-md outline-none ml-1 block w-full truncate">
                             <option value="">SELECCIONE</option>
-                                @foreach ($inspectores as $inspector)
+                            @foreach ($inspectores as $inspector)
                                 <option value="{{ $inspector->id }}">{{ $inspector->name }}</option>
-                                @endforeach
+                            @endforeach
                         </select>
                     </div>
                     <div class="flex items-center space-x-2">
@@ -73,10 +73,16 @@
                         {{ $certificacionesTaller[0]->taller }}
                     </h2>
                     --}}
+            <div class="m-auto flex justify-center items-center bg-gray-300 rounded-md w-full p-4 mt-4">
+                <button wire:click="exportarExcel"
+                    class="bg-green-400 px-6 py-4 w-1/3 text-sm rounded-md text-sm text-white font-semibold tracking-wide cursor-pointer ">
+                    <p class="truncate"><i class="fa-solid fa-file-excel fa-lg"></i> Desc. Excel </p>
+                </button>
+            </div>
             @foreach ($resultados->groupBy('idInspector') as $inspector => $certificacionesInspector)
-                <div class="bg-gray-200  px-8 py-4 rounded-xl w-full mt-8">
-                    {{--{{dd($certificacionesInspector)}}--}}
-                    <h2 class="text-indigo-600 text-xl font-bold mb-4">{{ $certificacionesInspector[0]->nombre }}</h2>
+                <div class="bg-gray-200  px-8 py-4 rounded-xl w-full mt-4">
+                    {{-- {{dd($certificacionesInspector)}} --}}
+                    {{--<h2 class="text-indigo-600 text-xl font-bold mb-4">{{ $certificacionesInspector[0]->nombre }}</h2>--}}
                     @if ($certificacionesInspector->count() > 0)
                         <div class="overflow-x-auto m-auto w-full" wire:ignore>
                             <div class="inline-block min-w-full py-2 sm:px-6">
@@ -89,6 +95,8 @@
                                                 </th>
                                                 <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
                                                     Taller</th>
+                                                <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
+                                                    Inspector</th>
                                                 <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
                                                     Vehículo</th>
                                                 <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
@@ -115,7 +123,7 @@
                                                     --}}
                                             </tr>
                                         </thead>
-                                        
+
                                         <tbody>
                                             @foreach ($certificacionesInspector as $key => $item)
                                                 <tr class="border-b dark:border-neutral-500 bg-orange-200">
@@ -125,57 +133,65 @@
 
                                                     <td
                                                         class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                        {{ $item->taller }}
+                                                        {{ $item->taller ?? 'N.A' }}
+                                                    </td>
+                                                    <td
+                                                        class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                        {{ $item->nombre ?? 'N.A' }}
                                                     </td>
                                                     <td
                                                         class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
                                                         {{ $item->placa ?? 'En tramite' }}</td>
                                                     <td
                                                         class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                        {{ $item->tiposervicio }}</td>
+                                                        {{ $item->tiposervicio ?? 'N.E' }}</td>
                                                     <td
                                                         class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                        {{ \Carbon\Carbon::parse($item->created_at)->format('d M Y') }}
+                                                        {{ $item->created_at ?? 'S.F' }}
                                                     </td>
-                                                    <td class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                    <td
+                                                        class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
                                                         <div class="flex items-center justify-center">
-                                                            @switch($item->estado)
+                                                            @switch(is_object($item) ? $item->estado : null)
                                                                 @case(1)
-                                                                    <i class="far fa-check-circle fa-lg" style="color: forestgreen;"></i>
+                                                                    <i class="far fa-check-circle fa-lg"
+                                                                        style="color: forestgreen;"></i>
                                                                 @break
-                    
+
                                                                 @case(2)
-                                                                    <i class="far fa-times-circle fa-lg" style="color: red;"></i>
+                                                                    <i class="far fa-times-circle fa-lg"
+                                                                        style="color: red;"></i>
                                                                 @break
-                    
+
                                                                 @case(3)
-                                                                    <i class="fa-regular fa-circle-pause fa-lg text-amber-400"></i>
+                                                                    <i
+                                                                        class="fa-regular fa-circle-pause fa-lg text-amber-400"></i>
                                                                 @break
-                    
-                                                                @default 
-                                                                NA
+
+                                                                @default
+                                                                    NA
                                                             @endswitch
                                                         </div>
                                                     </td>
                                                     <td
                                                         class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
                                                         {{-- --}}
-                                                        @if (property_exists($item, 'pagado'))
+                                                        @if (is_object($item) && property_exists($item, 'pagado'))
                                                             @if ($item->pagado == 0)
                                                                 Sin cobrar
                                                             @elseif ($item->pagado == 1)
-                                                                Cobrado
+                                                                Cobrado el
+                                                                {{ \Carbon\Carbon::parse($item->created_at)->format('d M Y') }}
                                                             @else
                                                                 Cert. Pendiente
                                                             @endif
                                                         @else
                                                             Cert. Pendiente
                                                         @endif
-
                                                     </td>
                                                     <td
                                                         class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                        {{ $item->precio }}
+                                                        {{ $item->precio ?? 'S.P' }}
                                                     </td>
                                                     {{--
                                                         <td
@@ -188,15 +204,13 @@
                                             @endforeach
 
                                             <tr class="border-b dark:border-neutral-500 bg-green-200">
-                                                <td colspan="7"
+                                                <td colspan="8"
                                                     class="border-r px-6 py-3 dark:border-neutral-500 font-bold text-right">
                                                     Total: {{-- ({{ $certificacionesInspector[0]->nombre }}) --}}
                                                 </td>
                                                 <td class="border-r px-6 py-3 dark:border-neutral-500 font-bold">
                                                     {{ number_format(
-                                                        $certificacionesInspector->where('pagado', 0)
-                                                                                ->whereIn('estado', [1, 3])
-                                                                                ->sum('precio'),
+                                                        $certificacionesInspector->where('pagado', 0)->whereIn('estado', [1, 3])->sum('precio'),
                                                         2,
                                                     ) }}
                                                 </td>
@@ -222,8 +236,7 @@
                                             @foreach ($certificacionesInspector->groupBy('tiposervicio') as $tipoServicio => $detalle)
                                                 {{-- Filtrar las entradas donde pagado sea igual a 0 --}}
                                                 @php
-                                                    $detalleSinPagados = $detalle->where('pagado', 0)
-                                                                                ->whereIn('estado', [1, 3]);
+                                                    $detalleSinPagados = $detalle->where('pagado', 0)->whereIn('estado', [1, 3]);
                                                 @endphp
                                                 <li
                                                     class="flex items-center justify-between bg-gray-100 p-3 rounded-md shadow">

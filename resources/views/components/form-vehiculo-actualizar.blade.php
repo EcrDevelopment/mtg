@@ -71,7 +71,7 @@
             </div>
             <div>
                 <x-jet-label value="N° Serie Motor:" />
-                <x-jet-input type="text" class="w-full" wire:model="vehiculo.numMotor"  />
+                <x-jet-input type="text" class="w-full" wire:model="vehiculo.numMotor"  maxlength="21"/>
                 <x-jet-input-error for="numMotor" />
             </div>
             <div class="flex flex-row justify-center">

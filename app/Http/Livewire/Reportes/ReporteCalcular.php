@@ -73,7 +73,7 @@ class ReporteCalcular extends Component
                 if (!empty($this->ins)) {
                     $query->where('certificacion.idInspector', $this->ins);
                 }
-    
+
                 if (!empty($this->taller)) {
                     $query->where('certificacion.idTaller', $this->taller);
                 }
@@ -82,7 +82,7 @@ class ReporteCalcular extends Component
                 $this->fechaInicio . ' 00:00:00',
                 $this->fechaFin . ' 23:59:59'
             ])
-            
+
             ->get();
 
         $certificadosPendientes = DB::table('certificados_pendientes')
@@ -112,16 +112,16 @@ class ReporteCalcular extends Component
                 if (!empty($this->ins)) {
                     $query->where('certificados_pendientes.idInspector', $this->ins);
                 }
-    
+
                 if (!empty($this->taller)) {
                     $query->where('certificados_pendientes.idTaller', $this->taller);
-                }               
+                }
             })
             ->whereBetween('certificados_pendientes.created_at', [
                 $this->fechaInicio . ' 00:00:00',
                 $this->fechaFin . ' 23:59:59'
             ])
-            
+
             ->get();
 
 
@@ -131,7 +131,7 @@ class ReporteCalcular extends Component
         Cache::put('reporteCalcular', $this->resultados, now()->addMinutes(10));
         $this->totalPrecio = $totalPrecio;
         $this->emit('resultadosCalculados', $this->resultados, $this->cantidades, $this->totalPrecio);
-    } 
+    }
 
     public function toggleSelectAll($taller)
     {
@@ -172,4 +172,31 @@ class ReporteCalcular extends Component
             return Excel::download(new ReporteCalcularExport($data), 'ReporteCalcular' . $fecha . '.xlsx');
         }
     }
+
+    /*
+    public function exportarExcel()
+    {
+        $data = Cache::get('reporteCalcular');
+
+        if ($data) {
+            // Formatear los datos para asegurarse de que estén en el formato correcto antes de exportar
+            $formattedData = $this->formatDataForExport($data);
+
+            $fecha = now()->format('d-m-Y');
+            return Excel::download(new ReporteCalcularExport($formattedData), 'ReporteCalcular' . $fecha . '.xlsx');
+        }
+    }
+
+    protected function formatDataForExport($data)
+    {
+        // Verificar si los datos son un array o un objeto
+        if (is_array($data)) {
+            // Si es un array, convertirlo a una colección antes de exportar
+            return collect($data);
+        } else {
+            // Si es un objeto, convertirlo a una colección antes de exportar
+            return collect($data->toArray());
+        }
+    }
+    */
 }

@@ -82,7 +82,7 @@
             @foreach ($resultados->groupBy('idInspector') as $inspector => $certificacionesInspector)
                 <div class="bg-gray-200  px-8 py-4 rounded-xl w-full mt-4">
                     {{-- {{dd($certificacionesInspector)}} --}}
-                    {{--<h2 class="text-indigo-600 text-xl font-bold mb-4">{{ $certificacionesInspector[0]->nombre }}</h2>--}}
+                    <h2 class="text-indigo-600 text-xl font-bold mb-4">{{ $certificacionesInspector[0]->nombre }}</h2>
                     @if ($certificacionesInspector->count() > 0)
                         <div class="overflow-x-auto m-auto w-full" wire:ignore>
                             <div class="inline-block min-w-full py-2 sm:px-6">

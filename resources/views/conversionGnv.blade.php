@@ -235,21 +235,29 @@
                     @elseif ($carro->combustible === 'GLP')
                         GNV
                     @else
-                        {{$carro->combustible}}
+                        {{ $carro->combustible }}
                     @endif
                 </td>
             </tr>
             <tr>
                 <td style="text-align:center;">18</td>
                 <td style="text-align:center;">Peso neto(kg)</td>
-                <td style="text-align:center;">{{ $carro->pesoNeto + $pesos }}</td>
+                <td style="text-align:center;">
+                    @if ($carro->combustible === 'BI-COMBUSTIBLE GLP')
+                        {{ $carro->pesoNeto + 30 }}
+                    @else
+                        {{ $carro->pesoNeto + $pesos }}
+                    @endif
+                    {{-- {{ $carro->pesoNeto + $pesos }} --}}
+                </td>
             </tr>
         </table>
         <p>Consiste por el presente documento que el sistema de combustible a Gas Natural Vehicular GNV, del vehículo
             antes referido, no afectaran negativamente la seguridad
             del mismo(**), el tránsito terrestre, el medio ambiente o incumplen con las condiciones técnicas
             establecidas en la normativa vigente en la materia(***),según el
-            expediente técnico N° {{ $hoja->numSerie . ' - ' . $fechaCert->format('Y') }}, habilitándose al mismo para cargar Gas Natural
+            expediente técnico N° {{ $hoja->numSerie . ' - ' . $fechaCert->format('Y') }}, habilitándose al mismo para
+            cargar Gas Natural
             vehicular-GNV, hasta el: {{ $fechaCert->format('d/m/') . ($fechaCert->format('Y') + 1) }}
         </p>
         <h6 style="font-size: 10px;">OBSERVACIONES</h6>

@@ -9,9 +9,9 @@ class Documento extends Model
 {
     use HasFactory;
 
-    protected $table="documento";
+    protected $table = "documento";
 
-    public $fillable=[
+    public $fillable = [
         "tipoDocumento",
         "nombreEmpleado",
         "fechaInicio",
@@ -23,8 +23,9 @@ class Documento extends Model
         "dias",
     ];
 
-    public function TipoDocumento(){
-        return $this->belongsTo(TipoDocumento::class,'tipoDocumento');
+    public function TipoDocumento()
+    {
+        return $this->belongsTo(TipoDocumento::class, 'tipoDocumento');
     }
 
 
@@ -36,41 +37,45 @@ class Documento extends Model
 
 
 
-    public function Taller(){
+    public function Taller()
+    {
         return $this->belongsToMany(Taller::class, 'documentostaller', 'idDocumento', 'idTaller');
+    }
+
+    public function documentostaller()
+    {
+        return $this->hasMany(DocumentoTaller::class, 'idDocumento', 'id');
     }
 
     protected $casts = [
         'fechaExpiracion' => 'datetime:Y-m-d',
     ];
 
-    public function getTiempoAttribute(){
-        $resultMes='';
-        $resultDia='';
-        $resultHora='';
+    public function getTiempoAttribute()
+    {
+        $resultMes = '';
+        $resultDia = '';
+        $resultHora = '';
         $hoy = now();
         $intervalo = $hoy->diff($this->attributes['fechaExpiracion']);
 
-        if($intervalo->m){
-            $resultMes=$intervalo->m.' meses ';
+        if ($intervalo->m) {
+            $resultMes = $intervalo->m . ' meses ';
         }
 
-        if($intervalo->d){
-            $resultDia=$intervalo->d.' días ';
+        if ($intervalo->d) {
+            $resultDia = $intervalo->d . ' días ';
         }
-        if($intervalo->h){
-            $resultHora=$intervalo->h.' horas.';
+        if ($intervalo->h) {
+            $resultHora = $intervalo->h . ' horas.';
         }
-        return $resultMes.$resultDia.$resultHora;
+        return $resultMes . $resultDia . $resultHora;
     }
 
-    public function getDiasAttribute(){
-       $hoy = now();
-       $dias=$hoy->diff($this->attributes['fechaExpiracion'])->format('%R%a');
-       return $dias;
+    public function getDiasAttribute()
+    {
+        $hoy = now();
+        $dias = $hoy->diff($this->attributes['fechaExpiracion'])->format('%R%a');
+        return $dias;
     }
-
-
-
-
 }

@@ -81,6 +81,9 @@
                                                 Documento
                                             </th>
                                             <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
+                                                Combustible
+                                            </th>
+                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
                                                 Vence
                                             </th>
                                         </tr>
@@ -101,6 +104,12 @@
                                                 <td
                                                     class="whitespace-nowrap border-r px-6 py-4 font-medium dark:border-neutral-500">
                                                     {{ $item->TipoDocumento->nombreTipo }}
+                                                </td>
+                                                <td
+                                                    class="whitespace-nowrap border-r px-6 py-4 font-medium dark:border-neutral-500">                                                    
+                                                    @foreach ($item->documentostaller as $comb)
+                                                        {{ $comb->combustible }}
+                                                    @endforeach
                                                 </td>
                                                 <td
                                                     class="whitespace-nowrap border-r px-6 py-4 font-medium dark:border-neutral-500">

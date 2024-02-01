@@ -3,7 +3,6 @@
 namespace App\Exports;
 
 use Maatwebsite\Excel\Concerns\FromCollection;
-use App\Models\Expediente;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\Exportable;
@@ -13,6 +12,7 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStrictNullComparison;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\WithStyles;
+use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
@@ -29,7 +29,6 @@ class ReporteCalcularExport implements FromCollection, WithHeadings, WithMapping
 
     public function collection()
     {
-        //dd($this->data); 
         return $this->data;
     }
 
@@ -47,10 +46,8 @@ class ReporteCalcularExport implements FromCollection, WithHeadings, WithMapping
         ];
     }
 
-
     public function headings(): array
     {
-
         return [
             'Taller',
             'Inspector',
@@ -65,37 +62,52 @@ class ReporteCalcularExport implements FromCollection, WithHeadings, WithMapping
 
     public function map($data): array
     {
-        if (is_array($data)) {
-            // Manejar el caso en que $data es un array
-            return $data;
-        } else {
-            // Manejar el caso en que $data es un objeto
-            return [
-                $data->taller,
-                $data->nombre,
-                $data->placa ?? 'EN TRAMITE',
-                $data->tiposervicio,
-                $data->created_at,
-                $data->estado,
-                $data->pagado,
-                $data->precio,
-            ];
-        }
+        return [
+            $data->taller,
+            $data->nombre,
+            $data->placa ?? 'EN TRAMITE',
+            $data->tiposervicio,
+            $data->created_at,
+            $data->estado,
+            $data->pagado,
+            $data->precio,
+        ];
     }
 
     public function styles(Worksheet $sheet)
     {
-        // bordes a todas las celdas
         $sheet->getStyle('A1:H' . $sheet->getHighestRow())
             ->getBorders()
             ->getAllBorders()
             ->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
-        // encabezados sea negrita
         $sheet->getStyle('1:1')->getFont()->setBold(true);
 
+        return [];
+    }
+
+    public function registerEvents(): array
+    {
         return [
-            // 
+            AfterSheet::class => function (AfterSheet $event) {
+                // Encontrar el número de filas en el conjunto de datos
+                $rowCount = count($this->data) + 2; // +2 para incluir la fila de encabezado y empezar desde 1
+
+                // Agregar una fila vacía después de cada grupo de datos del inspector
+                $inspectorActual = null;
+
+                for ($i = 2; $i <= $rowCount; $i++) {
+                    $inspectorSiguiente = $event->sheet->getCell('B' . $i)->getValue();
+
+                    if ($inspectorActual !== null && $inspectorActual !== $inspectorSiguiente) {
+                        $event->sheet->insertNewRowBefore($i, 1);
+                        $rowCount++; // Incrementar el número total de filas
+                        $i++; // Saltar la fila que acabamos de agregar
+                    }
+
+                    $inspectorActual = $inspectorSiguiente;
+                }
+            },
         ];
     }
 }

@@ -228,7 +228,7 @@
                 <td style="text-align:center;">17</td>
                 <td style="text-align:center;">Combustible</td>
                 <td style="text-align:center;">
-                    @if ($carro->combustible === 'GASOLINA' || $carro->combustible === 'BI-COMBUSTIBLE GLP')
+                    @if ($carro->combustible === 'GASOLINA' || $carro->combustible === 'BI-COMBUSTIBLE GLP' || $carro->combustible === 'GASOLINA GLP')
                         BI COMBUSTIBLE GNV
                     @elseif ($carro->combustible === 'DIESEL')
                         DUAL GNV

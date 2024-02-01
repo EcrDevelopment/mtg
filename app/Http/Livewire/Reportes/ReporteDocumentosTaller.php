@@ -62,7 +62,7 @@ class ReporteDocumentosTaller extends Component
             ->when($this->tipoDocumentoId, function ($query) {
                 $query->where('tipoDocumento', $this->tipoDocumentoId);
             })
-            ->with(['talleres', 'tipoDocumento'])
+            ->with(['talleres', 'tipoDocumento', 'documentostaller'])
             ->get();
     }
 

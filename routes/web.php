@@ -21,6 +21,7 @@ use App\Http\Livewire\AdministracionCertificaciones;
 use App\Http\Livewire\AdminPermisos;
 use App\Http\Livewire\AdminRoles;
 use App\Http\Livewire\Arreglando;
+use App\Http\Livewire\CargaFotos;
 use App\Http\Livewire\ConsultarHoja;
 use App\Http\Livewire\EditarTaller;
 use App\Http\Livewire\FinalizarPreConversion;
@@ -193,6 +194,10 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified'])
     Route::get('/Reporte-calcular',ReporteCalcular::class)->name('reportes.reporteCalcular');
     Route::get('/Reporte-calcular-chip',ReporteCalcularChip::class)->name('reportes.reporteCalcularChip');
     Route::get('/Reporte-calcular-gasol',ReporteCalcularGasol::class)->name('reportes.reporteCalcularGasol');
+
+
+    //Prueba Fotos
+    Route::get('/CargaFotos',CargaFotos::class)->name('CargaFotos');
 
 
     //Ruta para adminsitracion de tablas

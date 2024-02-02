@@ -195,8 +195,7 @@
                                         <x-jet-input-error for="fechaCertificacion" />
                                     </div>
                                     <div>
-                                        <button wire:click="certificar" wire:loading.attr="disabled"
-                                            wire.target="certificar"
+                                        <button wire:click="certificar" wire:loading.attr="disabled" wire.target="certificar"
                                             class="hover:cursor-pointer border border-indigo-500 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 sm:mt-0 inline-flex items-center justify-center px-6 py-3 bg-indigo-400 hover:bg-indigo-500 focus:outline-none rounded">
                                             <p class="text-sm font-medium leading-none text-white">
                                                 <span wire:loading wire:target="certificar">
@@ -334,8 +333,7 @@
                                         <x-jet-input-error for="fechaCertificacion" />
                                     </div>
                                     <div>
-                                        <button wire:click="certificarGlp" wire:loading.attr="disabled"
-                                            wire.target="certificar"
+                                        <button wire:click="certificarGlp" wire:loading.attr="disabled" wire.target="certificar"
                                             class="hover:cursor-pointer border border-indigo-500 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 sm:mt-0 inline-flex items-center justify-center px-6 py-3 bg-indigo-400 hover:bg-indigo-500 focus:outline-none rounded">
                                             <p class="text-sm font-medium leading-none text-white">
                                                 <span wire:loading wire:target="certificarGlp">
@@ -472,8 +470,7 @@
                                         <x-jet-input-error for="fechaCertificacion" />
                                     </div>
                                     <div>
-                                        <button wire:click="certificarGlp" wire:loading.attr="disabled"
-                                            wire.target="certificar"
+                                        <button wire:click="certificarGlp" wire:loading.attr="disabled" wire.target="certificar"
                                             class="hover:cursor-pointer border border-indigo-500 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 sm:mt-0 inline-flex items-center justify-center px-6 py-3 bg-indigo-400 hover:bg-indigo-500 focus:outline-none rounded">
                                             <p class="text-sm font-medium leading-none text-white">
                                                 <span wire:loading wire:target="certificarGlp">
@@ -677,7 +674,7 @@
                     @endswitch
                 @endif
             @break
-            
+
             @case(7)
                 @livewire('activacion-de-chips', ['tipoServicio' => $tipoServicio, 'idTaller' => $this->taller])
             @break
@@ -969,7 +966,7 @@
             @break
 
             @case(11)
-                @livewire('chip-por-deterioro', ['taller'=> $this->taller, 'servicio'=> $this->servicio,])
+                @livewire('chip-por-deterioro', ['taller' => $this->taller, 'servicio' => $this->servicio])
                 {{--
                 @if ($estado)
                     @switch($estado)
@@ -1083,18 +1080,24 @@
                     @switch($estado)
                         @case('esperando')
                             <div class="max-w-5xl m-auto bg-white rounded-lg shadow-md my-4 py-4">
-                                <div class="my-2 flex flex-row justify-evenly items-center">
-                                    <button wire:click="certificarPreconver" wire:loading.attr="disabled"
-                                        wire.target="certificarPreconver"
-                                        class="hover:cursor-pointer border border-indigo-500 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 sm:mt-0 inline-flex items-center justify-center px-6 py-3 bg-indigo-400 hover:bg-indigo-500 focus:outline-none rounded">
-                                        <p class="text-sm font-medium leading-none text-white">
-                                            <span wire:loading wire:target="certificarPreconver">
-                                                <i class="fas fa-spinner animate-spin"></i>
-                                                &nbsp;
-                                            </span>
-                                            &nbsp;Certificar
-                                        </p>
-                                    </button>
+                                <div class="my-2 flex flex-col md:flex-row justify-evenly items-center">
+                                    <div>
+                                        <x-jet-input type="date" class="" wire:model="fechaCertificacion" />
+                                        <x-jet-input-error for="fechaCertificacion" />
+                                    </div>
+                                    <div class="my-2 flex flex-row justify-evenly items-center">
+                                        <button wire:click="certificarPreconver" wire:loading.attr="disabled"
+                                            wire.target="certificarPreconver"
+                                            class="hover:cursor-pointer border border-indigo-500 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 sm:mt-0 inline-flex items-center justify-center px-6 py-3 bg-indigo-400 hover:bg-indigo-500 focus:outline-none rounded">
+                                            <p class="text-sm font-medium leading-none text-white">
+                                                <span wire:loading wire:target="certificarPreconver">
+                                                    <i class="fas fa-spinner animate-spin"></i>
+                                                    &nbsp;
+                                                </span>
+                                                &nbsp;Certificar
+                                            </p>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         @break

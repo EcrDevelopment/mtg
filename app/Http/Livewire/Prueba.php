@@ -488,6 +488,8 @@ class Prueba extends Component
                     if ($certi) {
                         $this->estado = "certificado";
                         $this->certificacion = $certi;
+                        // Agrega la fecha al modelo Certificacion
+                        $certi->update(['created_at' => $this->fechaCertificacion]);
 
 
                         $this->emit("minAlert", ["titulo" => "¡EXCELENTE TRABAJO!", "mensaje" => "Tu certificado N°: " . $certi->Hoja->numSerie . " esta listo.", "icono" => "success"]);

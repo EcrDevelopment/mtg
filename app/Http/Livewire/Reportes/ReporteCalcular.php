@@ -17,22 +17,26 @@ use Livewire\Component;
 
 class ReporteCalcular extends Component
 {
-    public $fechaInicio, $fechaFin, $resultados, $talleres, $inspectores, $totalPrecio, $cantidades;
+    public $fechaInicio, $fechaFin, $resultados, $talleres, $inspectores, $totalPrecio, $cantidades, $tiposServicio;
     public $ins, $taller;
     public $selectAll = false;
     public $selectedItems = [];
+    public $editando, $inspectorSeleccionado;
+    public $preciosInspector = [];
+    public $precioServicios = [];
+
 
     protected $rules = [
         "fechaInicio" => 'required|date',
         "fechaFin" => 'required|date',
-        //"ins" => 'numeric',
-        //'taller' => 'nullable|numeric', 
     ];
 
     public function mount()
     {
         $this->inspectores = User::role(['inspector', 'supervisor'])->orderBy('name')->get();
         $this->talleres = Taller::all()->sortBy('nombre');
+        $this->tiposServicio = TipoServicio::all()->sortBy('descripcion');
+        $this->preciosInspector = []; // Inicializar el array
     }
 
     public function render()
@@ -173,30 +177,43 @@ class ReporteCalcular extends Component
         }
     }
 
-    /*
-    public function exportarExcel()
+    public function precios()
     {
-        $data = Cache::get('reporteCalcular');
+        // Asegurarse de obtener el objeto User
+        $this->inspectorSeleccionado = User::find($this->inspectorSeleccionado);
 
-        if ($data) {
-            // Formatear los datos para asegurarse de que estén en el formato correcto antes de exportar
-            $formattedData = $this->formatDataForExport($data);
+        // Obtener los precios del inspector seleccionado
+        $this->preciosInspector = $this->inspectorSeleccionado ? $this->precioServicios[$this->inspectorSeleccionado->id] ?? [] : [];
 
-            $fecha = now()->format('d-m-Y');
-            return Excel::download(new ReporteCalcularExport($formattedData), 'ReporteCalcular' . $fecha . '.xlsx');
+        $this->editando = true;
+    }
+
+
+    public function updatePrecios()
+    {
+        if (!empty($this->inspectorSeleccionado)) {
+            // Actualizar los precios del inspector seleccionado
+            $this->precioServicios[$this->inspectorSeleccionado->id] = $this->preciosInspector;
+
+            // Resto del código...
+
+            $this->inspectorSeleccionado = null;
+        }
+
+        $this->editando = false;
+    }
+
+    /*public function cargarPrecios()
+    {
+        if (!empty($this->inspectorSeleccionado)) {
+            // Cargar los precios desde la matriz asociativa
+            $this->precioServicios = $this->precioServicios[$this->inspectorSeleccionado] ?? [];
         }
     }
 
-    protected function formatDataForExport($data)
+    public function persistirPrecios($inspectorId, $precios)
     {
-        // Verificar si los datos son un array o un objeto
-        if (is_array($data)) {
-            // Si es un array, convertirlo a una colección antes de exportar
-            return collect($data);
-        } else {
-            // Si es un objeto, convertirlo a una colección antes de exportar
-            return collect($data->toArray());
-        }
-    }
-    */
+        $this->precioServicios[$inspectorId] = $precios;
+        $this->editando = false;
+    }*/
 }

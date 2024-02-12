@@ -50,6 +50,11 @@
                         class="bg-green-400 px-6 py-4 w-full md:w-auto rounded-md text-white font-semibold tracking-wide cursor-pointer mb-4">
                         <p class="truncate"> Generar reporte </p>
                     </button>
+
+                    <button wire:click="precios"
+                        class="bg-blue-400 px-6 py-4 w-full md:w-auto rounded-md text-white font-semibold tracking-wide cursor-pointer mb-4">
+                        <p class="truncate"> Precios </p>
+                    </button>
                 </div>
                 <div class="w-auto my-4">
                     <x-jet-input-error for="taller" />
@@ -65,14 +70,6 @@
         </div>
 
         @if (isset($resultados))
-            {{--  @forelse ($resultados->groupBy('idTaller') as $taller => $certificacionesTaller) --}}
-
-            {{-- {{ dd($certificacionesTaller) }} --}}
-            {{--
-                    <h2 class="text-indigo-600 text-xl font-bold mb-4">
-                        {{ $certificacionesTaller[0]->taller }}
-                    </h2>
-                    --}}
             <div class="m-auto flex justify-center items-center bg-gray-300 rounded-md w-full p-4 mt-4">
                 <button wire:click="exportarExcel"
                     class="bg-green-400 px-6 py-4 w-1/3 text-sm rounded-md text-sm text-white font-semibold tracking-wide cursor-pointer ">
@@ -81,11 +78,7 @@
             </div>
             @foreach ($resultados->groupBy('idInspector') as $inspector => $certificacionesInspector)
                 <div class="bg-gray-200  px-8 py-4 rounded-xl w-full mt-4">
-                    {{-- {{dd($certificacionesInspector)}} --}}
-                    {{-- $certificacionesInspector[0]->nombre --}}
-                    {{-- Obtener el nombre del inspector del primer elemento --}}
                     @php $nombreInspector = $certificacionesInspector[0]->nombre ?? 'Nombre no disponible' @endphp
-                    {{-- Mostrar el nombre del inspector como título --}}
                     <h2 class="text-indigo-600 text-xl font-bold mb-4">{{ $nombreInspector }}</h2>
                     @if ($certificacionesInspector->count() > 0)
                         <div class="overflow-x-auto m-auto w-full" wire:ignore>
@@ -197,13 +190,6 @@
                                                         class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
                                                         {{ $item->precio ?? 'S.P' }}
                                                     </td>
-                                                    {{--
-                                                        <td
-                                                            class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                            <input type="checkbox" wire:model="selectedItems"
-                                                                value="selectedItems">
-                                                        </td>
-                                                        --}}
                                                 </tr>
                                             @endforeach
 
@@ -218,20 +204,6 @@
                                                         2,
                                                     ) }}
                                                 </td>
-                                                {{--
-                                                    <td>
-                                                        <div class="flex justify-center  space-x-2">
-                                                            <a wire:click="actualizarCertificaciones"
-                                                                class="group flex py-2 px-2 text-center rounded-md bg-blue-300 font-bold text-white cursor-pointer hover:bg-blue-400 hover:animate-pulse">
-                                                                <i class="fas fa-edit"></i>
-                                                                <span
-                                                                    class="group-hover:opacity-100 transition-opacity bg-gray-800 px-1 text-sm text-gray-100 rounded-md absolute left-1/2-translate-x-1/2 translate-y-full opacity-0 m-4 mx-auto">
-                                                                    Actualizar
-                                                                </span>
-                                                            </a>
-                                                        </div>
-                                                    </td>
-                                                    --}}
                                             </tr>
                                         </tbody>
                                     </table>
@@ -261,15 +233,74 @@
                     @endif
                 </div>
             @endforeach
-
-            {{--
-            @empty
-                <div class="w-full text-center font-semibold text-gray-100 p-4 mb-4 border rounded-md bg-indigo-400 shadow-lg"
-                    wire:loading.class="hidden">
-                    No se encontraron resultados.
-                </div>
-            @endforelse
-            --}}
         @endif
     </div>
+
+
+    {{-- MODAL PARA EDITAR PRECIOS --}}
+    <x-jet-dialog-modal wire:model="editando" wire:loading.attr="disabled">
+        <x-slot name="title" class="font-bold">
+            <h1 class="text-xl font-bold">Editar Precios</h1>
+        </x-slot>
+
+        <x-slot name="content">
+            <h1 class="font-bold text-lg"> Seleccionar Inspector:</h1>
+            <div class="flex bg-white items-center p-2 rounded-md mb-4">
+                <span>Inspector: </span>
+                <select wire:model="inspectorSeleccionado"
+                    class="bg-gray-50 mx-2 border-indigo-500 rounded-md outline-none ml-1 block w-full truncate"
+                    id="inspector">
+                    <option value="">SELECCIONE</option>
+                    @foreach ($inspectores as $inspector)
+                        <option value="{{ $inspector->id }}">{{ $inspector->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            @if ($inspectorSeleccionado)
+                <div>
+                    <h1 class="font-bold text-lg">Servicios:</h1>
+                    <hr class="my-4">
+                    @if ($taller && count($taller->servicios))
+                        <div class="mb-4" wire:loading.attr="disabled" wire:target="updatePrecios">
+                            @foreach ($taller->servicios as $key => $serv)
+                                <div
+                                    class="flex flex-row justify-between bg-indigo-100 my-2 items-center rounded-lg p-2">
+                                    <div class="">
+                                        <label class="form-check-label inline-block text-gray-800">
+                                            {{ $serv->tiposervicio->descripcion }}
+                                        </label>
+                                    </div>
+                                    <div class="flex flex-row items-center">
+                                        <x-jet-label value="Precio:" class="mr-2" />
+                                        <x-jet-input type="number" class="w-6px"
+                                            wire:model="precioServicios.{{ $key }}" />
+                                    </div>
+                                </div>
+                                <x-jet-input-error for="precioServicios.{{ $key }}" />
+                            @endforeach
+                        </div>
+                    @else
+                        <hr>
+                        <div class="w-full items-center mt-2 justify-center text-center py-2 ">
+                            <h1 class="text-xs text-gray-500 ">El Inspector no cuenta con servicios registrados</h1>
+                        </div>
+                    @endif
+                </div>
+            @endif
+
+        </x-slot>
+
+        <x-slot name="footer">
+            <x-jet-secondary-button wire:click="$set('editando',false)" class="mx-2">
+                Cancelar
+            </x-jet-secondary-button>
+            <x-jet-button wire:click="updatePrecios" wire:loading.attr="disabled" wire:target="updatePrecios">
+                Actualizar
+            </x-jet-button>
+
+        </x-slot>
+
+    </x-jet-dialog-modal>
+
 </div>

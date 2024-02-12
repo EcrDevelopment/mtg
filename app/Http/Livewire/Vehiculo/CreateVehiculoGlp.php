@@ -116,7 +116,7 @@ class CreateVehiculoGlp extends Component
             "categoria"=>strtoupper($this->categoria),
             "marca"=>$this->retornaNE($this->marca),
             "modelo"=>$this->retornaNE($this->modelo),
-            "version"=>$this->retornaSV($this->version),
+            "version"=>$this->version,
 
             //considerar en el PDF
             "anioFab"=>$this->retornaNulo($this->anioFab),
@@ -214,7 +214,7 @@ class CreateVehiculoGlp extends Component
             "categoria"=>strtoupper($this->vehiculo->categoria),
             "marca"=>$this->retornaNE($this->vehiculo->marca),
             "modelo"=>$this->retornaNE($this->vehiculo->modelo),
-            "version"=>$this->retornaSV($this->vehiculo->version),
+            "version"=>$this->vehiculo->version,
 
             //considerar en el PDF
             "anioFab"=>$this->retornaNulo($this->vehiculo->anioFab),

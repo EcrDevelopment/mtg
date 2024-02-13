@@ -188,7 +188,7 @@
                                                     </td>
                                                     <td
                                                         class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                        {{ $item->precio ?? 'S.P' }}
+                                                        {{--{{ $item->precio ?? 'S.P' }}--}}
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -247,7 +247,7 @@
             <h1 class="font-bold text-lg"> Seleccionar Inspector:</h1>
             <div class="flex bg-white items-center p-2 rounded-md mb-4">
                 <span>Inspector: </span>
-                <select wire:model="inspectorSeleccionado"
+                <select wire:model="selectedInspectorId"
                     class="bg-gray-50 mx-2 border-indigo-500 rounded-md outline-none ml-1 block w-full truncate"
                     id="inspector">
                     <option value="">SELECCIONE</option>
@@ -257,13 +257,16 @@
                 </select>
             </div>
 
-            @if ($inspectorSeleccionado)
+            @if ($selectedInspectorId)
                 <div>
                     <h1 class="font-bold text-lg">Servicios:</h1>
                     <hr class="my-4">
                     @if ($taller && count($taller->servicios))
                         <div class="mb-4" wire:loading.attr="disabled" wire:target="updatePrecios">
                             @foreach ($taller->servicios as $key => $serv)
+                                {{--@php
+                                    dd($preciosInspector); // Agrega esta línea
+                                @endphp--}}
                                 <div
                                     class="flex flex-row justify-between bg-indigo-100 my-2 items-center rounded-lg p-2">
                                     <div class="">
@@ -274,10 +277,10 @@
                                     <div class="flex flex-row items-center">
                                         <x-jet-label value="Precio:" class="mr-2" />
                                         <x-jet-input type="number" class="w-6px"
-                                            wire:model="precioServicios.{{ $key }}" />
+                                            wire:model="preciosInspector.{{ $key }}" />
                                     </div>
                                 </div>
-                                <x-jet-input-error for="precioServicios.{{ $key }}" />
+                                <x-jet-input-error for="preciosInspector.{{ $key }}" />
                             @endforeach
                         </div>
                     @else

@@ -17,10 +17,10 @@ use Livewire\Component;
 
 class ReporteCalcular extends Component
 {
-    public $fechaInicio, $fechaFin, $resultados, $talleres, $inspectores, $totalPrecio, $cantidades, $tiposServicio;
+    public $fechaInicio, $fechaFin, $resultados, $talleres, $inspectores, $totalPrecio, $cantidades, $tiposServicio, $mostrar=false;
     public $ins, $taller;
     public $selectAll = false;
-    public $selectedItems = [];
+    public $selectedRows = [];
     public $editando, $selectedInspectorId;
     public $preciosInspector = [];
     public $precioServicios = [];
@@ -148,7 +148,28 @@ class ReporteCalcular extends Component
         }
     }
 
-    public function precios()
+    public function ver()
+    {
+        if($this->mostrar===false){
+            $this->mostrar=true;
+        }
+        
+    }
+
+    public function toggleSelectAll()
+    {
+        $this->selectAll = !$this->selectAll;
+
+        // Si el checkbox de selección está marcado, seleccionar todas las filas
+        if ($this->selectAll) {
+            $this->selectedRows = range(0, count($this->certificacionesInspector) - 1);
+        } else {
+            // Si el checkbox de selección está desmarcado, deseleccionar todas las filas
+            $this->selectedRows = [];
+        }
+    }
+
+    /*public function precios()
     {
         // Asegurarse de obtener el objeto User solo si hay un ID válido seleccionado
         if (!empty($this->selectedInspectorId)) {
@@ -162,10 +183,10 @@ class ReporteCalcular extends Component
         }
         $this->editando = true;
         //dd($this->precioServicios);
-    }
+    }*/
 
 
-    public function updatePrecios()
+    /*public function updatePrecios()
     {
         //dd('Evento emitido');
         if (!empty($this->selectedInspectorId)) {
@@ -182,5 +203,5 @@ class ReporteCalcular extends Component
 
 
         $this->editando = false;
-    }
+    }*/
 }

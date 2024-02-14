@@ -50,11 +50,7 @@
                         class="bg-green-400 px-6 py-4 w-full md:w-auto rounded-md text-white font-semibold tracking-wide cursor-pointer mb-4">
                         <p class="truncate"> Generar reporte </p>
                     </button>
-
-                    <button wire:click="precios"
-                        class="bg-blue-400 px-6 py-4 w-full md:w-auto rounded-md text-white font-semibold tracking-wide cursor-pointer mb-4">
-                        <p class="truncate"> Precios </p>
-                    </button>
+                    
                 </div>
                 <div class="w-auto my-4">
                     <x-jet-input-error for="taller" />
@@ -78,8 +74,16 @@
             </div>
             @foreach ($resultados->groupBy('idInspector') as $inspector => $certificacionesInspector)
                 <div class="bg-gray-200  px-8 py-4 rounded-xl w-full mt-4">
-                    @php $nombreInspector = $certificacionesInspector[0]->nombre ?? 'Nombre no disponible' @endphp
+                    <div class="p-2 w-full justify-between m-auto flex items-space-around">
+                        @php $nombreInspector = $certificacionesInspector[0]->nombre ?? 'Nombre no disponible' @endphp
                     <h2 class="text-indigo-600 text-xl font-bold mb-4">{{ $nombreInspector }}</h2>
+
+                    <button wire:click="ver"
+                        class="bg-blue-400 px-4 py-2 w-full md:w-auto rounded-md text-white font-semibold tracking-wide cursor-pointer mb-4">
+                        <p class="truncate"> Precios </p>
+                    </button>
+                    </div>
+
                     @if ($certificacionesInspector->count() > 0)
                         <div class="overflow-x-auto m-auto w-full" wire:ignore>
                             <div class="inline-block min-w-full py-2 sm:px-6">
@@ -88,6 +92,9 @@
                                         class="min-w-full border text-center text-sm font-light dark:border-neutral-500">
                                         <thead class="border-b font-medium dark:border-neutral-500">
                                             <tr class="bg-indigo-200">
+                                                <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
+                                                    <input type="checkbox" wire:model="selectAll" wire:click="toggleSelectAll">
+                                                </th>
                                                 <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">#
                                                 </th>
                                                 <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
@@ -124,6 +131,9 @@
                                         <tbody>
                                             @foreach ($certificacionesInspector as $key => $item)
                                                 <tr class="border-b dark:border-neutral-500 bg-orange-200">
+                                                    <td class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                        <input type="checkbox" wire:model="selectedRows.{{ $key }}" />
+                                                    </td>
                                                     <td
                                                         class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
                                                         {{ $key + 1 }}</td>
@@ -188,13 +198,13 @@
                                                     </td>
                                                     <td
                                                         class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                        {{--{{ $item->precio ?? 'S.P' }}--}}
+                                                        {{ $item->precio ?? 'S.P' }}
                                                     </td>
                                                 </tr>
                                             @endforeach
 
                                             <tr class="border-b dark:border-neutral-500 bg-green-200">
-                                                <td colspan="8"
+                                                <td colspan="9" {{--{{$mostrar ? '9':'8'}}--}}
                                                     class="border-r px-6 py-3 dark:border-neutral-500 font-bold text-right">
                                                     Total: {{-- ({{ $certificacionesInspector[0]->nombre }}) --}}
                                                 </td>
@@ -243,30 +253,15 @@
             <h1 class="text-xl font-bold">Editar Precios</h1>
         </x-slot>
 
-        <x-slot name="content">
-            <h1 class="font-bold text-lg"> Seleccionar Inspector:</h1>
-            <div class="flex bg-white items-center p-2 rounded-md mb-4">
-                <span>Inspector: </span>
-                <select wire:model="selectedInspectorId"
-                    class="bg-gray-50 mx-2 border-indigo-500 rounded-md outline-none ml-1 block w-full truncate"
-                    id="inspector">
-                    <option value="">SELECCIONE</option>
-                    @foreach ($inspectores as $inspector)
-                        <option value="{{ $inspector->id }}">{{ $inspector->name }}</option>
-                    @endforeach
-                </select>
-            </div>
+        <x-slot name="content">            
 
-            @if ($selectedInspectorId)
+            
                 <div>
                     <h1 class="font-bold text-lg">Servicios:</h1>
                     <hr class="my-4">
                     @if ($taller && count($taller->servicios))
                         <div class="mb-4" wire:loading.attr="disabled" wire:target="updatePrecios">
                             @foreach ($taller->servicios as $key => $serv)
-                                {{--@php
-                                    dd($preciosInspector); // Agrega esta línea
-                                @endphp--}}
                                 <div
                                     class="flex flex-row justify-between bg-indigo-100 my-2 items-center rounded-lg p-2">
                                     <div class="">
@@ -290,7 +285,6 @@
                         </div>
                     @endif
                 </div>
-            @endif
 
         </x-slot>
 

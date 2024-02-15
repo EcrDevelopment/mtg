@@ -17,13 +17,14 @@ use Livewire\Component;
 
 class ReporteCalcular extends Component
 {
-    public $fechaInicio, $fechaFin, $resultados, $talleres, $inspectores, $totalPrecio, $cantidades, $tiposServicio, $mostrar=false;
+    public $fechaInicio, $fechaFin, $resultados, $talleres, $inspectores, $totalPrecio, $cantidades, $tiposServicio, $mostrar = false;
     public $ins, $taller;
     public $selectAll = false;
     public $selectedRows = [];
-    public $editando, $selectedInspectorId;
-    public $preciosInspector = [];
-    public $precioServicios = [];
+    public $editando;
+    public $certificacionIds = [];
+    public $updatedPrices = [];
+    public $selectedTipoServicios = [];
 
 
     protected $rules = [
@@ -36,8 +37,6 @@ class ReporteCalcular extends Component
         $this->inspectores = User::role(['inspector', 'supervisor'])->orderBy('name')->get();
         $this->talleres = Taller::all()->sortBy('nombre');
         $this->tiposServicio = TipoServicio::all()->sortBy('descripcion');
-        $this->precioServicios = Cache::get('precioServicios', []);
-        //$this->preciosInspector = []; // Inicializar el array
     }
 
     public function render()
@@ -65,7 +64,8 @@ class ReporteCalcular extends Component
                 'users.name as nombre',
                 'taller.nombre as taller',
                 'vehiculo.placa as placa',
-                'tiposervicio.descripcion as tiposervicio'
+                'tiposervicio.descripcion as tiposervicio',
+                'material.numSerie as matenumSerie',
 
 
             )
@@ -74,6 +74,8 @@ class ReporteCalcular extends Component
             ->join('vehiculo', 'certificacion.idVehiculo', '=', 'vehiculo.id')
             ->join('servicio', 'certificacion.idServicio', '=', 'servicio.id')
             ->join('tiposervicio', 'servicio.tipoServicio_idtipoServicio', '=', 'tiposervicio.id')
+            ->leftJoin('serviciomaterial', 'certificacion.id', '=', 'serviciomaterial.idCertificacion')
+            ->leftJoin('material', 'serviciomaterial.idMaterial', '=', 'material.id')
             ->where(function ($query) {
                 if (!empty($this->ins)) {
                     $query->where('certificacion.idInspector', $this->ins);
@@ -148,13 +150,49 @@ class ReporteCalcular extends Component
         }
     }
 
-    public function ver()
+    public function ver($certificacionIds)
     {
-        if($this->mostrar===false){
-            $this->mostrar=true;
-        }
-        
+        //dd($certificacionIds);
+        $this->certificacionIds = $certificacionIds;
+        $this->editando = true;
     }
+
+
+    public function updatePrecios()
+    {
+        if (count($this->selectedTipoServicios) > 0) {
+            foreach ($this->selectedTipoServicios as $tipoServicioId => $certificacionId) {
+                $precioActualizado = $this->updatedPrices[$tipoServicioId] ?? null;
+
+                if ($precioActualizado !== null) {
+                    // Encuentra la certificación por su ID
+                    $certificacion = Certificacion::find($certificacionId);
+
+                    if ($certificacion) {
+                        // Encuentra el tipo de servicio por su ID
+                        $tipoServicio = TipoServicio::find($tipoServicioId);
+
+                        if ($tipoServicio) {
+                            // Actualiza el precio del tipo de servicio en la certificación
+                            $certificacion->tipoServicios()->updateExistingPivot($tipoServicio->id, [
+                                'precio' => $precioActualizado,
+                            ]);
+                        }
+                    }
+                }
+            }
+
+            // Restablece las propiedades después de actualizar los precios
+            $this->certificacionIds = [];
+            $this->selectedTipoServicios = [];
+            $this->updatedPrices = [];
+
+            // Cierra el modal
+            $this->editando = false;
+        }
+    }
+
+
 
     public function toggleSelectAll()
     {

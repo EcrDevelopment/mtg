@@ -77,8 +77,8 @@
                     <div class="p-2 w-full justify-between m-auto flex items-space-around">
                         @php $nombreInspector = $certificacionesInspector[0]->nombre ?? 'Nombre no disponible' @endphp
                         <h2 class="text-indigo-600 text-xl font-bold mb-4">{{ $nombreInspector }}</h2>
-
-                        <button wire:click="ver({{ $certificacionesInspector->pluck('id') }})"
+                        {{--{{dd($certificacionesInspector->pluck('tiposervicio'))}}--}}
+                        <button wire:click="ver({{ $certificacionesInspector->pluck('id') }},{{($certificacionesInspector->pluck('tiposervicio')->unique())}})"                            
                             class="bg-blue-400 px-4 py-2 w-full md:w-auto rounded-md text-white font-semibold tracking-wide cursor-pointer mb-4">
                             <p class="truncate"> Precios </p>
                         </button>
@@ -267,26 +267,26 @@
             <div>
                 <h1 class="font-bold text-lg">Servicios:</h1>
                 <hr class="my-4">
-                @if (count($tiposServicio) > 0)
+                @if (count($tiposServicios) > 0)
                     <div class="mb-4" wire:loading.attr="disabled" wire:target="updatePrecios">
-                        @foreach ($tiposServicio as $tipoServicio)
+                        @foreach ($tiposServicios as $tipoServicio)
                             {{-- {{dd($certificacionIds)}} --}}
                             {{-- @if (in_array($tipoServicio->id, $certificacionIds, true)) --}}
                             <div class="flex flex-row justify-between bg-indigo-100 my-2 items-center rounded-lg p-2">
                                 <div class="">
                                     <label class="form-check-label inline-block text-gray-800">
-                                        {{ $tipoServicio->descripcion }}
+                                        {{ $tipoServicio }}
                                     </label>
                                 </div>
                                 <div class="flex flex-row items-center">
                                     <x-jet-label value="Precio:" class="mr-2" />
-                                    <x-jet-input type="number" class="w-6px" wire:model="updatedPrices.{{ $tipoServicio->id }}" />
+                                    {{--<x-jet-input type="number" class="w-6px" wire:model="updatedPrices.{{ $tipoServicio->id }}" />
                                     <input type="hidden" wire:model="selectedTipoServicios.{{ $tipoServicio->id }}"
                                            data-certificacion-id="{{ $tipoServicio->certificacion_id }}"
-                                           value="{{ $tipoServicio->id }}">
+                                           value="{{ $tipoServicio->id }}">--}}
                                 </div>
                             </div>
-                            <x-jet-input-error for="updatedPrices.{{ $tipoServicio->id }}" />
+                            {{--<x-jet-input-error for="updatedPrices.{{ $tipoServicio->id }}" />--}}
                         @endforeach
                     </div>
                 @else

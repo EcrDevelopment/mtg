@@ -17,11 +17,11 @@ use Livewire\Component;
 
 class ReporteCalcular extends Component
 {
-    public $fechaInicio, $fechaFin, $resultados, $talleres, $inspectores, $totalPrecio, $cantidades, $tiposServicio, $mostrar = false;
+    public $fechaInicio, $fechaFin, $resultados, $talleres, $inspectores, $totalPrecio, $cantidades, $mostrar = false;
     public $ins, $taller;
     public $selectAll = false;
     public $selectedRows = [];
-    public $editando;
+    public $editando, $tiposServicios = [];
     public $certificacionIds = [];
     public $updatedPrices = [];
     public $selectedTipoServicios = [];
@@ -36,7 +36,7 @@ class ReporteCalcular extends Component
     {
         $this->inspectores = User::role(['inspector', 'supervisor'])->orderBy('name')->get();
         $this->talleres = Taller::all()->sortBy('nombre');
-        $this->tiposServicio = TipoServicio::all()->sortBy('descripcion');
+        //$this->tiposServicio = TipoServicio::all()->sortBy('descripcion');
     }
 
     public function render()
@@ -150,10 +150,11 @@ class ReporteCalcular extends Component
         }
     }
 
-    public function ver($certificacionIds)
+    public function ver($certificacionIds, $tiposServicios)
     {
         //dd($certificacionIds);
         $this->certificacionIds = $certificacionIds;
+        $this->tiposServicios = $tiposServicios;
         $this->editando = true;
     }
 

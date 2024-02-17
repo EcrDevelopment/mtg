@@ -10,6 +10,7 @@ use App\Models\TipoServicio;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use App\Exports\ReporteCalcularExport;
+use App\Models\Servicio;
 use Illuminate\Support\Facades\Cache;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -137,7 +138,6 @@ class ReporteCalcular extends Component
         $this->resultados = $resultados;
         Cache::put('reporteCalcular', $this->resultados, now()->addMinutes(10));
         $this->totalPrecio = $totalPrecio;
-        $this->emit('resultadosCalculados', $this->resultados, $this->cantidades, $this->totalPrecio);
     }
 
     public function exportarExcel()
@@ -161,41 +161,28 @@ class ReporteCalcular extends Component
 
     public function updatePrecios()
     {
-        if (count($this->selectedTipoServicios) > 0) {
-            foreach ($this->selectedTipoServicios as $tipoServicioId => $certificacionId) {
-                $precioActualizado = $this->updatedPrices[$tipoServicioId] ?? null;
-
-                if ($precioActualizado !== null) {
-                    // Encuentra la certificación por su ID
-                    $certificacion = Certificacion::find($certificacionId);
-
-                    if ($certificacion) {
-                        // Encuentra el tipo de servicio por su ID
-                        $tipoServicio = TipoServicio::find($tipoServicioId);
-
-                        if ($tipoServicio) {
-                            // Actualiza el precio del tipo de servicio en la certificación
-                            $certificacion->tipoServicios()->updateExistingPivot($tipoServicio->id, [
-                                'precio' => $precioActualizado,
-                            ]);
-                        }
-                    }
+        //$servicios=$this->resultados->whereIn('id', $this->certificacionIds)->whereIn('price', [150, 200]);;
+       
+        if (count($this->updatedPrices) > 0) {
+            foreach ($this->updatedPrices as $key => $nuevoPrecio) {
+                $servs=$this->resultados->whereIn('id', $this->certificacionIds)->where('tiposervicio', $key);
+                 //dd($servicios);   
+                foreach($servs as $seleccionado){
+                    //dd($seleccionado["id"]);
+                    Certificacion::find($seleccionado["id"])->update(['precio'=>$nuevoPrecio]);                    
                 }
             }
-
-            // Restablece las propiedades después de actualizar los precios
-            $this->certificacionIds = [];
-            $this->selectedTipoServicios = [];
-            $this->updatedPrices = [];
-
-            // Cierra el modal
+            $this->reset(['resultados','updatedPrices','certificacionIds']);
+            $this->calcularReporte();
             $this->editando = false;
+           
+            
+            
         }
     }
 
 
-
-    public function toggleSelectAll()
+    /*public function toggleSelectAll()
     {
         $this->selectAll = !$this->selectAll;
 
@@ -206,41 +193,5 @@ class ReporteCalcular extends Component
             // Si el checkbox de selección está desmarcado, deseleccionar todas las filas
             $this->selectedRows = [];
         }
-    }
-
-    /*public function precios()
-    {
-        // Asegurarse de obtener el objeto User solo si hay un ID válido seleccionado
-        if (!empty($this->selectedInspectorId)) {
-            $this->selectedInspector = User::find($this->selectedInspectorId);
-
-            // Obtener los precios del inspector seleccionado desde la caché
-            $this->preciosInspector = $this->precioServicios[$this->selectedInspectorId] ?? [];
-            info($this->preciosInspector);
-            // Emitir el evento para actualizar la interfaz de usuario con los precios actuales
-            $this->emit('resultadosCalculados', $this->resultados, $this->cantidades, $this->totalPrecio);            
-        }
-        $this->editando = true;
-        //dd($this->precioServicios);
-    }*/
-
-
-    /*public function updatePrecios()
-    {
-        //dd('Evento emitido');
-        if (!empty($this->selectedInspectorId)) {
-            $this->precioServicios[$this->selectedInspectorId] = $this->preciosInspector;
-            Cache::put('precioServicios', $this->precioServicios, now()->addMinutes(10));            
-            // Actualiza los precios en la variable local
-            $this->preciosInspector = $this->precioServicios[$this->selectedInspectorId] ?? [];
-            $this->emit('resultadosCalculados', $this->resultados, $this->cantidades, $this->totalPrecio);
-            //dd('Precios actualizados y evento emitido', $this->precioServicios, Cache::get('precioServicios'));
-
-            $this->selectedInspectorId  = null;
-            $this->preciosInspector = [];
-        }
-
-
-        $this->editando = false;
     }*/
 }

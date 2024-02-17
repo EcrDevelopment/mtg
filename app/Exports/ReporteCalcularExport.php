@@ -51,6 +51,7 @@ class ReporteCalcularExport implements FromCollection, WithHeadings, WithMapping
         return [
             'Taller',
             'Inspector',
+            'Hoja',
             'Vehículo',
             'Servicio',
             'Fecha',
@@ -63,20 +64,21 @@ class ReporteCalcularExport implements FromCollection, WithHeadings, WithMapping
     public function map($data): array
     {
         return [
-            $data->taller,
-            $data->nombre,
+            $data->taller ?? 'N.A',
+            $data->nombre ?? 'N.A',
+            $data->matenumSerie ?? 'N.A',
             $data->placa ?? 'EN TRAMITE',
-            $data->tiposervicio,
-            $data->created_at,
+            $data->tiposervicio ?? 'N.E',
+            $data->created_at ?? 'S.F',
             $data->estado,
             $data->pagado,
-            $data->precio,
+            $data->precio ?? 'S.P',
         ];
     }
 
     public function styles(Worksheet $sheet)
     {
-        $sheet->getStyle('A1:H' . $sheet->getHighestRow())
+        $sheet->getStyle('A1:I' . $sheet->getHighestRow())
             ->getBorders()
             ->getAllBorders()
             ->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);

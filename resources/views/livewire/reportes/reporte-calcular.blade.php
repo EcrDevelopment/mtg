@@ -66,6 +66,8 @@
         </div>
 
         @if (isset($resultados))
+
+        <div  wire.model="resultados">        
             <div class="m-auto flex justify-center items-center bg-gray-300 rounded-md w-full p-4 mt-4">
                 <button wire:click="exportarExcel"
                     class="bg-green-400 px-6 py-4 w-1/3 text-sm rounded-md text-sm text-white font-semibold tracking-wide cursor-pointer ">
@@ -92,10 +94,10 @@
                                         class="min-w-full border text-center text-sm font-light dark:border-neutral-500">
                                         <thead class="border-b font-medium dark:border-neutral-500">
                                             <tr class="bg-indigo-200">
-                                                <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
+                                                {{--<th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
                                                     <input type="checkbox" wire:model="selectAll"
                                                         wire:click="toggleSelectAll">
-                                                </th>
+                                                </th>--}}
                                                 <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">#
                                                 </th>
                                                 <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">ID
@@ -131,11 +133,11 @@
                                         <tbody>
                                             @foreach ($certificacionesInspector as $key => $item)
                                                 <tr class="border-b dark:border-neutral-500 bg-orange-200">
-                                                    <td
+                                                    {{--<td
                                                         class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
                                                         <input type="checkbox"
                                                             wire:model="selectedRows.{{ $key }}" />
-                                                    </td>
+                                                    </td>--}}
                                                     <td
                                                         class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
                                                         {{ $key + 1 }}
@@ -214,7 +216,7 @@
                                             @endforeach
 
                                             <tr class="border-b dark:border-neutral-500 bg-green-200">
-                                                <td colspan="9" {{-- {{$mostrar ? '9':'8'}} --}}
+                                                <td colspan="10" {{-- {{$mostrar ? '9':'8'}} --}}
                                                     class="border-r px-6 py-3 dark:border-neutral-500 font-bold text-right">
                                                     Total: {{-- ({{ $certificacionesInspector[0]->nombre }}) --}}
                                                 </td>
@@ -253,6 +255,7 @@
                     @endif
                 </div>
             @endforeach
+        </div>
         @endif
     </div>
 
@@ -280,13 +283,15 @@
                                 </div>
                                 <div class="flex flex-row items-center">
                                     <x-jet-label value="Precio:" class="mr-2" />
-                                    {{--<x-jet-input type="number" class="w-6px" wire:model="updatedPrices.{{ $tipoServicio->id }}" />
-                                    <input type="hidden" wire:model="selectedTipoServicios.{{ $tipoServicio->id }}"
-                                           data-certificacion-id="{{ $tipoServicio->certificacion_id }}"
-                                           value="{{ $tipoServicio->id }}">--}}
+                                    <x-jet-input type="number" class="w-6px" wire:model="updatedPrices.{{ $tipoServicio}}" />
+                                    {{--
+                                    <input type="hidden" wire:model="nuevosPrecios.{{ $tipoServicio }}"
+                                           data-certificacion-id="{{ $tipoServicio }}"ESSTA LINEA PARA QUE ES? Justo eso te hiba a preguntar esta mal esa wevada siempre justo vas a preguntar hvn
+                                           value="{{ $tipoServicio }}">
+                                    --}}
                                 </div>
                             </div>
-                            {{--<x-jet-input-error for="updatedPrices.{{ $tipoServicio->id }}" />--}}
+                            <x-jet-input-error for="updatedPrices.{{ $tipoServicio }}" />
                         @endforeach
                     </div>
                 @else

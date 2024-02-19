@@ -41,7 +41,7 @@ class ActivacionDeChips extends Component
     public function guardar(){
         if (isset($this->vehiculo)) {
             if ($this->vehiculo->esCertificableGnv) {
-                $serv=Servicio::where([["taller_idtaller",$this->idTaller],["tipoServicio_idtipoServicio",7]])->first();
+                $serv=Servicio::where([["taller_idtaller",$this->idTaller],["tipoServicio_idtipoServicio",2]])->first();
                if($serv!=null){
                     $certi=CertificacionPendiente::create([
                         "idInspector"=>Auth::id(),

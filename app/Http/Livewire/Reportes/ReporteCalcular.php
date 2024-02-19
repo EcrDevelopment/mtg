@@ -26,6 +26,8 @@ class ReporteCalcular extends Component
     public $certificacionIds = [];
     public $updatedPrices = [];
     public $selectedTipoServicios = [];
+    public $reportePorInspector; //= []
+    protected $listeners = ['preciosActualizados' => 'recargarDatos'];
 
 
     protected $rules = [
@@ -107,13 +109,14 @@ class ReporteCalcular extends Component
                 'users.name as nombre',
                 'taller.nombre as taller',
                 'vehiculo.placa as placa',
-                'tiposervicio.descripcion as tiposervicio'
+                DB::raw("'Activación de chip (Anual)' as tiposervicio")
             )
+
             ->leftJoin('users', 'certificados_pendientes.idInspector', '=', 'users.id')
             ->leftJoin('taller', 'certificados_pendientes.idTaller', '=', 'taller.id')
             ->leftJoin('vehiculo', 'certificados_pendientes.idVehiculo', '=', 'vehiculo.id')
             ->leftJoin('servicio', 'certificados_pendientes.idServicio', '=', 'servicio.id')
-            ->leftJoin('tiposervicio', 'servicio.tipoServicio_idtipoServicio', '=', 'tiposervicio.id')
+            //->leftJoin('tiposervicio', 'servicio.tipoServicio_idtipoServicio', '=', 'tiposervicio.id')
             ->where('certificados_pendientes.estado', 1)
             ->whereNull('certificados_pendientes.idCertificacion')
             ->where(function ($query) {
@@ -132,12 +135,14 @@ class ReporteCalcular extends Component
 
             ->get();
 
-
+        //dd($certificadosPendientes);
         $resultados = $certificaciones->concat($certificadosPendientes);
         $totalPrecio = $resultados->sum('precio');
         $this->resultados = $resultados;
         Cache::put('reporteCalcular', $this->resultados, now()->addMinutes(10));
         $this->totalPrecio = $totalPrecio;
+        // Agrupar por inspector
+        $this->reportePorInspector = $resultados->groupBy('idInspector');
     }
 
     public function exportarExcel()
@@ -152,14 +157,13 @@ class ReporteCalcular extends Component
 
     public function ver($certificacionIds, $tiposServicios)
     {
-        //dd($certificacionIds);
         $this->certificacionIds = $certificacionIds;
         $this->tiposServicios = $tiposServicios;
         $this->editando = true;
     }
 
 
-    public function updatePrecios()
+    /*public function updatePrecios()
     {
         //$servicios=$this->resultados->whereIn('id', $this->certificacionIds)->whereIn('price', [150, 200]);;
        
@@ -168,18 +172,59 @@ class ReporteCalcular extends Component
                 $servs=$this->resultados->whereIn('id', $this->certificacionIds)->where('tiposervicio', $key);
                  //dd($servicios);   
                 foreach($servs as $seleccionado){
-                    //dd($seleccionado["id"]);
-                    Certificacion::find($seleccionado["id"])->update(['precio'=>$nuevoPrecio]);                    
+                    Certificacion::find($seleccionado["id"])->update(['precio'=>$nuevoPrecio]); 
+                    //CertificacionPendiente::find($seleccionado["id"])->update(['precio' => $nuevoPrecio]);                   
                 }
+
+                //dd($seleccionado);
             }
             $this->reset(['resultados','updatedPrices','certificacionIds']);
             $this->calcularReporte();
-            $this->editando = false;
-           
+            $this->editando = false;          
             
             
         }
+    }*/
+
+    public function updatePrecios()
+    {
+        if (count($this->updatedPrices) > 0) {
+            foreach ($this->updatedPrices as $key => $nuevoPrecio) {
+                $certificacionIds = $this->certificacionIds;
+
+                // Actualizar precios en Certificacion
+                Certificacion::whereIn('id', $certificacionIds)
+                    ->whereHas('servicio', function ($query) use ($key) {
+                        $query->whereHas('tipoServicio', function ($query) use ($key) {
+                            $query->where('descripcion', $key);
+                        });
+                    })
+                    ->update(['precio' => $nuevoPrecio]);
+
+                // Actualizar precios en CertificacionPendiente
+                CertificacionPendiente::whereIn('id', $certificacionIds)
+                    ->update(['precio' => $nuevoPrecio]);
+            }
+
+            // Emitir evento para indicar que los precios han sido actualizados
+            $this->emit('preciosActualizados');
+            // Refrescar solo la sección de la tabla
+            $this->dispatchBrowserEvent('refresh-table');
+            // Resetear propiedades y recalcular reporte
+            $this->reset(['resultados', 'updatedPrices', 'certificacionIds']);
+            $this->calcularReporte();
+            $this->editando = false;
+        }
     }
+
+    public function recargarDatos()
+    {
+        $this->calcularReporte();
+
+        // Emitir un evento para indicar que los datos se han recalculado
+        $this->emit('datosRecargados');
+    }
+
 
 
     /*public function toggleSelectAll()

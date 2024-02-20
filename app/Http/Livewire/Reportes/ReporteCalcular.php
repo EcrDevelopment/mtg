@@ -208,9 +208,10 @@ class ReporteCalcular extends Component
 
             // Emitir evento para indicar que los precios han sido actualizados
             $this->emit('preciosActualizados');
+
             // Refrescar solo la sección de la tabla
             $this->dispatchBrowserEvent('refresh-table');
-            // Resetear propiedades y recalcular reporte
+            
             $this->reset(['resultados', 'updatedPrices', 'certificacionIds']);
             $this->calcularReporte();
             $this->editando = false;
@@ -220,9 +221,6 @@ class ReporteCalcular extends Component
     public function recargarDatos()
     {
         $this->calcularReporte();
-
-        // Emitir un evento para indicar que los datos se han recalculado
-        $this->emit('datosRecargados');
     }
 
 

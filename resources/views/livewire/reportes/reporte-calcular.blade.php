@@ -87,7 +87,7 @@
                         </div>
 
                         @if (!empty($certificacionesInspector) && count($certificacionesInspector) > 0)
-                            <div class="overflow-x-auto m-auto w-full" wire:ignore>
+                            <div class="overflow-x-auto m-auto w-full">
                                 <div class="inline-block min-w-full py-2 sm:px-6">
                                     <div class="overflow-hidden">
                                         <table
@@ -295,7 +295,7 @@
                                 <div class="flex flex-row items-center">
                                     <x-jet-label value="Precio:" class="mr-2" />
                                     <x-jet-input type="number" class="w-6px"
-                                        wire:model.lazy="updatedPrices.{{ $tipoServicio }}" />
+                                        wire:model="updatedPrices.{{ $tipoServicio }}" />
                                 </div>
                             </div>
                             <x-jet-input-error for="updatedPrices.{{ $tipoServicio }}" />

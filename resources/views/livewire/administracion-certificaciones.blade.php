@@ -191,6 +191,12 @@
                                                     Conversion a GNV + chip
                                                 </p>
                                             @break
+                                            @case(11)
+                                                <p
+                                                    class="text-sm leading-none text-gray-600 ml-2 p-2 bg-yellow-200 rounded-full">
+                                                    Chip por deterioro
+                                                </p>
+                                            @break
 
                                             @case(12)
                                                 <p

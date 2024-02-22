@@ -88,12 +88,23 @@ class AdministracionCertificaciones extends Component
         }
     }
 
-    public function anular(Certificacion $certificacion)
+    /*public function anular(Certificacion $certificacion)
     {
         $certificacion->Hoja->update(['estado' => 5]); // estado anulado en MATERIAL
         $certificacion->update(['estado' => 2]); //estado anulado en CERTIFICACION
         $this->emitTo('administracion-certificaciones', 'render');
+    }*/
+
+    public function anular(Certificacion $certificacion)
+    {
+        if ($certificacion->Hoja) {
+            $certificacion->Hoja->update(['estado' => 5]); // estado anulado en MATERIAL
+        }
+        $certificacion->update(['estado' => 2]); // estado anulado en CERTIFICACION
+        $this->emitTo('administracion-certificaciones', 'render');
     }
+
+
 
 
     public function cambiaEstadoDeMateriales(Collection $materiales, User $inspector)
@@ -195,7 +206,7 @@ class AdministracionCertificaciones extends Component
     {
         // dd($cert);
         $cert_ex = CertifiacionExpediente::where('idCertificacion', $cert->id)->first();
-         
+
         // Verificar si $cert_ex es nulo o si no tiene idExpediente
         if (!$cert_ex || is_null($cert_ex->idExpediente)) {
             $this->emit('showErrorMessage', 'Este servicio no tiene expediente.');

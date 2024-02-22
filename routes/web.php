@@ -82,6 +82,12 @@ Route::get('index', function () {
 Route::get('about', function () {
     return view('about');
 });
+Route::get('aniversario', function () {
+    return view('aniversario');
+});
+Route::get('aniversario2', function () {
+    return view('aniversario2');
+});
 Route::get('services', function () {
     return view('services');
 });

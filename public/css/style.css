@@ -592,6 +592,9 @@ a.navbar-brand {
 .theme_color {
 	color: #ff880e;
 }
+.theme_color2 {
+	color: #d48d8d;
+}
 
 .menu_orange_section {
     float: right;
@@ -1964,7 +1967,7 @@ p {
 .heading_main h2::after {
     width: 250px;
     height: 8px;
-    background: #ff880e;
+    background: #d48d8d; /* */
     content: "";
     display: block;
     transform: skew(-30deg);
@@ -2322,14 +2325,33 @@ ul.bottom_menu li {
     height: 600px;
     padding: 20px 0;
 }
+.contact_form2 {
+    background: url('../images/images/foani.jpg');
+    background-size: cover;
+    background-position: center center;
+    height: 950px;
+    padding: 20px 0;
+}
 
 .field input {
     width: 100%;
-    background: #0e0606;
+    background: #0e0606; /*0e0606*/
     min-height: 65px;
     border: none;
     margin: 15px 0;
     color: #fff;
+    padding: 0 25px;
+    font-size: 17px;
+    font-weight: 300;	
+	border-radius: 20px; 
+}
+.field2 input {
+    width: 100%;
+    background: #d48d8d;
+    min-height: 65px;
+    border: none;
+    margin: 15px 0;
+    color: #0e0606;
     padding: 0 25px;
     font-size: 17px;
     font-weight: 300;	
@@ -2362,12 +2384,31 @@ ul.bottom_menu li {
 
 }
 
+.contact_form_inner2 button {
+    width: 210px;
+    height: 60px;
+    border: none;
+    font-size: 20px;
+    color: #050000;
+    line-height: 62px;
+    cursor: pointer;
+    transition: ease all 0.5s;
+	border-radius: 20px; 
+
+}
+
 
 
 .contact_form_inner button:hover,
 .contact_form_inner button:focus {
     color: #fff;
     background: #ff880e;
+}
+
+.contact_form_inner2 button:hover,
+.contact_form_inner2 button:focus {
+    color: #050000;
+    background: #d48d8d;
 }
 
 

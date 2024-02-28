@@ -25,7 +25,7 @@ class CargaFotos extends Component
         //dd($this->imagenes);
         $this->validate([
             'imagenes' => 'required|array|min:1',
-            'imagenes.*' => 'image|max:2048', // Tamaño máximo de 2MB
+            'imagenes.*' => 'image|max:2048', // Tamaño máximo de 2MB  
         ]);
 
         $imagenesGuardadas = [];
@@ -36,8 +36,8 @@ class CargaFotos extends Component
             $extension = $imagen->getClientOriginalExtension();
             // Reducir el tamaño y peso de la imagen con Intervention Image
             $imagenProcesada = Image::make($imagen->path())
-                ->resize(120, 120)
-                ->encode($extension);
+                //->resize(120, 120)
+                ->encode($extension, 75);
             // Guardar la imagen procesada en el storage
             $path = "public/prueba/{$nombreImg}.{$extension}";
             Storage::put($path, $imagenProcesada->__toString());

@@ -11,9 +11,10 @@
                 </div>
 
                 <div class="w-full  items-center md:flex md:flex-row md:justify-between ">
+                    {{--
                     <div class="flex bg-gray-50 items-center p-2 rounded-md mb-4">
                         <span>Taller: </span>
-                        <select wire:model="taller"
+                        <select wire:model="taller"   
                             class="bg-gray-50 mx-2 border-indigo-500 rounded-md outline-none ml-1 block w-full truncate">
                             <option value="">SELECCIONE</option>
                             @isset($talleres)
@@ -22,17 +23,50 @@
                                 @endforeach
                             @endisset
                         </select>
+                    </div>   
+                    --}}
+                    <div x-data="{ isOpen: false }" class="flex bg-white items-center p-2 rounded-md mb-4">
+                        <span>Taller: </span>
+                        <div class="relative">
+                            <div x-on:click="isOpen = !isOpen" class="cursor-pointer">
+                                <input wire:model="taller" type="text" placeholder="Seleccione" readonly
+                                    class="bg-gray-50 border-indigo-500 rounded-md outline-none ml-1 block w-96">
+                            </div>
+                            <div x-show="isOpen" x-on:click.away="isOpen = false"
+                                class="absolute z-10 mt-2 bg-white border rounded-md shadow-md max-h-96 overflow-y-auto">
+                                @isset($talleres)
+                                    @foreach ($talleres as $tallerItem)
+                                        <label for="taller_{{ $tallerItem->id }}" class="block px-4 py-2 cursor-pointer">
+                                            <input id="taller_{{ $tallerItem->id }}" wire:model="taller" type="checkbox"
+                                                value="{{ $tallerItem->id }}" class="mr-2">
+                                            {{ $tallerItem->nombre }}
+                                        </label>
+                                    @endforeach
+                                @endisset
+                            </div>
+                        </div>
                     </div>
-                    <div class="flex bg-white items-center p-2 rounded-md mb-4">
+
+                    <div x-data="{ isOpen: false }" class="flex bg-white items-center p-2 rounded-md mb-4">
                         <span>Inspector: </span>
-                        <select wire:model="ins"
-                            class="bg-gray-50 mx-2 border-indigo-500 rounded-md outline-none ml-1 block w-full truncate">
-                            <option value="">SELECCIONE</option>
-                            @foreach ($inspectores as $inspector)
-                                <option value="{{ $inspector->id }}">{{ $inspector->name }}</option>
-                            @endforeach
-                        </select>
+                        <div class="relative">
+                            <div x-on:click="isOpen = !isOpen" class="cursor-pointer">
+                                <input wire:model="ins" type="text" placeholder="Seleccione" readonly
+                                    class="bg-gray-50 border-indigo-500 rounded-md outline-none ml-1 block w-96">
+                            </div>
+                            <div x-show="isOpen" x-on:click.away="isOpen = false"
+                                class="absolute z-10 mt-2 bg-white border rounded-md shadow-md max-h-96 overflow-y-auto">
+                                @foreach ($inspectores as $inspector)
+                                    <label for="inspector_{{ $inspector->id }}" class="block px-4 py-2 cursor-pointer">
+                                        <input id="inspector_{{ $inspector->id }}" wire:model="ins" type="checkbox"
+                                            value="{{ $inspector->id }}" class="mr-2">
+                                        {{ $inspector->name }}
+                                    </label>
+                                @endforeach
+                            </div>
+                        </div>
                     </div>
+
                     <div class="flex items-center space-x-2">
                         <div class="flex bg-white items-center p-2 w-1/2 md:w-48 rounded-md mb-4 ">
                             <span>Desde: </span>
@@ -86,17 +120,18 @@
                                 @php $nombreInspector = $certificacionesInspector[0]->nombre ?? 'Nombre no disponible' @endphp
                                 <h2 class="text-indigo-600 text-xl font-bold mb-4">{{ $nombreInspector }}</h2>
                                 {{-- {{dd($certificacionesInspector->pluck('tiposervicio'))}} --}}
-                                {{--<button
+                                {{-- <button
                                     wire:click="ver({{ json_encode(collect($certificacionesInspector)->pluck('id')->toArray()) }}, {{ json_encode(collect($certificacionesInspector)->pluck('tiposervicio')->unique()->toArray()) }})"
                                     class="bg-blue-400 px-4 py-2 w-full md:w-auto rounded-md text-white font-semibold tracking-wide cursor-pointer mb-4">
                                     <p class="truncate"> Precios </p>
-                                </button>--}}
+                                </button> --}}
                                 <a wire:click="ver({{ json_encode(collect($certificacionesInspector)->pluck('id')->toArray()) }}, {{ json_encode(collect($certificacionesInspector)->pluck('tiposervicio')->unique()->toArray()) }})"
-                                    class="group flex py-4 px-4 text-center rounded-md bg-blue-300 font-bold text-white cursor-pointer hover:bg-blue-400 hover:animate-pulse" >
+                                    class="group flex py-4 px-4 text-center rounded-md bg-blue-300 font-bold text-white cursor-pointer hover:bg-blue-400 hover:animate-pulse">
                                     <i class="fas fa-edit"></i>
-                                         <span class="group-hover:opacity-100 transition-opacity bg-gray-800 px-1 text-sm text-gray-100 rounded-md absolute left-1/2-translate-x-1/2 translate-y-full opacity-0 m-4 mx-auto z-100">
-                                          Editar Precios
-                                         </span>
+                                    <span
+                                        class="group-hover:opacity-100 transition-opacity bg-gray-800 px-1 text-sm text-gray-100 rounded-md absolute left-1/2-translate-x-1/2 translate-y-full opacity-0 m-4 mx-auto z-100">
+                                        Editar Precios
+                                    </span>
                                 </a>
                             </div>
 

@@ -20,7 +20,7 @@ use Livewire\Component;
 class ReporteCalcular extends Component
 {
     public $fechaInicio, $fechaFin, $resultados, $talleres, $inspectores, $totalPrecio, $cantidades, $mostrar = false;
-    public $ins, $taller;
+    public $ins = [], $taller = [];
     public $selectAll = false;
     public $selectedRows = [];
     public $editando, $tiposServicios = [];
@@ -86,7 +86,7 @@ class ReporteCalcular extends Component
             //->leftJoin('material', 'serviciomaterial.idMaterial', '=', 'material.id')
             ->where(function ($query) {
                 if (!empty($this->ins)) {
-                    $query->where('certificacion.idInspector', $this->ins);
+                    $query->whereIn('certificacion.idInspector', $this->ins);
                 }
 
                 if (!empty($this->taller)) {
@@ -126,7 +126,7 @@ class ReporteCalcular extends Component
             ->whereNull('certificados_pendientes.idCertificacion')
             ->where(function ($query) {
                 if (!empty($this->ins)) {
-                    $query->where('certificados_pendientes.idInspector', $this->ins);
+                    $query->whereIn('certificados_pendientes.idInspector', $this->ins);
                 }
 
                 if (!empty($this->taller)) {
@@ -179,7 +179,7 @@ class ReporteCalcular extends Component
             ->join('tiposervicio', 'servicio.tipoServicio_idtipoServicio', '=', 'tiposervicio.id')
             ->where(function ($query) {
                 if (!empty($this->ins)) {
-                    $query->where('certificacion.idInspector', $this->ins);
+                    $query->whereIn('certificacion.idInspector', $this->ins);
                 }
 
                 if (!empty($this->taller)) {
@@ -210,7 +210,7 @@ class ReporteCalcular extends Component
             ->whereNull('certificados_pendientes.idCertificacion')
             ->where(function ($query) {
                 if (!empty($this->ins)) {
-                    $query->where('certificados_pendientes.idInspector', $this->ins);
+                    $query->whereIn('certificados_pendientes.idInspector', $this->ins);
                 }
 
                 if (!empty($this->taller)) {

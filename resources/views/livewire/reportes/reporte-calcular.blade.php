@@ -350,6 +350,7 @@
                                                         class="border-r px-6 py-4 dark:border-neutral-500">
                                                         Conversion Gnv
                                                     </th>
+                                                    {{--
                                                     <th scope="col"
                                                         class="border-r px-6 py-4 dark:border-neutral-500">
                                                         Anual GLP
@@ -362,18 +363,22 @@
                                                         class="border-r px-6 py-4 dark:border-neutral-500">
                                                         Modificación
                                                     </th>
+                                                    --}}
                                                     <th scope="col"
                                                         class="border-r px-6 py-4 dark:border-neutral-500">
                                                         Desmonte
                                                     </th>
+                                                    {{--
                                                     <th scope="col"
                                                         class="border-r px-6 py-4 dark:border-neutral-500">
                                                         Activación
                                                     </th>
+                                                    --}}
                                                     <th scope="col"
                                                         class="border-r px-6 py-4 dark:border-neutral-500">
                                                         Duplicado
                                                     </th>
+                                                    {{--
                                                     <th scope="col"
                                                         class="border-r px-6 py-4 dark:border-neutral-500">
                                                         Conver + chip
@@ -390,6 +395,7 @@
                                                         class="border-r px-6 py-4 dark:border-neutral-500">
                                                         Pre-GLP
                                                     </th>
+                                                    --}}
                                                     <th scope="col"
                                                         class="border-r px-6 py-4 dark:border-neutral-500">
                                                         Total
@@ -435,6 +441,7 @@
                                                             class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
                                                             {{ $ConversionGnv }}
                                                         </td>
+                                                        {{--
                                                         <td
                                                             class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
                                                             {{ $AnualGLP }}
@@ -447,18 +454,22 @@
                                                             class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
                                                             {{ $modi }}
                                                         </td>
+                                                        --}}
                                                         <td
                                                             class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
                                                             {{ $desmonte }}
                                                         </td>
+                                                        {{--
                                                         <td
                                                             class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
                                                             {{ $activacion }}
                                                         </td>
+                                                        --}}
                                                         <td
                                                             class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
                                                             {{ $duplicadoGNV }}
                                                         </td>
+                                                        {{--
                                                         <td
                                                             class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
                                                             {{ $ConverChip }}
@@ -475,6 +486,7 @@
                                                             class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
                                                             {{ $preGLP }}
                                                         </td>
+                                                        --}}
                                                         <td
                                                             class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
                                                             {{ $totalPrecio }}

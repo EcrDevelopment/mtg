@@ -90,7 +90,7 @@ class ReporteCalcular extends Component
                 }
 
                 if (!empty($this->taller)) {
-                    $query->where('certificacion.idTaller', $this->taller);
+                    $query->whereIn('certificacion.idTaller', $this->taller);
                 }
             })
             ->whereBetween('certificacion.created_at', [
@@ -130,7 +130,7 @@ class ReporteCalcular extends Component
                 }
 
                 if (!empty($this->taller)) {
-                    $query->where('certificados_pendientes.idTaller', $this->taller);
+                    $query->whereIn('certificados_pendientes.idTaller', $this->taller);
                 }
             })
             ->whereBetween('certificados_pendientes.created_at', [
@@ -161,7 +161,7 @@ class ReporteCalcular extends Component
         }
     }
 
-    public function calcularReporteSimple()
+    /*public function calcularReporteSimple()
     {
         $this->validate();
 
@@ -230,7 +230,127 @@ class ReporteCalcular extends Component
         $this->resultados = $resultados;
         Cache::put('reporteCalcularSimple', $this->resultados, now()->addMinutes(10));
         $this->mostrarTablaSimple = false;
+    }*/
+
+    public function calcularReporteSimple()
+    {
+        $this->validate();
+
+        $certificaciones = DB::table('certificacion')
+            ->select(
+                'users.name as nombre',
+                'tiposervicio.descripcion as tiposervicio',
+                'certificacion.estado',
+                'certificacion.pagado',
+                DB::raw('COUNT(tiposervicio.descripcion) as cantidad_servicio'),
+                DB::raw('SUM(certificacion.precio) as total_precio'),
+                DB::raw('DAYOFWEEK(certificacion.created_at) as dia_semana')
+            )
+            ->join('users', 'certificacion.idInspector', '=', 'users.id')
+            ->join('servicio', 'certificacion.idServicio', '=', 'servicio.id')
+            ->join('tiposervicio', 'servicio.tipoServicio_idtipoServicio', '=', 'tiposervicio.id')
+            ->where(function ($query) {
+                if (!empty($this->ins)) {
+                    $query->whereIn('certificacion.idInspector', $this->ins);
+                }
+
+                if (!empty($this->taller)) {
+                    $query->whereIn('certificacion.idTaller', $this->taller);
+                }
+            })
+            ->whereBetween('certificacion.created_at', [
+                $this->fechaInicio . ' 00:00:00',
+                $this->fechaFin . ' 23:59:59'
+            ])
+            ->groupBy('nombre', 'tiposervicio.descripcion', 'certificacion.pagado', 'certificacion.estado', 'dia_semana')
+            ->get();
+
+        $certificadosPendientes = DB::table('certificados_pendientes')
+            ->select(
+                'users.name as nombre',
+                'certificados_pendientes.estado',
+                'certificados_pendientes.pagado',
+                DB::raw("'Activación de chip (Anual)' as tiposervicio"),
+                DB::raw('COUNT("Activación de chip (Anual)") as cantidad_servicio'),
+                DB::raw('SUM(certificados_pendientes.precio) as total_precio'),
+                DB::raw('DAYOFWEEK(certificados_pendientes.created_at) as dia_semana')
+            )
+            ->leftJoin('users', 'certificados_pendientes.idInspector', '=', 'users.id')
+            ->leftJoin('servicio', 'certificados_pendientes.idServicio', '=', 'servicio.id')
+            //->leftJoin('tiposervicio', 'servicio.tipoServicio_idtipoServicio', '=', 'tiposervicio.id')
+            ->where('certificados_pendientes.estado', 1)
+            ->whereNull('certificados_pendientes.idCertificacion')
+            ->where(function ($query) {
+                if (!empty($this->ins)) {
+                    $query->whereIn('certificados_pendientes.idInspector', $this->ins);
+                }
+
+                if (!empty($this->taller)) {
+                    $query->whereIn('certificados_pendientes.idTaller', $this->taller);
+                }
+            })
+            ->whereBetween('certificados_pendientes.created_at', [
+                $this->fechaInicio . ' 00:00:00',
+                $this->fechaFin . ' 23:59:59'
+            ])
+            ->groupBy('nombre', 'tiposervicio', 'certificados_pendientes.pagado', 'certificados_pendientes.estado', 'dia_semana')
+            ->get();
+
+        $resultados = collect();
+
+        foreach ($certificaciones as $certificacion) {
+            $key = $certificacion->nombre . '_' . $certificacion->tiposervicio;
+
+            if (!isset($resultados[$key])) {
+                $resultados[$key] = (object)[
+                    'nombreInspector' => $certificacion->nombre,
+                    'tiposervicio' => $certificacion->tiposervicio,
+                    'dias' => [
+                        1 => 0, // Domingo
+                        2 => 0, // Lunes
+                        3 => 0, // Martes
+                        4 => 0, // Miércoles
+                        5 => 0, // Jueves
+                        6 => 0, // Viernes
+                        7 => 0, // Sábado
+                    ],
+                    'total' => 0,
+                ];
+            }
+
+            $resultados[$key]->dias[$certificacion->dia_semana] += $certificacion->cantidad_servicio;
+            $resultados[$key]->total += $certificacion->cantidad_servicio;
+        }
+
+        foreach ($certificadosPendientes as $certificado) {
+            $key = $certificado->nombre . '_' . $certificado->tiposervicio;
+
+            if (!isset($resultados[$key])) {
+                $resultados[$key] = (object)[
+                    'nombreInspector' => $certificado->nombre,
+                    'tiposervicio' => $certificado->tiposervicio,
+                    'dias' => [
+                        1 => 0, // Domingo
+                        2 => 0, // Lunes
+                        3 => 0, // Martes
+                        4 => 0, // Miércoles
+                        5 => 0, // Jueves
+                        6 => 0, // Viernes
+                        7 => 0, // Sábado
+                    ],
+                    'total' => 0,
+                ];
+            }
+
+            $resultados[$key]->dias[$certificado->dia_semana] += $certificado->cantidad_servicio;
+            $resultados[$key]->total += $certificado->cantidad_servicio;
+        }
+
+        $this->resultados = array_values($resultados->toArray());
+        Cache::put('reporteCalcularSimple', $this->resultados, now()->addMinutes(10));
+        $this->mostrarTablaSimple = false;
     }
+
 
     public function exportarExcelSimple()
     {

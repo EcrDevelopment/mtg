@@ -292,7 +292,9 @@
                                                     @foreach (collect($certificacionesInspector)->groupBy('tiposervicio') as $tipoServicio => $detalle)
                                                         {{-- Filtrar las entradas donde pagado sea igual a 0 --}}
                                                         @php
-                                                            $detalleSinPagados = $detalle->where('pagado', 0)->whereIn('estado', [1, 3]);
+                                                            $detalleSinPagados = $detalle
+                                                                ->where('pagado', 0)
+                                                                ->whereIn('estado', [1, 3]);
                                                         @endphp
                                                         <li
                                                             class="flex items-center justify-between bg-gray-100 p-3 rounded-md shadow">
@@ -326,6 +328,83 @@
                             <p class="truncate"><i class="fa-solid fa-file-excel fa-lg"></i> Desc. Excel 2 </p>
                         </button>
                     </div>
+                    <!-- Nueva Sección: Resumen Semanal -->
+                    <div class="bg-gray-200 px-8 py-4 rounded-xl w-full mt-4">
+                        @if (!empty($resultados))
+                            <div class="overflow-x-auto m-auto w-full">
+                                <div class="inline-block min-w-full py-2 sm:px-6">
+                                    <div class="overflow-hidden">
+                                        <table
+                                            class="min-w-full border text-center text-sm font-light dark:border-neutral-500">
+                                            <thead class="border-b font-medium dark:border-neutral-500">
+                                                <tr class="bg-indigo-200">
+                                                    <th scope="col"
+                                                        class="border-r px-6 py-4 dark:border-neutral-500">Servicios
+                                                    </th>
+                                                    <th scope="col"
+                                                        class="border-r px-6 py-4 dark:border-neutral-500">Lunes</th>
+                                                    <th scope="col"
+                                                        class="border-r px-6 py-4 dark:border-neutral-500">Martes</th>
+                                                    <th scope="col"
+                                                        class="border-r px-6 py-4 dark:border-neutral-500">Miércoles
+                                                    </th>
+                                                    <th scope="col"
+                                                        class="border-r px-6 py-4 dark:border-neutral-500">Jueves</th>
+                                                    <th scope="col"
+                                                        class="border-r px-6 py-4 dark:border-neutral-500">Viernes</th>
+                                                    <th scope="col"
+                                                        class="border-r px-6 py-4 dark:border-neutral-500">Sábado</th>
+                                                    <th scope="col" class="px-6 py-4 dark:border-neutral-500">
+                                                        Domingo</th>
+                                                    <th scope="col"
+                                                        class="border-r px-6 py-4 dark:border-neutral-500">Total</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                @foreach ($resultados as $detalle)
+                                                    <tr class="border-b dark:border-neutral-500 bg-orange-200">
+                                                        <td
+                                                            class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                            {{ $detalle->tiposervicio }}</td>
+                                                        <td
+                                                            class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                            {{ $detalle->dias[2] }}</td>
+                                                        <td
+                                                            class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                            {{ $detalle->dias[3] }}</td>
+                                                        <td
+                                                            class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                            {{ $detalle->dias[4] }}</td>
+                                                        <td
+                                                            class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                            {{ $detalle->dias[5] }}</td>
+                                                        <td
+                                                            class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                            {{ $detalle->dias[6] }}</td>
+                                                        <td
+                                                            class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                            {{ $detalle->dias[7] }}</td>
+                                                        <td
+                                                            class="whitespace-nowrap px-6 py-3 dark:border-neutral-500">
+                                                            {{ $detalle->dias[1] }}</td>
+                                                        <td
+                                                            class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                            {{ $detalle->total }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+
+
+
+
+
                     <div class="bg-gray-200  px-8 py-4 rounded-xl w-full mt-4">
                         @if (!empty($resultados))
                             <div class="overflow-x-auto m-auto w-full">
@@ -407,18 +486,42 @@
                                                 @foreach ($resultados as $inspector => $servicios)
                                                     @php
                                                         $serviciosCollection = collect($servicios);
-                                                        $AnualGNV = $serviciosCollection->where('tiposervicio', 'Revisión anual GNV')->sum('cantidad_servicio');
-                                                        $ConversionGnv = $serviciosCollection->where('tiposervicio', 'Conversión a GNV')->sum('cantidad_servicio');
-                                                        $AnualGLP = $serviciosCollection->where('tiposervicio', 'Revisión anual GLP')->sum('cantidad_servicio');
-                                                        $ConversionGLP = $serviciosCollection->where('tiposervicio', 'Conversión a GLP')->sum('cantidad_servicio');
-                                                        $modi = $serviciosCollection->where('tiposervicio', 'Modificación')->sum('cantidad_servicio');
-                                                        $desmonte = $serviciosCollection->where('tiposervicio', 'Desmonte de Cilindro')->sum('cantidad_servicio');
-                                                        $activacion = $serviciosCollection->where('tiposervicio', 'Activación de chip (Anual)')->sum('cantidad_servicio');
-                                                        $duplicadoGNV = $serviciosCollection->where('tiposervicio', 'Duplicado GNV')->sum('cantidad_servicio');
-                                                        $ConverChip = $serviciosCollection->where('tiposervicio', 'Conversión a GNV + Chip')->sum('cantidad_servicio');
-                                                        $chip = $serviciosCollection->where('tiposervicio', 'Chip por deterioro')->sum('cantidad_servicio');
-                                                        $preGNV = $serviciosCollection->where('tiposervicio', 'Pre-conversión GNV')->sum('cantidad_servicio');
-                                                        $preGLP = $serviciosCollection->where('tiposervicio', 'Pre-conversión GLP')->sum('cantidad_servicio');
+                                                        $AnualGNV = $serviciosCollection
+                                                            ->where('tiposervicio', 'Revisión anual GNV')
+                                                            ->sum('cantidad_servicio');
+                                                        $ConversionGnv = $serviciosCollection
+                                                            ->where('tiposervicio', 'Conversión a GNV')
+                                                            ->sum('cantidad_servicio');
+                                                        $AnualGLP = $serviciosCollection
+                                                            ->where('tiposervicio', 'Revisión anual GLP')
+                                                            ->sum('cantidad_servicio');
+                                                        $ConversionGLP = $serviciosCollection
+                                                            ->where('tiposervicio', 'Conversión a GLP')
+                                                            ->sum('cantidad_servicio');
+                                                        $modi = $serviciosCollection
+                                                            ->where('tiposervicio', 'Modificación')
+                                                            ->sum('cantidad_servicio');
+                                                        $desmonte = $serviciosCollection
+                                                            ->where('tiposervicio', 'Desmonte de Cilindro')
+                                                            ->sum('cantidad_servicio');
+                                                        $activacion = $serviciosCollection
+                                                            ->where('tiposervicio', 'Activación de chip (Anual)')
+                                                            ->sum('cantidad_servicio');
+                                                        $duplicadoGNV = $serviciosCollection
+                                                            ->where('tiposervicio', 'Duplicado GNV')
+                                                            ->sum('cantidad_servicio');
+                                                        $ConverChip = $serviciosCollection
+                                                            ->where('tiposervicio', 'Conversión a GNV + Chip')
+                                                            ->sum('cantidad_servicio');
+                                                        $chip = $serviciosCollection
+                                                            ->where('tiposervicio', 'Chip por deterioro')
+                                                            ->sum('cantidad_servicio');
+                                                        $preGNV = $serviciosCollection
+                                                            ->where('tiposervicio', 'Pre-conversión GNV')
+                                                            ->sum('cantidad_servicio');
+                                                        $preGLP = $serviciosCollection
+                                                            ->where('tiposervicio', 'Pre-conversión GLP')
+                                                            ->sum('cantidad_servicio');
                                                         $totalPrecio = $serviciosCollection
                                                             ->where('pagado', 0)
                                                             ->whereIn('estado', [1, 3])
@@ -489,7 +592,7 @@
                                                         --}}
                                                         <td
                                                             class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                            {{ $totalPrecio }}
+                                                            {{ 'S/' . $totalPrecio . '.00' }}
                                                         </td>
                                                     </tr>
                                                 @endforeach

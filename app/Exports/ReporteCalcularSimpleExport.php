@@ -20,7 +20,9 @@ class ReporteCalcularSimpleExport implements FromCollection, WithHeadings, WithM
 {
     use Exportable;
 
-    public $data;
+    public $iteration;
+    private $data;
+
 
     public function __construct($data)
     {
@@ -40,28 +42,23 @@ class ReporteCalcularSimpleExport implements FromCollection, WithHeadings, WithM
     public function columnFormats(): array
     {
         return [
+            'B' => NumberFormat::FORMAT_NUMBER,
             'C' => NumberFormat::FORMAT_NUMBER,
             'D' => NumberFormat::FORMAT_NUMBER,
             'E' => NumberFormat::FORMAT_NUMBER,
+            'F' => NumberFormat::FORMAT_NUMBER,
         ];
     }
 
     public function headings(): array
     {
         return [
+            'N°',
             'Inspector',
             'Anual Gnv',
             'Conversion Gnv',
-            'Anual GLP',
-            'Conversión GLP',
-            'Modificación',
             'Desmonte',
-            'Activación',
             'Duplicado',
-            'Conver + chip',
-            'Chip',
-            'Pre-GNV',
-            'Pre-GLP',
             'Total',
         ];
     }
@@ -69,26 +66,23 @@ class ReporteCalcularSimpleExport implements FromCollection, WithHeadings, WithM
     public function map($data): array
     {
         return [
-            $data['nombre'] ?? 'N.E',
-            $data['AnualGNV'] ?? 'S.P',
-            $data['ConversionGnv'] ?? 'S.P',
-            $data['AnualGLP'] ?? 'S.P',
-            $data['ConversionGLP'] ?? 'S.P',
-            $data['modi'] ?? 'S.P',
-            $data['desmonte'] ?? 'S.P',
-            $data['activacion'] ?? 'S.P',
-            $data['duplicadoGNV'] ?? 'S.P',
-            $data['ConverChip'] ?? 'S.P',
-            $data['chip'] ?? 'S.P',
-            $data['preGNV'] ?? 'S.P',
-            $data['preGLP'] ?? 'S.P',
-            $data['total_precio'] ?? 'S.P',
+            'N°' => $this->getIterationNumber(), 
+            'Inspector' => $data['Inspector'] ?? 'N.E',
+            'Anual Gnv' => $data['Anual Gnv'] ?? 'S.P',
+            'Conversion Gnv' => $data['Conversion Gnv'] ?? 'S.P',
+            'Desmonte' => $data['Desmonte'] ?? 'S.P',
+            'Duplicado' => $data['Duplicado'] ?? 'S.P',
+            'Total' => $data['Total'] ?? 'S.P',
         ];
     }
+    protected function getIterationNumber()
+{
+    return ++$this->iteration;
+}
 
     public function styles(Worksheet $sheet)
     {
-        $sheet->getStyle('A1:N' . $sheet->getHighestRow())
+        $sheet->getStyle('A1:G' . $sheet->getHighestRow())
             ->getBorders()
             ->getAllBorders()
             ->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);

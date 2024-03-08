@@ -29,6 +29,9 @@ class ReporteCalcular extends Component
     public $selectedTipoServicios = [];
     public $reportePorInspector; //= []
     public $mostrarTablaSimple = false;
+    public $semana = false;
+    public $inspectorTotals;
+    public $reporteTaller , $mostrarTaller = false , $vertaller;
     protected $listeners = ['preciosActualizados' => 'recargarDatos'];
 
 
@@ -151,6 +154,102 @@ class ReporteCalcular extends Component
         $this->mostrarTablaSimple = true;
     }
 
+    public function taller(){
+        $certificaciones = DB::table('certificacion')
+            ->select(
+                'certificacion.id',
+                'certificacion.idTaller',
+                'certificacion.idInspector',
+                'certificacion.idVehiculo',
+                'certificacion.idServicio',
+                'certificacion.estado',
+                'certificacion.created_at',
+                'certificacion.precio',
+                'certificacion.pagado',
+                'users.name as nombre',
+                'taller.nombre as taller',
+                'vehiculo.placa as placa',
+                'tiposervicio.descripcion as tiposervicio',
+                //'material.numSerie as matenumSerie',
+                DB::raw('(SELECT material.numSerie FROM serviciomaterial 
+                LEFT JOIN material ON serviciomaterial.idMaterial = material.id 
+                WHERE serviciomaterial.idCertificacion = certificacion.id LIMIT 1) as matenumSerie')
+
+
+            )
+            ->join('users', 'certificacion.idInspector', '=', 'users.id')
+            ->join('taller', 'certificacion.idTaller', '=', 'taller.id')
+            ->join('vehiculo', 'certificacion.idVehiculo', '=', 'vehiculo.id')
+            ->join('servicio', 'certificacion.idServicio', '=', 'servicio.id')
+            ->join('tiposervicio', 'servicio.tipoServicio_idtipoServicio', '=', 'tiposervicio.id')
+            //->leftJoin('serviciomaterial', 'certificacion.id', '=', 'serviciomaterial.idCertificacion')
+            //->leftJoin('material', 'serviciomaterial.idMaterial', '=', 'material.id')
+            ->where(function ($query) {
+                if (!empty($this->ins)) {
+                    $query->whereIn('certificacion.idInspector', $this->ins);
+                }
+
+                if (!empty($this->taller)) {
+                    $query->whereIn('certificacion.idTaller', $this->taller);
+                }
+            })
+            ->whereBetween('certificacion.created_at', [
+                $this->fechaInicio . ' 00:00:00',
+                $this->fechaFin . ' 23:59:59'
+            ])
+
+            ->get();
+
+        $certificadosPendientes = DB::table('certificados_pendientes')
+            ->select(
+                'certificados_pendientes.id',
+                'certificados_pendientes.idTaller',
+                'certificados_pendientes.idInspector',
+                'certificados_pendientes.idVehiculo',
+                'certificados_pendientes.idServicio',
+                'certificados_pendientes.estado',
+                'certificados_pendientes.created_at',
+                'certificados_pendientes.pagado',
+                'certificados_pendientes.precio',
+                'users.name as nombre',
+                'taller.nombre as taller',
+                'vehiculo.placa as placa',
+                DB::raw("'Activación de chip (Anual)' as tiposervicio")
+            )
+
+            ->leftJoin('users', 'certificados_pendientes.idInspector', '=', 'users.id')
+            ->leftJoin('taller', 'certificados_pendientes.idTaller', '=', 'taller.id')
+            ->leftJoin('vehiculo', 'certificados_pendientes.idVehiculo', '=', 'vehiculo.id')
+            ->leftJoin('servicio', 'certificados_pendientes.idServicio', '=', 'servicio.id')
+            //->leftJoin('tiposervicio', 'servicio.tipoServicio_idtipoServicio', '=', 'tiposervicio.id')
+            ->where('certificados_pendientes.estado', 1)
+            ->whereNull('certificados_pendientes.idCertificacion')
+            ->where(function ($query) {
+                if (!empty($this->ins)) {
+                    $query->whereIn('certificados_pendientes.idInspector', $this->ins);
+                }
+
+                if (!empty($this->taller)) {
+                    $query->whereIn('certificados_pendientes.idTaller', $this->taller);
+                }
+            })
+            ->whereBetween('certificados_pendientes.created_at', [
+                $this->fechaInicio . ' 00:00:00',
+                $this->fechaFin . ' 23:59:59'
+            ])
+
+            ->get();
+
+        //dd($certificadosPendientes);
+        $vertaller = $certificaciones->concat($certificadosPendientes);
+        $totalPrecio = $vertaller->sum('precio');
+        $this->vertaller = $vertaller;
+        Cache::put('reporteCalcular', $this->resultados, now()->addMinutes(10));
+        $this->totalPrecio = $totalPrecio;
+        // Agrupar por inspector
+        $this->reporteTaller = $vertaller->groupBy('idInspector');
+    }
+
     public function exportarExcel()
     {
         $data = Cache::get('reporteCalcular');
@@ -249,6 +348,8 @@ class ReporteCalcular extends Component
             ->join('users', 'certificacion.idInspector', '=', 'users.id')
             ->join('servicio', 'certificacion.idServicio', '=', 'servicio.id')
             ->join('tiposervicio', 'servicio.tipoServicio_idtipoServicio', '=', 'tiposervicio.id')
+            ->where('certificacion.pagado', 0)
+            ->whereIn('certificacion.estado', [3, 1])
             ->where(function ($query) {
                 if (!empty($this->ins)) {
                     $query->whereIn('certificacion.idInspector', $this->ins);
@@ -296,7 +397,8 @@ class ReporteCalcular extends Component
             ->groupBy('nombre', 'tiposervicio', 'certificados_pendientes.pagado', 'certificados_pendientes.estado', 'dia_semana')
             ->get();
 
-        $resultados = collect();
+        $resultados = []; //collect()
+        $tiposServiciosDeseados = ['Revisión anual GNV', 'Conversión a GNV', 'Desmonte de Cilindro', 'Duplicado GNV'];
 
         foreach ($certificaciones as $certificacion) {
             $key = $certificacion->nombre . '_' . $certificacion->tiposervicio;
@@ -315,11 +417,17 @@ class ReporteCalcular extends Component
                         7 => 0, // Sábado
                     ],
                     'total' => 0,
+                    'total_certificacion' => 0,
+                    'pagado' => 0,
+                    'estado' => 0,
                 ];
             }
 
             $resultados[$key]->dias[$certificacion->dia_semana] += $certificacion->cantidad_servicio;
             $resultados[$key]->total += $certificacion->cantidad_servicio;
+            if (in_array($certificacion->tiposervicio, $tiposServiciosDeseados)) {
+                $resultados[$key]->total_certificacion += $certificacion->total_precio;
+            }
         }
 
         foreach ($certificadosPendientes as $certificado) {
@@ -339,20 +447,90 @@ class ReporteCalcular extends Component
                         7 => 0, // Sábado
                     ],
                     'total' => 0,
+                    'total_certificacion' => 0,
+                    'pagado' => 0,
+                    'estado' => 0,
                 ];
             }
 
             $resultados[$key]->dias[$certificado->dia_semana] += $certificado->cantidad_servicio;
             $resultados[$key]->total += $certificado->cantidad_servicio;
+            //$resultados[$key]->total_certificacion += $certificado->total_precio;
+            if (in_array($certificado->tiposervicio, $tiposServiciosDeseados)) {
+                $resultados[$key]->total_certificacion += $certificado->total_precio;
+            }
         }
 
-        $this->resultados = array_values($resultados->toArray());
-        Cache::put('reporteCalcularSimple', $this->resultados, now()->addMinutes(10));
+        $inspectorTotals = $this->acumularTotales($resultados);
+        $this->inspectorTotals = $inspectorTotals;
+        $this->resultados = array_values($resultados); //->toArray()
+        Cache::put('reporteCalcularSimple', $this->inspectorTotals, now()->addMinutes(10));
         $this->mostrarTablaSimple = false;
     }
 
+    private function acumularTotales($resultados)
+    {
+        $inspectorTotals = [];
+
+        foreach ($resultados as $inspector) {
+
+            // Verificamos si ya hemos procesado este inspector
+            if (!isset($inspectorTotals[$inspector->nombreInspector])) {
+                $inspectorTotals[$inspector->nombreInspector] = [
+                    'AnualGnv' => 0,
+                    'ConversionGnv' => 0,
+                    'Desmonte' => 0,
+                    'Duplicado' => 0,
+                    'Total' => 0,
+                ];
+            }
+
+            // Acumulamos los resultados según el tipo de servicio
+            switch ($inspector->tiposervicio) {
+                case 'Revisión anual GNV':
+                    $inspectorTotals[$inspector->nombreInspector]['AnualGnv'] += $inspector->total;
+                    break;
+                case 'Conversión a GNV':
+                    $inspectorTotals[$inspector->nombreInspector]['ConversionGnv'] += $inspector->total;
+                    break;
+                case 'Desmonte de Cilindro':
+                    $inspectorTotals[$inspector->nombreInspector]['Desmonte'] += $inspector->total;
+                    break;
+                case 'Duplicado GNV':
+                    $inspectorTotals[$inspector->nombreInspector]['Duplicado'] += $inspector->total;
+                    break;
+            }
+
+            // Acumulamos el total general
+            $inspectorTotals[$inspector->nombreInspector]['Total'] += $inspector->total_certificacion;
+        }
+        return $inspectorTotals;
+    }
 
     public function exportarExcelSimple()
+    {
+        $data = Cache::get('reporteCalcularSimple');
+
+        if ($data) {
+            $exportData = [];
+
+            foreach ($data as $inspectorName => $totals) {
+                $exportData[] = [
+                    'Inspector' => $inspectorName,
+                    'Anual Gnv' => $totals['AnualGnv'],
+                    'Conversion Gnv' => $totals['ConversionGnv'],
+                    'Desmonte' => $totals['Desmonte'],
+                    'Duplicado' => $totals['Duplicado'],
+                    'Total' =>  'S/' . number_format($totals['Total'], 2, '.', ''),
+                ];
+            }
+
+            $fecha = now()->format('d-m-Y');
+            return Excel::download(new ReporteCalcularSimpleExport($exportData), 'ReporteCalcular' . $fecha . '.xlsx');
+        }
+    }
+
+    /*public function exportarExcelSimple()
     {
         $data = Cache::get('reporteCalcularSimple');
 
@@ -386,8 +564,7 @@ class ReporteCalcular extends Component
             $fecha = now()->format('d-m-Y');
             return Excel::download(new ReporteCalcularSimpleExport($exportData), 'ReporteCalcular' . $fecha . '.xlsx');
         }
-    }
-
+    }*/
 
     public function ver($certificacionIds, $tiposServicios)
     {

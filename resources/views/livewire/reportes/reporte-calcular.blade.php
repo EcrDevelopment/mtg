@@ -82,11 +82,15 @@
 
                     <button wire:click="calcularReporte"
                         class="bg-green-400 px-4 py-4 w-full md:w-auto rounded-md text-white font-semibold tracking-wide cursor-pointer mb-4">
-                        <p class="truncate"> Gnra Detallado </p>
+                        <p class="truncate"> Detallado </p>
                     </button>
                     <button wire:click="calcularReporteSimple"
                         class="bg-indigo-400 px-4 py-4 w-full md:w-auto rounded-md text-white font-semibold tracking-wide cursor-pointer mb-4">
-                        <p class="truncate"> Gnra Simple </p>
+                        <p class="truncate"> Externo </p>
+                    </button>
+                    <button wire:click="taller"
+                        class="bg-blue-400 px-4 py-4 w-full md:w-auto rounded-md text-white font-semibold tracking-wide cursor-pointer mb-4">
+                        <p class="truncate"> Taller </p>
                     </button>
 
                 </div>
@@ -104,6 +108,7 @@
         </div>
 
         @if ($mostrarTablaSimple)
+            {{-- Tabla detallado --}}
             @if (isset($reportePorInspector))
 
                 <div wire.model="resultados">
@@ -319,6 +324,7 @@
                 </div>
             @endif
         @else
+            {{-- Tabla para externo --}}
             @if (isset($resultados))
 
                 <div wire.model="resultados">
@@ -328,7 +334,6 @@
                             <p class="truncate"><i class="fa-solid fa-file-excel fa-lg"></i> Desc. Excel 2 </p>
                         </button>
                     </div>
-                    <!-- Nueva Sección: Resumen Semanal -->
                     <div class="bg-gray-200 px-8 py-4 rounded-xl w-full mt-4">
                         @if (!empty($resultados))
                             <div class="overflow-x-auto m-auto w-full">
@@ -339,7 +344,8 @@
                                             <thead class="border-b font-medium dark:border-neutral-500">
                                                 <tr class="bg-indigo-200">
                                                     <th scope="col"
-                                                        class="border-r px-6 py-4 dark:border-neutral-500">Servicios
+                                                        class="border-r px-6 py-4 dark:border-neutral-500">Motorgas
+                                                        Company
                                                     </th>
                                                     <th scope="col"
                                                         class="border-r px-6 py-4 dark:border-neutral-500">Lunes</th>
@@ -366,31 +372,41 @@
                                                     <tr class="border-b dark:border-neutral-500 bg-orange-200">
                                                         <td
                                                             class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                            {{ $detalle->tiposervicio }}</td>
+                                                            {{ is_array($detalle) ? $detalle['tiposervicio'] : $detalle->tiposervicio }}
+                                                        </td>
                                                         <td
                                                             class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                            {{ $detalle->dias[2] }}</td>
+                                                            {{ $detalle->dias[2] ?? 0 }}
+                                                        </td>
                                                         <td
                                                             class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                            {{ $detalle->dias[3] }}</td>
+                                                            {{ $detalle->dias[3] ?? 0 }}
+                                                        </td>
                                                         <td
                                                             class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                            {{ $detalle->dias[4] }}</td>
+                                                            {{ $detalle->dias[4] ?? 0 }}
+                                                        </td>
                                                         <td
                                                             class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                            {{ $detalle->dias[5] }}</td>
+                                                            {{ $detalle->dias[5] ?? 0 }}
+                                                        </td>
                                                         <td
                                                             class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                            {{ $detalle->dias[6] }}</td>
+                                                            {{ $detalle->dias[6] ?? 0 }}
+                                                        </td>
                                                         <td
                                                             class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                            {{ $detalle->dias[7] }}</td>
+                                                            {{ $detalle->dias[7] ?? 0 }}
+                                                        </td>
                                                         <td
                                                             class="whitespace-nowrap px-6 py-3 dark:border-neutral-500">
-                                                            {{ $detalle->dias[1] }}</td>
+                                                            {{ $detalle->dias[1] ?? 0 }}
+                                                        </td>
                                                         <td
                                                             class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                            {{ $detalle->total }}</td>
+                                                            {{ $detalle->total ?? 0 }}
+                                                        </td>
+
                                                     </tr>
                                                 @endforeach
                                             </tbody>
@@ -400,9 +416,6 @@
                             </div>
                         @endif
                     </div>
-
-
-
 
 
                     <div class="bg-gray-200  px-8 py-4 rounded-xl w-full mt-4">
@@ -429,104 +442,23 @@
                                                         class="border-r px-6 py-4 dark:border-neutral-500">
                                                         Conversion Gnv
                                                     </th>
-                                                    {{--
-                                                    <th scope="col"
-                                                        class="border-r px-6 py-4 dark:border-neutral-500">
-                                                        Anual GLP
-                                                    </th>
-                                                    <th scope="col"
-                                                        class="border-r px-6 py-4 dark:border-neutral-500">
-                                                        Conversión GLP
-                                                    </th>
-                                                    <th scope="col"
-                                                        class="border-r px-6 py-4 dark:border-neutral-500">
-                                                        Modificación
-                                                    </th>
-                                                    --}}
                                                     <th scope="col"
                                                         class="border-r px-6 py-4 dark:border-neutral-500">
                                                         Desmonte
                                                     </th>
-                                                    {{--
-                                                    <th scope="col"
-                                                        class="border-r px-6 py-4 dark:border-neutral-500">
-                                                        Activación
-                                                    </th>
-                                                    --}}
                                                     <th scope="col"
                                                         class="border-r px-6 py-4 dark:border-neutral-500">
                                                         Duplicado
                                                     </th>
-                                                    {{--
                                                     <th scope="col"
                                                         class="border-r px-6 py-4 dark:border-neutral-500">
-                                                        Conver + chip
-                                                    </th>
-                                                    <th scope="col"
-                                                        class="border-r px-6 py-4 dark:border-neutral-500">
-                                                        Chip
-                                                    </th>
-                                                    <th scope="col"
-                                                        class="border-r px-6 py-4 dark:border-neutral-500">
-                                                        Pre-GNV
-                                                    </th>
-                                                    <th scope="col"
-                                                        class="border-r px-6 py-4 dark:border-neutral-500">
-                                                        Pre-GLP
-                                                    </th>
-                                                    --}}
-                                                    <th scope="col"
-                                                        class="border-r px-6 py-4 dark:border-neutral-500">
-                                                        Total
+                                                        Monto
                                                     </th>
                                                 </tr>
                                             </thead>
 
                                             <tbody>
-                                                @foreach ($resultados as $inspector => $servicios)
-                                                    @php
-                                                        $serviciosCollection = collect($servicios);
-                                                        $AnualGNV = $serviciosCollection
-                                                            ->where('tiposervicio', 'Revisión anual GNV')
-                                                            ->sum('cantidad_servicio');
-                                                        $ConversionGnv = $serviciosCollection
-                                                            ->where('tiposervicio', 'Conversión a GNV')
-                                                            ->sum('cantidad_servicio');
-                                                        $AnualGLP = $serviciosCollection
-                                                            ->where('tiposervicio', 'Revisión anual GLP')
-                                                            ->sum('cantidad_servicio');
-                                                        $ConversionGLP = $serviciosCollection
-                                                            ->where('tiposervicio', 'Conversión a GLP')
-                                                            ->sum('cantidad_servicio');
-                                                        $modi = $serviciosCollection
-                                                            ->where('tiposervicio', 'Modificación')
-                                                            ->sum('cantidad_servicio');
-                                                        $desmonte = $serviciosCollection
-                                                            ->where('tiposervicio', 'Desmonte de Cilindro')
-                                                            ->sum('cantidad_servicio');
-                                                        $activacion = $serviciosCollection
-                                                            ->where('tiposervicio', 'Activación de chip (Anual)')
-                                                            ->sum('cantidad_servicio');
-                                                        $duplicadoGNV = $serviciosCollection
-                                                            ->where('tiposervicio', 'Duplicado GNV')
-                                                            ->sum('cantidad_servicio');
-                                                        $ConverChip = $serviciosCollection
-                                                            ->where('tiposervicio', 'Conversión a GNV + Chip')
-                                                            ->sum('cantidad_servicio');
-                                                        $chip = $serviciosCollection
-                                                            ->where('tiposervicio', 'Chip por deterioro')
-                                                            ->sum('cantidad_servicio');
-                                                        $preGNV = $serviciosCollection
-                                                            ->where('tiposervicio', 'Pre-conversión GNV')
-                                                            ->sum('cantidad_servicio');
-                                                        $preGLP = $serviciosCollection
-                                                            ->where('tiposervicio', 'Pre-conversión GLP')
-                                                            ->sum('cantidad_servicio');
-                                                        $totalPrecio = $serviciosCollection
-                                                            ->where('pagado', 0)
-                                                            ->whereIn('estado', [1, 3])
-                                                            ->sum('total_precio');
-                                                    @endphp
+                                                @foreach ($inspectorTotals as $inspectorName => $totals)
                                                     <tr class="border-b dark:border-neutral-500 bg-orange-200">
                                                         <td
                                                             class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
@@ -534,71 +466,33 @@
                                                         </td>
                                                         <td
                                                             class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                            {{ $inspector }}
+                                                            {{ $inspectorName }}
                                                         </td>
                                                         <td
                                                             class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                            {{ $AnualGNV }}
+                                                            {{ $totals['AnualGnv'] }}
                                                         </td>
                                                         <td
                                                             class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                            {{ $ConversionGnv }}
-                                                        </td>
-                                                        {{--
-                                                        <td
-                                                            class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                            {{ $AnualGLP }}
+                                                            {{ $totals['ConversionGnv'] }}
                                                         </td>
                                                         <td
                                                             class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                            {{ $ConversionGLP }}
+                                                            {{ $totals['Desmonte'] }}
                                                         </td>
                                                         <td
                                                             class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                            {{ $modi }}
-                                                        </td>
-                                                        --}}
-                                                        <td
-                                                            class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                            {{ $desmonte }}
-                                                        </td>
-                                                        {{--
-                                                        <td
-                                                            class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                            {{ $activacion }}
-                                                        </td>
-                                                        --}}
-                                                        <td
-                                                            class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                            {{ $duplicadoGNV }}
-                                                        </td>
-                                                        {{--
-                                                        <td
-                                                            class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                            {{ $ConverChip }}
+                                                            {{ $totals['Duplicado'] }}
                                                         </td>
                                                         <td
                                                             class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                            {{ $chip }}
-                                                        </td>
-                                                        <td
-                                                            class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                            {{ $preGNV }}
-                                                        </td>
-                                                        <td
-                                                            class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                            {{ $preGLP }}
-                                                        </td>
-                                                        --}}
-                                                        <td
-                                                            class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                            {{ 'S/' . $totalPrecio . '.00' }}
+                                                            {{ 'S/' . $totals['Total'] . '.00' }}
                                                         </td>
                                                     </tr>
                                                 @endforeach
-
-
                                             </tbody>
+
+
                                         </table>
                                     </div>
                                 </div>
@@ -609,6 +503,75 @@
             @endif
         @endif
 
+        {{-- Tabla Para Taller --}}
+
+        @if (isset($reporteTaller))
+
+            <div wire.model="">
+                @foreach ($reporteTaller as $inspectorId => $certificacionesInspector)
+                    <div class="bg-gray-200  px-8 py-4 rounded-xl w-full mt-4">
+                        @if (!empty($certificacionesInspector) && count($certificacionesInspector) > 0)
+                            <div class="overflow-x-auto m-auto w-full">
+                                <div class="inline-block min-w-full py-2 sm:px-6">
+                                    <div class="overflow-hidden">
+                                        <table
+                                            class="min-w-full border text-center text-sm font-light dark:border-neutral-500">
+                                            <thead class="border-b font-medium dark:border-neutral-500">
+                                                <tr class="bg-indigo-200">
+                                                    <th scope="col"
+                                                        class="border-r px-6 py-4 dark:border-neutral-500">
+                                                        #
+                                                    </th>
+                                                    <th scope="col"
+                                                        class="border-r px-6 py-4 dark:border-neutral-500">
+                                                        Taller
+                                                    </th>
+                                                    <th scope="col"
+                                                        class="border-r px-6 py-4 dark:border-neutral-500">
+                                                        Inspector
+                                                    </th>
+                                                    <th scope="col"
+                                                        class="border-r px-6 py-4 dark:border-neutral-500">
+                                                        Monto
+                                                    </th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                @foreach ($certificacionesInspector as $key => $item)
+                                                    <tr class="border-b dark:border-neutral-500 bg-orange-200">
+                                                        <td
+                                                            class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                            {{ $key + 1 }}
+                                                        </td>
+                                                        <td
+                                                            class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                            {{ $item->taller ?? 'N.A' }}
+                                                        </td>
+                                                        <td
+                                                            class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                            {{ $item->nombre ?? 'N.A' }}
+                                                        </td>
+                                                        <td
+                                                            class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                            {{ $item->precio ?? 'S.P' }}
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+                                </div>
+                            </div>
+                        @else
+                            <p class="text-center text-gray-500">No hay certificaciones para este
+                                taller.</p>
+                        @endif
+                    </div>
+                @endforeach
+            </div>
+        @endif
 
     </div>
 

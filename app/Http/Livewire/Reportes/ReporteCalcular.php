@@ -87,6 +87,8 @@ class ReporteCalcular extends Component
             ->join('tiposervicio', 'servicio.tipoServicio_idtipoServicio', '=', 'tiposervicio.id')
             //->leftJoin('serviciomaterial', 'certificacion.id', '=', 'serviciomaterial.idCertificacion')
             //->leftJoin('material', 'serviciomaterial.idMaterial', '=', 'material.id')
+            ->where('certificacion.pagado', 0)
+            ->whereIn('certificacion.estado', [3, 1])
             ->where(function ($query) {
                 if (!empty($this->ins)) {
                     $query->whereIn('certificacion.idInspector', $this->ins);
@@ -160,7 +162,6 @@ class ReporteCalcular extends Component
                 'certificacion.id',
                 'certificacion.idTaller',
                 'certificacion.idInspector',
-                'certificacion.idVehiculo',
                 'certificacion.idServicio',
                 'certificacion.estado',
                 'certificacion.created_at',
@@ -170,10 +171,6 @@ class ReporteCalcular extends Component
                 'taller.nombre as taller',
                 'vehiculo.placa as placa',
                 'tiposervicio.descripcion as tiposervicio',
-                //'material.numSerie as matenumSerie',
-                DB::raw('(SELECT material.numSerie FROM serviciomaterial 
-                LEFT JOIN material ON serviciomaterial.idMaterial = material.id 
-                WHERE serviciomaterial.idCertificacion = certificacion.id LIMIT 1) as matenumSerie')
 
 
             )
@@ -182,8 +179,8 @@ class ReporteCalcular extends Component
             ->join('vehiculo', 'certificacion.idVehiculo', '=', 'vehiculo.id')
             ->join('servicio', 'certificacion.idServicio', '=', 'servicio.id')
             ->join('tiposervicio', 'servicio.tipoServicio_idtipoServicio', '=', 'tiposervicio.id')
-            //->leftJoin('serviciomaterial', 'certificacion.id', '=', 'serviciomaterial.idCertificacion')
-            //->leftJoin('material', 'serviciomaterial.idMaterial', '=', 'material.id')
+            ->where('certificacion.pagado', 0)
+            ->whereIn('certificacion.estado', [3, 1])
             ->where(function ($query) {
                 if (!empty($this->ins)) {
                     $query->whereIn('certificacion.idInspector', $this->ins);
@@ -221,7 +218,6 @@ class ReporteCalcular extends Component
             ->leftJoin('taller', 'certificados_pendientes.idTaller', '=', 'taller.id')
             ->leftJoin('vehiculo', 'certificados_pendientes.idVehiculo', '=', 'vehiculo.id')
             ->leftJoin('servicio', 'certificados_pendientes.idServicio', '=', 'servicio.id')
-            //->leftJoin('tiposervicio', 'servicio.tipoServicio_idtipoServicio', '=', 'tiposervicio.id')
             ->where('certificados_pendientes.estado', 1)
             ->whereNull('certificados_pendientes.idCertificacion')
             ->where(function ($query) {
@@ -240,14 +236,13 @@ class ReporteCalcular extends Component
 
             ->get();
 
-        //dd($certificadosPendientes);
         $vertaller = $certificaciones->concat($certificadosPendientes);
         $totalPrecio = $vertaller->sum('precio');
         $this->vertaller = $vertaller;
         Cache::put('reporteCalcular', $this->resultados, now()->addMinutes(10));
         $this->totalPrecio = $totalPrecio;
         // Agrupar por inspector
-        $this->reporteTaller = $vertaller->groupBy('idInspector');
+        $this->reporteTaller = $vertaller->groupBy('idTaller');
     }
 
     public function exportarExcel()

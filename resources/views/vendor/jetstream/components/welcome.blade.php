@@ -49,6 +49,44 @@
 
             </div>
         </div>
+        <div x-data="{ open: true }"
+            class=" bg-white flex flex-col items-center justify-center relative overflow-hidden w-full">
+            <div @click="open = ! open" class="bg-indigo-100 p-6 w-full flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-book pl-5 text-indigo-600"></i>
+                    <p class="ml-4 text-lg text-indigo-600 leading-7 font-semibold">
+                        Manual de Funciones:
+                    </p>
+                </div>
+                <i class="fas fa-chevron-down fa-lg text-indigo-600"></i>
+            </div>
+            <div x-show="open" @click.outside="open = false" x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0 translate-y-0" x-transition:enter-end="opacity-100 translate-y-0"
+                x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 translate-y-10"
+                x-transition:leave-end="opacity-0 translate-y-0" class="w-full bg-white">
+               
+                {{--@livewire('resumen-manual')--}}
+            </div>
+        </div>
+        <div x-data="{ open: true }"
+            class=" bg-white flex flex-col items-center justify-center relative overflow-hidden w-full">
+            <div @click="open = ! open" class="bg-indigo-100 p-6 w-full flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-sitemap pl-5 text-indigo-600"></i>
+                    <p class="ml-4 text-lg text-indigo-600 leading-7 font-semibold">
+                        Organigrama:
+                    </p>
+                </div>
+                <i class="fas fa-chevron-down fa-lg text-indigo-600"></i>
+            </div>
+            <div x-show="open" @click.outside="open = false" x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0 translate-y-0" x-transition:enter-end="opacity-100 translate-y-0"
+                x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 translate-y-10"
+                x-transition:leave-end="opacity-0 translate-y-0" class="w-full bg-white">
+               
+                {{--@livewire('resumen-organigrama')--}}
+            </div>
+        </div>
         @endhasanyrole
         
         @hasanyrole('Administrador taller')

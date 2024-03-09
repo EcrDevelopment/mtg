@@ -284,10 +284,7 @@
                                                         </td>
                                                         <td
                                                             class="border-r px-6 py-3 dark:border-neutral-500 font-bold">
-                                                            {{ number_format(
-                                                                collect($certificacionesInspector)->where('pagado', 0)->whereIn('estado', [1, 3])->sum('precio'),
-                                                                2,
-                                                            ) }}
+                                                            {{ number_format(collect($certificacionesInspector)->sum('precio'), 2) }}
                                                         </td>
                                                     </tr>
                                                 </tbody>
@@ -295,18 +292,11 @@
                                             <div class="mt-4">
                                                 <ul class="grid grid-cols-2 gap-4">
                                                     @foreach (collect($certificacionesInspector)->groupBy('tiposervicio') as $tipoServicio => $detalle)
-                                                        {{-- Filtrar las entradas donde pagado sea igual a 0 --}}
-                                                        @php
-                                                            $detalleSinPagados = $detalle
-                                                                ->where('pagado', 0)
-                                                                ->whereIn('estado', [1, 3]);
-                                                        @endphp
                                                         <li
                                                             class="flex items-center justify-between bg-gray-100 p-3 rounded-md shadow">
                                                             <span
                                                                 class="text-blue-400">{{ 'Cantidad de ' . $tipoServicio }}</span>
-                                                            <span
-                                                                class="text-green-500">{{ $detalleSinPagados->count() }}
+                                                            <span class="text-green-500">{{ $detalle->count() }}
                                                                 servicios</span>
                                                         </li>
                                                     @endforeach
@@ -506,72 +496,55 @@
         {{-- Tabla Para Taller --}}
 
         @if (isset($reporteTaller))
+            <div wire:model="">
+                <div class="bg-gray-200  px-8 py-4 rounded-xl w-full mt-4">
+                    <div class="overflow-x-auto m-auto w-full">
+                        <div class="inline-block min-w-full py-2 sm:px-6">
+                            <div class="overflow-hidden">
+                                <table
+                                    class="min-w-full border text-center text-sm font-light dark:border-neutral-500">
+                                    <thead class="border-b font-medium dark:border-neutral-500">
+                                        <tr class="bg-indigo-200">
+                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
+                                                #
+                                            </th>
+                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
+                                                Taller
+                                            </th>
+                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
+                                                Monto
+                                            </th>
+                                        </tr>
+                                    </thead>
 
-            <div wire.model="">
-                @foreach ($reporteTaller as $inspectorId => $certificacionesInspector)
-                    <div class="bg-gray-200  px-8 py-4 rounded-xl w-full mt-4">
-                        @if (!empty($certificacionesInspector) && count($certificacionesInspector) > 0)
-                            <div class="overflow-x-auto m-auto w-full">
-                                <div class="inline-block min-w-full py-2 sm:px-6">
-                                    <div class="overflow-hidden">
-                                        <table
-                                            class="min-w-full border text-center text-sm font-light dark:border-neutral-500">
-                                            <thead class="border-b font-medium dark:border-neutral-500">
-                                                <tr class="bg-indigo-200">
-                                                    <th scope="col"
-                                                        class="border-r px-6 py-4 dark:border-neutral-500">
-                                                        #
-                                                    </th>
-                                                    <th scope="col"
-                                                        class="border-r px-6 py-4 dark:border-neutral-500">
-                                                        Taller
-                                                    </th>
-                                                    <th scope="col"
-                                                        class="border-r px-6 py-4 dark:border-neutral-500">
-                                                        Inspector
-                                                    </th>
-                                                    <th scope="col"
-                                                        class="border-r px-6 py-4 dark:border-neutral-500">
-                                                        Monto
-                                                    </th>
+                                    <tbody>
+                                        @foreach ($reporteTaller as $tallerId => $certiTaller)
+                                            @if (!empty($certiTaller) && count($certiTaller) > 0)
+                                                <tr class="border-b dark:border-neutral-500 bg-orange-200">
+                                                    <td
+                                                        class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                        {{ $loop->iteration }}
+                                                    </td>
+                                                    <td
+                                                        class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                        {{ $certiTaller[0]->taller ?? 'N.A' }}
+                                                    </td>
+                                                    <td
+                                                        class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                        S/{{ number_format($certiTaller->sum('precio'), 2, '.', '') }}
+                                                    </td>
                                                 </tr>
-                                            </thead>
-
-                                            <tbody>
-                                                @foreach ($certificacionesInspector as $key => $item)
-                                                    <tr class="border-b dark:border-neutral-500 bg-orange-200">
-                                                        <td
-                                                            class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                            {{ $key + 1 }}
-                                                        </td>
-                                                        <td
-                                                            class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                            {{ $item->taller ?? 'N.A' }}
-                                                        </td>
-                                                        <td
-                                                            class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                            {{ $item->nombre ?? 'N.A' }}
-                                                        </td>
-                                                        <td
-                                                            class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                            {{ $item->precio ?? 'S.P' }}
-                                                        </td>
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-
-                                    </div>
-                                </div>
+                                            @endif
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
-                        @else
-                            <p class="text-center text-gray-500">No hay certificaciones para este
-                                taller.</p>
-                        @endif
+                        </div>
                     </div>
-                @endforeach
+                </div>
             </div>
         @endif
+
 
     </div>
 

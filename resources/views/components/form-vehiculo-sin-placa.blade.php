@@ -85,12 +85,12 @@
 
             <div>
                 <x-jet-label value="VIN / N° Serie:" />
-                <x-jet-input type="text" class="w-full" wire:model="numSerie" />
+                <x-jet-input type="text" class="w-full" wire:model="numSerie" wire:keydown.enter="buscarVehiculo"/>
                 <x-jet-input-error for="numSerie" />
             </div>
             <div>
                 <x-jet-label value="N° Serie Motor:" />
-                <x-jet-input list="vehiculos" type="text" class="w-full" wire:model="numMotor"  wire:keydown.enter="buscarVehiculo" maxlength="21" />
+                <x-jet-input list="vehiculos" type="text" class="w-full" wire:model="numMotor"   maxlength="21" />
                 <x-jet-input-error for="numMotor" />
             </div>
             <div class="flex flex-row justify-center">

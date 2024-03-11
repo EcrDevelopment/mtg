@@ -32,6 +32,7 @@ use App\Http\Livewire\ListaCertificaciones;
 use App\Http\Livewire\ListaCertificacionesPendientes;
 use App\Http\Livewire\ListadoChips;
 use App\Http\Livewire\Logona;
+use App\Http\Livewire\ManualFunciones;
 use App\Http\Livewire\NotificacionesPendientes;
 use App\Http\Livewire\PrestamoMateriales;
 use App\Http\Livewire\Prueba;
@@ -49,6 +50,7 @@ use App\Http\Livewire\RevisionInventario;
 use App\Http\Livewire\ServicioModi;
 use App\Http\Livewire\TallerRevision;
 use App\Http\Livewire\Tablas\Tiposservicios;
+use App\Http\Livewire\TiposManual;
 use App\Http\Livewire\Usuarios;
 use App\Http\Livewire\VistaEliminacion;
 use App\Http\Livewire\VistaSolicitudAnul;
@@ -205,15 +207,21 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified'])
     //Prueba Fotos
     Route::get('/CargaFotos',CargaFotos::class)->name('CargaFotos');
 
-
     //Ruta para adminsitracion de tablas
     Route::get('/Tablas/TiposDeServicios',Tiposservicios::class)->name('table.tiposServicio');
-
     Route::get('/documentosTaller',PruebaDocumentosTaller::class)->name('documentosTaller');
-
 
     //Ruta para los logos
     Route::get('/Logona',Logona::class)->name('Logona');
+
+    //Ruta para Manual de Funciones
+    Route::get('/ManualFunciones',ManualFunciones::class)->name('ManualFunciones');
+    Route::get('/ManualFunciones/{id}/download',[DocumentosController::class,'downloadManual'])->name('download_docManual');
+    Route::get('/Tablas/TiposManual',TiposManual::class)->name('table.TiposManual');
+
+
+
+
 
 
 

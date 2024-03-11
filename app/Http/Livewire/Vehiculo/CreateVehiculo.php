@@ -367,7 +367,7 @@ class CreateVehiculo extends Component
     {
        // $this->validate(['numMotor' => 'min:6|max:11']); //['placa' => 'min:3|max:7'],
 
-        $vehiculos = vehiculo::where('numMotor', 'like', '%' . $this->numMotor . '%') //->orWhere('numMotor', 'like', '%' . $this->numMotor . '%')   ('placa', 'like', '%' . $this->placa . '%')  
+        $vehiculos = vehiculo::where('numSerie', 'like', '%' . $this->numSerie . '%') //->orWhere('numMotor', 'like', '%' . $this->numMotor . '%')   ('placa', 'like', '%' . $this->placa . '%')  
             ->get();
 
         if ($vehiculos->count() > 0) {

@@ -235,7 +235,7 @@
                     @elseif ($carro->combustible === 'GLP')
                         GNV
                     @else
-                        {{ $carro->combustible }}
+                        BI COMBUSTIBLE GNV
                     @endif
                 </td>
             </tr>

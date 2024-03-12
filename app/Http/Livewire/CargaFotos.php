@@ -36,7 +36,7 @@ class CargaFotos extends Component
             $extension = $imagen->getClientOriginalExtension();
             // Reducir el tamaño y peso de la imagen con Intervention Image
             $imagenProcesada = Image::make($imagen->path())
-                //->resize(120, 120)
+                //->resize(200, 200)
                 ->encode($extension, 75);
             // Guardar la imagen procesada en el storage
             $path = "public/prueba/{$nombreImg}.{$extension}";

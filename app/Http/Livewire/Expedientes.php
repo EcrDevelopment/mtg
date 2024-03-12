@@ -51,7 +51,7 @@ class Expedientes extends Component
     protected $rules = [
         'expediente.placa' => 'required|min:6|max:7',
         'expediente.certificado' => 'required|min:1|max:7',
-        'fotosnuevas.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048', //'fotosnuevas'=>'array|max:25'
+        'fotosnuevas.*' => 'image|mimes:jpeg,png,jpg,gif', //|max:2048
         'documentosnuevos.*' => 'mimes:pdf,xls,xlsx,doc,docx,txt|max:2048', //'documentosnuevos'=>'array|max:25'
         'tallerSeleccionado' => 'required',
         'servicioSeleccionado' => 'required',

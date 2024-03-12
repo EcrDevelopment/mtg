@@ -172,7 +172,7 @@ class Expedientes extends Component
         }
     }
 
-    /*public function actualizar(){       
+    public function actualizar(){       
         
         $this->validate();        
         
@@ -221,9 +221,9 @@ class Expedientes extends Component
         $this->emit('alert','El expediente se actualizo correctamente');
 
         $this->identificador=rand();
-    }*/
+    }
 
-    public function actualizar()
+    /*public function actualizar()
     {
         $this->validate();
 
@@ -273,7 +273,7 @@ class Expedientes extends Component
         $this->reset(['editando', 'expediente', 'documentosnuevos', 'fotosnuevas']);
         $this->emit('alert', 'El expediente se actualizó correctamente');
         $this->identificador = rand();
-    }
+    }*/
 
 
 

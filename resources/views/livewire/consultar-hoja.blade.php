@@ -66,6 +66,12 @@
                                                     N° Formato
                                                 </th>
                                                 <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
+                                                    Año
+                                                </th>
+                                                <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
+                                                    Grupo
+                                                </th>
+                                                <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
                                                     Material
                                                 </th>
                                             </tr>
@@ -123,6 +129,14 @@
                                                     <td
                                                         class="whitespace-nowrap border-r px-6 py-4 dark:border-neutral-500">
                                                         {{ $item->numSerie ?? 'NE' }}
+                                                    </td>
+                                                    <td
+                                                        class="whitespace-nowrap border-r px-6 py-4 dark:border-neutral-500">
+                                                        {{ $item->añoActivo ?? 'NE' }}
+                                                    </td>
+                                                    <td
+                                                        class="whitespace-nowrap border-r px-6 py-4 dark:border-neutral-500">
+                                                        {{ $item->grupo ?? 'NE' }}
                                                     </td>
                                                     <td
                                                         class="whitespace-nowrap border-r px-6 py-4 dark:border-neutral-500">

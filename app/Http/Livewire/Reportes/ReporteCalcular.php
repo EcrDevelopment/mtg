@@ -19,7 +19,7 @@ use Livewire\Component;
 
 class ReporteCalcular extends Component
 {
-    public $fechaInicio, $fechaFin, $resultados, $talleres, $inspectores, $totalPrecio, $cantidades, $mostrar = false;
+    public $fechaInicio, $fechaFin, $resultados, $resultadosdetalle, $detallesPlacasFaltantes, $talleres, $inspectores, $totalPrecio, $cantidades, $mostrar = false;
     public $ins = [], $taller = [];
     public $selectAll = false;
     public $selectedRows = [];
@@ -31,7 +31,8 @@ class ReporteCalcular extends Component
     public $mostrarTablaSimple = false;
     public $semana = false;
     public $inspectorTotals;
-    public $reporteTaller , $mostrarTaller = false , $vertaller;
+    public $reporteTaller, $mostrarTaller = false, $vertaller;
+    public $certificaciones, $serviciosImportados; //
     protected $listeners = ['preciosActualizados' => 'recargarDatos'];
 
 
@@ -44,6 +45,7 @@ class ReporteCalcular extends Component
     {
         $this->inspectores = User::role(['inspector', 'supervisor'])->orderBy('name')->get();
         $this->talleres = Taller::all()->sortBy('nombre');
+        $this->serviciosImportados = ServiciosImportados::all();
         //$this->tiposServicio = TipoServicio::all()->sortBy('descripcion');
     }
 
@@ -57,6 +59,113 @@ class ReporteCalcular extends Component
     public function calcularReporte()
     {
         $this->validate();
+        $resultadosdetalle = $this->datosMostrar();
+        $totalPrecio = $resultadosdetalle->sum('precio');
+        //Cache::put('reporteCalcular', $this->datosMostrar(), now()->addMinutes(10));
+        $datosCombinados = $this->datosMostrar();
+        $this->totalPrecio = $totalPrecio;
+        $this->reportePorInspector = $resultadosdetalle->groupBy('idInspector');  //collect($this->resultadosdetalle)->groupBy('idInspector')->toArray(); 
+
+        $this->detallesPlacasFaltantes   = $this->compararDiscrepancias();
+        $this->mostrarTablaSimple = true;
+    }
+
+    public function exportarReporte()
+    {
+        // Obtener los datos de ambas tablas
+        $datosCertificaciones = $this->datosMostrar();
+        $datosDiscrepancias = $this->compararDiscrepancias();
+
+        // Combinar los datos en una sola colección
+        $datosCombinados = $datosCertificaciones->concat($datosDiscrepancias);
+
+        // Exportar los datos combinados utilizando la clase ReporteCalcularExport
+        return Excel::download(new ReporteCalcularExport($datosCombinados), 'reporte_calcular_mtc.xlsx');
+    }
+
+    private function compararDiscrepancias()
+    {
+        $certificaciones = DB::table('certificacion')
+            ->select(
+                'certificacion.idVehiculo',
+                'certificacion.estado',
+                'certificacion.created_at',
+                'certificacion.pagado',
+                'certificacion.idInspector',
+                'certificacion.idTaller',
+                'certificacion.idServicio',
+                'vehiculo.placa as placa',
+            )
+            ->join('vehiculo', 'certificacion.idVehiculo', '=', 'vehiculo.id')
+            ->join('servicio', 'certificacion.idServicio', '=', 'servicio.id')
+            ->join('tiposervicio', 'servicio.tipoServicio_idtipoServicio', '=', 'tiposervicio.id')
+            ->whereIn('tiposervicio.descripcion', ['Conversión a GNV', 'Revisión anual GNV', 'Desmonte de Cilindro'])
+            ->where('certificacion.pagado', 0)
+            ->whereIn('certificacion.estado', [3, 1])
+            ->where(function ($query) {
+                $this->agregarFiltros($query);
+            })
+            ->where(function ($query) {
+                $this->fechaCerti($query);
+            })
+            ->get();
+
+        $serviciosImportados = DB::table('servicios_importados')
+            ->select(
+                'servicios_importados.fecha',
+                'servicios_importados.placa',
+                'servicios_importados.taller',
+                'servicios_importados.certificador',
+                'servicios_importados.tipoServicio',
+            )
+            ->where(function ($query) {
+                if (!empty($this->ins)) {
+                    $query->whereIn('servicios_importados.certificador', $this->ins);
+                }
+
+                if (!empty($this->taller)) {
+                    $query->whereIn('servicios_importados.taller', $this->taller);
+                }
+            })
+            ->where(function ($query) {
+                $this->fechaServImpor($query);
+            })
+            ->get();
+
+        //$placasCertificaciones = $certificaciones->pluck('placa')->unique();
+        // Filtrar servicios importados para que solo incluyan registros únicos
+        $serviciosImportadosUnicos = $serviciosImportados->unique(function ($item) {
+            return $item->placa . $item->taller . $item->certificador . $item->tipoServicio . $item->fecha;
+        });
+        //detalles de servicios_importados únicos
+        $detallesServiciosImportados = $serviciosImportadosUnicos->map(function ($item) {
+            return [
+                'placa' => $item->placa,
+                'taller' => $item->taller,
+                'certificador' => $item->certificador,
+                'tipoServicio' => $item->tipoServicio,
+                'fecha' => $item->fecha
+            ];
+        });
+        //placas de servicios_importados
+        $placasServiciosImportados = $serviciosImportadosUnicos->pluck('placa')->unique();
+        // Filtrar las placas que están en servicios_importados pero no en certificacion para los tipos de servicio requeridos
+        $placasFaltantes = $placasServiciosImportados->reject(function ($placa) use ($certificaciones) {
+            return $certificaciones->where('placa', $placa)
+                ->whereNotIn('tipoServicio', ['Conversión a GNV', 'Revisión anual GNV', 'Desmonte de Cilindro'])
+                ->isNotEmpty();
+        });
+        // Detalles de las placas faltantes
+        $detallesPlacasFaltantes = $detallesServiciosImportados->filter(function ($item) use ($placasFaltantes) {
+            return $placasFaltantes->contains($item['placa']);
+        });
+        //dd($detallesPlacasFaltantes);
+        return $detallesPlacasFaltantes;
+    }
+
+
+    private function datosMostrar()
+    {
 
         $certificaciones = DB::table('certificacion')
             ->select(
@@ -90,18 +199,11 @@ class ReporteCalcular extends Component
             ->where('certificacion.pagado', 0)
             ->whereIn('certificacion.estado', [3, 1])
             ->where(function ($query) {
-                if (!empty($this->ins)) {
-                    $query->whereIn('certificacion.idInspector', $this->ins);
-                }
-
-                if (!empty($this->taller)) {
-                    $query->whereIn('certificacion.idTaller', $this->taller);
-                }
+                $this->agregarFiltros($query);
             })
-            ->whereBetween('certificacion.created_at', [
-                $this->fechaInicio . ' 00:00:00',
-                $this->fechaFin . ' 23:59:59'
-            ])
+            ->where(function ($query) {
+                $this->fechaCerti($query);
+            })
 
             ->get();
 
@@ -130,33 +232,67 @@ class ReporteCalcular extends Component
             ->where('certificados_pendientes.estado', 1)
             ->whereNull('certificados_pendientes.idCertificacion')
             ->where(function ($query) {
-                if (!empty($this->ins)) {
-                    $query->whereIn('certificados_pendientes.idInspector', $this->ins);
-                }
-
-                if (!empty($this->taller)) {
-                    $query->whereIn('certificados_pendientes.idTaller', $this->taller);
-                }
+                $this->agregarFiltros($query);
             })
-            ->whereBetween('certificados_pendientes.created_at', [
-                $this->fechaInicio . ' 00:00:00',
-                $this->fechaFin . ' 23:59:59'
-            ])
-
+            ->where(function ($query) {
+                $this->fechaCeriPendi($query);
+            })
             ->get();
 
-        //dd($certificadosPendientes);
-        $resultados = $certificaciones->concat($certificadosPendientes);
-        $totalPrecio = $resultados->sum('precio');
-        $this->resultados = $resultados;
-        Cache::put('reporteCalcular', $this->resultados, now()->addMinutes(10));
-        $this->totalPrecio = $totalPrecio;
-        // Agrupar por inspector
-        $this->reportePorInspector = $resultados->groupBy('idInspector');
-        $this->mostrarTablaSimple = true;
+
+        $resultadosdetalle = $certificaciones->concat($certificadosPendientes);
+
+        return $resultadosdetalle;
     }
 
-    public function taller(){
+    private function fechaCerti($query)
+    {
+        return $query->whereBetween('certificacion.created_at', [
+            $this->fechaInicio . ' 00:00:00',
+            $this->fechaFin . ' 23:59:59'
+        ]);
+    }
+
+    private function fechaCeriPendi($query)
+    {
+        return $query->whereBetween('certificados_pendientes.created_at', [
+            $this->fechaInicio . ' 00:00:00',
+            $this->fechaFin . ' 23:59:59'
+        ]);
+    }
+    private function fechaServImpor($query)
+    {
+        return $query->whereBetween('servicios_importados.fecha', [
+            $this->fechaInicio . ' 00:00:00',
+            $this->fechaFin . ' 23:59:59'
+        ]);
+    }
+
+    private function agregarFiltros($query)
+    {
+        if (!empty($this->ins)) {
+            $query->whereIn('idInspector', $this->ins);
+        }
+
+        if (!empty($this->taller)) {
+            $query->whereIn('idTaller', $this->taller);
+        }
+    }
+
+
+    public function exportarExcel()
+    {
+        $data = Cache::get('reporteCalcular');
+        //dd($data);
+        if ($data) {
+            $fecha = now()->format('d-m-Y');
+            return Excel::download(new ReporteCalcularExport($data), 'ReporteCalcular' . $fecha . '.xlsx');
+        }
+    }
+
+
+    public function taller()
+    {
         $certificaciones = DB::table('certificacion')
             ->select(
                 'certificacion.id',
@@ -182,18 +318,11 @@ class ReporteCalcular extends Component
             ->where('certificacion.pagado', 0)
             ->whereIn('certificacion.estado', [3, 1])
             ->where(function ($query) {
-                if (!empty($this->ins)) {
-                    $query->whereIn('certificacion.idInspector', $this->ins);
-                }
-
-                if (!empty($this->taller)) {
-                    $query->whereIn('certificacion.idTaller', $this->taller);
-                }
+                $this->agregarFiltros($query);
             })
-            ->whereBetween('certificacion.created_at', [
-                $this->fechaInicio . ' 00:00:00',
-                $this->fechaFin . ' 23:59:59'
-            ])
+            ->where(function ($query) {
+                $this->fechaCerti($query);
+            })
 
             ->get();
 
@@ -221,110 +350,21 @@ class ReporteCalcular extends Component
             ->where('certificados_pendientes.estado', 1)
             ->whereNull('certificados_pendientes.idCertificacion')
             ->where(function ($query) {
-                if (!empty($this->ins)) {
-                    $query->whereIn('certificados_pendientes.idInspector', $this->ins);
-                }
-
-                if (!empty($this->taller)) {
-                    $query->whereIn('certificados_pendientes.idTaller', $this->taller);
-                }
+                $this->agregarFiltros($query);
             })
-            ->whereBetween('certificados_pendientes.created_at', [
-                $this->fechaInicio . ' 00:00:00',
-                $this->fechaFin . ' 23:59:59'
-            ])
+            ->where(function ($query) {
+                $this->fechaCeriPendi($query);
+            })
 
             ->get();
 
         $vertaller = $certificaciones->concat($certificadosPendientes);
         $totalPrecio = $vertaller->sum('precio');
         $this->vertaller = $vertaller;
-        Cache::put('reporteCalcular', $this->resultados, now()->addMinutes(10));
         $this->totalPrecio = $totalPrecio;
         // Agrupar por inspector
         $this->reporteTaller = $vertaller->groupBy('idTaller');
     }
-
-    public function exportarExcel()
-    {
-        $data = Cache::get('reporteCalcular');
-
-        if ($data) {
-            $fecha = now()->format('d-m-Y');
-            return Excel::download(new ReporteCalcularExport($data), 'ReporteCalcular' . $fecha . '.xlsx');
-        }
-    }
-
-    /*public function calcularReporteSimple()
-    {
-        $this->validate();
-
-        $certificaciones = DB::table('certificacion')
-            ->select(
-                'users.name as nombre',
-                'tiposervicio.descripcion as tiposervicio',
-                'certificacion.estado',
-                'certificacion.pagado',
-                DB::raw('COUNT(tiposervicio.descripcion) as cantidad_servicio'),
-                DB::raw('SUM(certificacion.precio) as total_precio')
-            )
-            ->join('users', 'certificacion.idInspector', '=', 'users.id')
-            ->join('servicio', 'certificacion.idServicio', '=', 'servicio.id')
-            ->join('tiposervicio', 'servicio.tipoServicio_idtipoServicio', '=', 'tiposervicio.id')
-            ->where(function ($query) {
-                if (!empty($this->ins)) {
-                    $query->whereIn('certificacion.idInspector', $this->ins);
-                }
-
-                if (!empty($this->taller)) {
-                    $query->where('certificacion.idTaller', $this->taller);
-                }
-            })
-            ->whereBetween('certificacion.created_at', [
-                $this->fechaInicio . ' 00:00:00',
-                $this->fechaFin . ' 23:59:59'
-            ])
-            ->groupBy('nombre', 'tiposervicio.descripcion', 'certificacion.pagado', 'certificacion.estado')
-            ->get();
-
-        $certificadosPendientes = DB::table('certificados_pendientes')
-            ->select(
-                'users.name as nombre',
-                'certificados_pendientes.estado',
-                'certificados_pendientes.pagado',
-                DB::raw("'Activación de chip (Anual)' as tiposervicio"),
-                DB::raw('COUNT("Activación de chip (Anual)") as cantidad_servicio'),
-                DB::raw('SUM(certificados_pendientes.precio) as total_precio'),
-            )
-
-            ->leftJoin('users', 'certificados_pendientes.idInspector', '=', 'users.id')
-            ->leftJoin('servicio', 'certificados_pendientes.idServicio', '=', 'servicio.id')
-            //->leftJoin('tiposervicio', 'servicio.tipoServicio_idtipoServicio', '=', 'tiposervicio.id')
-            ->where('certificados_pendientes.estado', 1)
-            ->whereNull('certificados_pendientes.idCertificacion')
-            ->where(function ($query) {
-                if (!empty($this->ins)) {
-                    $query->whereIn('certificados_pendientes.idInspector', $this->ins);
-                }
-
-                if (!empty($this->taller)) {
-                    $query->where('certificados_pendientes.idTaller', $this->taller);
-                }
-            })
-            ->whereBetween('certificados_pendientes.created_at', [
-                $this->fechaInicio . ' 00:00:00',
-                $this->fechaFin . ' 23:59:59'
-            ])
-
-            ->groupBy('nombre', 'tiposervicio', 'certificados_pendientes.pagado', 'certificados_pendientes.estado')
-            ->get();
-
-        $resultados = $certificaciones->concat($certificadosPendientes)->groupBy('nombre');
-
-        $this->resultados = $resultados;
-        Cache::put('reporteCalcularSimple', $this->resultados, now()->addMinutes(10));
-        $this->mostrarTablaSimple = false;
-    }*/
 
     public function calcularReporteSimple()
     {
@@ -346,18 +386,11 @@ class ReporteCalcular extends Component
             ->where('certificacion.pagado', 0)
             ->whereIn('certificacion.estado', [3, 1])
             ->where(function ($query) {
-                if (!empty($this->ins)) {
-                    $query->whereIn('certificacion.idInspector', $this->ins);
-                }
-
-                if (!empty($this->taller)) {
-                    $query->whereIn('certificacion.idTaller', $this->taller);
-                }
+                $this->agregarFiltros($query);
             })
-            ->whereBetween('certificacion.created_at', [
-                $this->fechaInicio . ' 00:00:00',
-                $this->fechaFin . ' 23:59:59'
-            ])
+            ->where(function ($query) {
+                $this->fechaCerti($query);
+            })
             ->groupBy('nombre', 'tiposervicio.descripcion', 'certificacion.pagado', 'certificacion.estado', 'dia_semana')
             ->get();
 
@@ -377,18 +410,12 @@ class ReporteCalcular extends Component
             ->where('certificados_pendientes.estado', 1)
             ->whereNull('certificados_pendientes.idCertificacion')
             ->where(function ($query) {
-                if (!empty($this->ins)) {
-                    $query->whereIn('certificados_pendientes.idInspector', $this->ins);
-                }
-
-                if (!empty($this->taller)) {
-                    $query->whereIn('certificados_pendientes.idTaller', $this->taller);
-                }
+                $this->agregarFiltros($query);
             })
-            ->whereBetween('certificados_pendientes.created_at', [
-                $this->fechaInicio . ' 00:00:00',
-                $this->fechaFin . ' 23:59:59'
-            ])
+            ->where(function ($query) {
+                $this->fechaCeriPendi($query);
+            })
+
             ->groupBy('nombre', 'tiposervicio', 'certificados_pendientes.pagado', 'certificados_pendientes.estado', 'dia_semana')
             ->get();
 
@@ -525,41 +552,6 @@ class ReporteCalcular extends Component
         }
     }
 
-    /*public function exportarExcelSimple()
-    {
-        $data = Cache::get('reporteCalcularSimple');
-
-        if ($data) {
-            $exportData = [];
-
-            foreach ($data as $inspector => $servicios) {
-                $serviciosCollection = collect($servicios);
-
-                $exportData[] = [
-                    'nombre' => $inspector,
-                    'AnualGNV' => $serviciosCollection->where('tiposervicio', 'Revisión anual GNV')->sum('cantidad_servicio'),
-                    'ConversionGnv' => $serviciosCollection->where('tiposervicio', 'Conversión a GNV')->sum('cantidad_servicio'),
-                    'AnualGLP' => $serviciosCollection->where('tiposervicio', 'Revisión anual GLP')->sum('cantidad_servicio'),
-                    'ConversionGLP' => $serviciosCollection->where('tiposervicio', 'Conversión a GLP')->sum('cantidad_servicio'),
-                    'modi' => $serviciosCollection->where('tiposervicio', 'Modificación')->sum('cantidad_servicio'),
-                    'desmonte' => $serviciosCollection->where('tiposervicio', 'Desmonte de Cilindro')->sum('cantidad_servicio'),
-                    'activacion' => $serviciosCollection->where('tiposervicio', 'Activación de chip (Anual)')->sum('cantidad_servicio'),
-                    'duplicadoGNV' => $serviciosCollection->where('tiposervicio', 'Duplicado GNV')->sum('cantidad_servicio'),
-                    'ConverChip' => $serviciosCollection->where('tiposervicio', 'Conversión a GNV + Chip')->sum('cantidad_servicio'),
-                    'chip' => $serviciosCollection->where('tiposervicio', 'Chip por deterioro')->sum('cantidad_servicio'),
-                    'preGNV' => $serviciosCollection->where('tiposervicio', 'Pre-conversión GNV')->sum('cantidad_servicio'),
-                    'preGLP' => $serviciosCollection->where('tiposervicio', 'Pre-conversión GLP')->sum('cantidad_servicio'),
-                    'total_precio' => $serviciosCollection
-                        ->where('pagado', 0)
-                        ->whereIn('estado', [1, 3])
-                        ->sum('total_precio'),
-                ];
-            }
-
-            $fecha = now()->format('d-m-Y');
-            return Excel::download(new ReporteCalcularSimpleExport($exportData), 'ReporteCalcular' . $fecha . '.xlsx');
-        }
-    }*/
 
     public function ver($certificacionIds, $tiposServicios)
     {
@@ -568,29 +560,6 @@ class ReporteCalcular extends Component
         $this->editando = true;
     }
 
-
-    /*public function updatePrecios()
-    {
-        //$servicios=$this->resultados->whereIn('id', $this->certificacionIds)->whereIn('price', [150, 200]);;
-       
-        if (count($this->updatedPrices) > 0) {
-            foreach ($this->updatedPrices as $key => $nuevoPrecio) {
-                $servs=$this->resultados->whereIn('id', $this->certificacionIds)->where('tiposervicio', $key);
-                 //dd($servicios);   
-                foreach($servs as $seleccionado){
-                    Certificacion::find($seleccionado["id"])->update(['precio'=>$nuevoPrecio]); 
-                    //CertificacionPendiente::find($seleccionado["id"])->update(['precio' => $nuevoPrecio]);                   
-                }
-
-                //dd($seleccionado);
-            }
-            $this->reset(['resultados','updatedPrices','certificacionIds']);
-            $this->calcularReporte();
-            $this->editando = false;          
-            
-            
-        }
-    }*/
 
     public function updatePrecios()
     {
@@ -621,17 +590,6 @@ class ReporteCalcular extends Component
             $this->reset(['resultados', 'updatedPrices', 'certificacionIds']);
             $this->calcularReporte();
             $this->editando = false;
-        }
-    }
-
-    public function toggleSelectAll($inspectorId)
-    {
-        $this->selectAll[$inspectorId] = !$this->selectAll[$inspectorId];
-
-        if ($this->selectAll[$inspectorId]) {
-            $this->selectedRows[$inspectorId] = array_keys($this->reportePorInspector[$inspectorId]->toArray());
-        } else {
-            $this->selectedRows[$inspectorId] = [];
         }
     }
 

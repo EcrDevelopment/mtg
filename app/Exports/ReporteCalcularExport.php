@@ -61,7 +61,7 @@ class ReporteCalcularExport implements FromCollection, WithHeadings, WithMapping
         ];
     }
 
-    public function map($data): array
+    /*public function map($data): array
     {
         return [
             $data->taller ?? 'N.A',
@@ -74,6 +74,36 @@ class ReporteCalcularExport implements FromCollection, WithHeadings, WithMapping
             $data->pagado,
             $data->precio ?? 'S.P',
         ];
+    }*/
+    public function map($data): array
+    {
+        if (isset($data['tipoServicio'])) {
+            // Para los datos de discrepancias
+            return [
+                $data['taller'] ?? 'N.A',
+                $data['certificador'] ?? 'N.A',
+                '', // Hoja (no disponible en los datos de discrepancias)
+                $data['placa'] ?? 'EN TRAMITE',
+                $data['tipoServicio'] ?? 'N.E',
+                $data['fecha'] ?? 'S.F',
+                '', // Estado (no disponible en los datos de discrepancias)
+                '', // Pagado (no disponible en los datos de discrepancias)
+                '', // Precio (no disponible en los datos de discrepancias)
+            ];
+        } else {
+            // Para los datos de certificaciones
+            return [
+                $data->taller ?? 'N.A',
+                $data->nombre ?? 'N.A',
+                $data->matenumSerie ?? 'N.A',
+                $data->placa ?? 'EN TRAMITE',
+                $data->tiposervicio ?? 'N.E',
+                $data->created_at ?? 'S.F',
+                $data->estado,
+                $data->pagado,
+                $data->precio ?? 'S.P',
+            ];
+        }
     }
 
     public function styles(Worksheet $sheet)

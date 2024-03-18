@@ -15,6 +15,7 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\Style\Color;
 
 class ReporteCalcularExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize, WithTitle, WithStyles, WithColumnFormatting, WithStrictNullComparison
 {
@@ -61,7 +62,7 @@ class ReporteCalcularExport implements FromCollection, WithHeadings, WithMapping
         ];
     }
 
-    public function map($data): array
+    /*public function map($data): array
     {
         return [
             $data->taller ?? 'N.A',
@@ -74,25 +75,24 @@ class ReporteCalcularExport implements FromCollection, WithHeadings, WithMapping
             $data->pagado,
             $data->precio ?? 'S.P',
         ];
-    }
+    }*/
 
-    /*public function map($data): array
+    public function map($data): array
     {
-        if (isset($data['tipoServicio'])) {
-            // Para los datos de discrepancias
+        if (is_array($data)) {
             return [
                 $data['taller'] ?? 'N.A',
                 $data['certificador'] ?? 'N.A',
-                '', // Hoja (no disponible en los datos de discrepancias)
+                '',
                 $data['placa'] ?? 'EN TRAMITE',
                 $data['tipoServicio'] ?? 'N.E',
                 $data['fecha'] ?? 'S.F',
-                '', // Estado (no disponible en los datos de discrepancias)
-                '', // Pagado (no disponible en los datos de discrepancias)
-                '', // Precio (no disponible en los datos de discrepancias)
+                '',
+                '',
+                '',
+                'discrepancia',
             ];
         } else {
-            // Para los datos de certificaciones
             return [
                 $data->taller ?? 'N.A',
                 $data->nombre ?? 'N.A',
@@ -103,11 +103,12 @@ class ReporteCalcularExport implements FromCollection, WithHeadings, WithMapping
                 $data->estado,
                 $data->pagado,
                 $data->precio ?? 'S.P',
+                'certificacion',
             ];
         }
-    }*/
+    }
 
-    public function styles(Worksheet $sheet)
+    /*public function styles(Worksheet $sheet)
     {
         $sheet->getStyle('A1:I' . $sheet->getHighestRow())
             ->getBorders()
@@ -117,30 +118,42 @@ class ReporteCalcularExport implements FromCollection, WithHeadings, WithMapping
         $sheet->getStyle('1:1')->getFont()->setBold(true);
 
         return [];
-    }
+    }*/
 
-    public function registerEvents(): array
+    public function styles(Worksheet $sheet)
     {
-        return [
-            AfterSheet::class => function (AfterSheet $event) {
-                // Encontrar el número de filas en el conjunto de datos
-                $rowCount = count($this->data) + 2; // +2 para incluir la fila de encabezado y empezar desde 1
+        $lastRow = $sheet->getHighestRow();
 
-                // Agregar una fila vacía después de cada grupo de datos del inspector
-                $inspectorActual = null;
+        // Aplicar estilos condicionales
+        for ($i = 2; $i <= $lastRow; $i++) {
+            $style = $sheet->getCell('J' . $i)->getValue();
 
-                for ($i = 2; $i <= $rowCount; $i++) {
-                    $inspectorSiguiente = $event->sheet->getCell('B' . $i)->getValue();
+            if ($style === 'certificacion') {
+                $sheet->getStyle('A1:I' . $sheet->getHighestRow())
+                    ->getBorders()
+                    ->getAllBorders()
+                    ->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
-                    if ($inspectorActual !== null && $inspectorActual !== $inspectorSiguiente) {
-                        $event->sheet->insertNewRowBefore($i, 1);
-                        $rowCount++; // Incrementar el número total de filas
-                        $i++; // Saltar la fila que acabamos de agregar
-                    }
+            } elseif ($style === 'discrepancia') {
+                $sheet->getStyle('A' . $i . ':I' . $i)->applyFromArray([
+                    'fill' => [
+                        'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                        'startColor' => ['rgb' => 'FFC0CB'], 
+                    ],
+                ])
+                ->getBorders()
+                    ->getAllBorders()
+                    ->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            }
+        }
 
-                    $inspectorActual = $inspectorSiguiente;
-                }
-            },
-        ];
+        // Aplicar estilos a los encabezados
+        $sheet->getStyle('A1:I1')->applyFromArray([
+            'font' => [
+                'bold' => true,
+            ],
+        ]);
+
+        return [];
     }
 }

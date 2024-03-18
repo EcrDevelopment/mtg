@@ -358,11 +358,12 @@
                                                     class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
                                                     {{ $item['placa'] ?? 'N.A' }}
                                                 </td>
-                                                <td class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                <td
+                                                    class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
                                                     @php
                                                         $tipoServicio = $item['tipoServicio'] ?? null;
                                                         $nombreTipoServicio = '';
-                                                
+
                                                         switch ($tipoServicio) {
                                                             case 1:
                                                                 $nombreTipoServicio = 'Conversión a GNV';
@@ -378,7 +379,7 @@
                                                                 break;
                                                         }
                                                     @endphp
-                                                
+
                                                     {{ $nombreTipoServicio }}
                                                 </td>
                                                 <td
@@ -408,6 +409,7 @@
                         </button>
                     </div>
                     <div class="bg-gray-200 px-8 py-4 rounded-xl w-full mt-4">
+                        <h2 class="text-indigo-600 text-xl font-bold mb-4">Semanal</h2>
                         @if (!empty($resultados))
                             <div class="overflow-x-auto m-auto w-full">
                                 <div class="inline-block min-w-full py-2 sm:px-6">
@@ -440,12 +442,41 @@
                                                 </tr>
                                             </thead>
 
-                                            <tbody>
+                                            <tbody>     
+                                                @php
+                                                    $tipoServicios = [];
+                                                @endphp
+                                                {{-- Agrupar resultados por tipo de servicio --}}
                                                 @foreach ($resultados as $detalle)
+                                                    @if (!isset($tipoServicios[$detalle->tiposervicio]))
+                                                        @php
+                                                            $tipoServicios[$detalle->tiposervicio] = (object) [
+                                                                'total_dias' => array_sum($detalle->dias),
+                                                                'dias' => $detalle->dias,
+                                                                'total' => $detalle->total,
+                                                            ];
+                                                        @endphp
+                                                    @else
+                                                        @php
+                                                            $tipoServicios[
+                                                                $detalle->tiposervicio
+                                                            ]->total_dias += array_sum($detalle->dias);
+                                                            $tipoServicios[$detalle->tiposervicio]->total +=
+                                                                $detalle->total;
+                                                            foreach ($detalle->dias as $dia => $cantidad) {
+                                                                $tipoServicios[$detalle->tiposervicio]->dias[
+                                                                    $dia
+                                                                ] += $cantidad;
+                                                            }
+                                                        @endphp
+                                                    @endif
+                                                @endforeach                                         
+
+                                                @foreach ($tipoServicios  as $tiposervicio =>$detalle)
                                                     <tr class="border-b dark:border-neutral-500 bg-orange-200">
                                                         <td
                                                             class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                            {{ is_array($detalle) ? $detalle['tiposervicio'] : $detalle->tiposervicio }}
+                                                            {{ $tiposervicio }}
                                                         </td>
                                                         <td
                                                             class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
@@ -492,7 +523,8 @@
 
 
                     <div class="bg-gray-200  px-8 py-4 rounded-xl w-full mt-4">
-                        @if (!empty($resultados))
+                        <h2 class="text-indigo-600 text-xl font-bold mb-4">certificaciones</h2>
+                        @if (!empty($inspectorTotals))
                             <div class="overflow-x-auto m-auto w-full">
                                 <div class="inline-block min-w-full py-2 sm:px-6">
                                     <div class="overflow-hidden">
@@ -563,6 +595,15 @@
                                                         </td>
                                                     </tr>
                                                 @endforeach
+                                                <tr class="border-b dark:border-neutral-500 bg-green-200">
+                                                    <td colspan="6" {{-- {{$mostrar ? '9':'8'}} --}}
+                                                        class="border-r px-6 py-3 dark:border-neutral-500 font-bold text-right">
+                                                        Total: {{-- ({{ $certificacionesInspector[0]->nombre }}) --}}
+                                                    </td>
+                                                    <td class="border-r px-6 py-3 dark:border-neutral-500 font-bold">
+                                                        S/{{ number_format(collect($inspectorTotals)->sum('Total'), 2) }}
+                                                    </td>
+                                                </tr>
                                             </tbody>
 
 

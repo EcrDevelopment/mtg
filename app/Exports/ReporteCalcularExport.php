@@ -61,7 +61,7 @@ class ReporteCalcularExport implements FromCollection, WithHeadings, WithMapping
         ];
     }
 
-    /*public function map($data): array
+    public function map($data): array
     {
         return [
             $data->taller ?? 'N.A',
@@ -74,8 +74,9 @@ class ReporteCalcularExport implements FromCollection, WithHeadings, WithMapping
             $data->pagado,
             $data->precio ?? 'S.P',
         ];
-    }*/
-    public function map($data): array
+    }
+
+    /*public function map($data): array
     {
         if (isset($data['tipoServicio'])) {
             // Para los datos de discrepancias
@@ -104,7 +105,7 @@ class ReporteCalcularExport implements FromCollection, WithHeadings, WithMapping
                 $data->precio ?? 'S.P',
             ];
         }
-    }
+    }*/
 
     public function styles(Worksheet $sheet)
     {

@@ -61,8 +61,8 @@ class ReporteCalcular extends Component
         $this->validate();
         $resultadosdetalle = $this->datosMostrar();
         $totalPrecio = $resultadosdetalle->sum('precio');
-        //Cache::put('reporteCalcular', $this->datosMostrar(), now()->addMinutes(10));
-        $datosCombinados = $this->datosMostrar();
+        Cache::put('reporteCalcular', $this->datosMostrar(), now()->addMinutes(10));
+        //$datosCombinados = $this->datosMostrar();
         $this->totalPrecio = $totalPrecio;
         $this->reportePorInspector = $resultadosdetalle->groupBy('idInspector');  //collect($this->resultadosdetalle)->groupBy('idInspector')->toArray(); 
 
@@ -70,7 +70,7 @@ class ReporteCalcular extends Component
         $this->mostrarTablaSimple = true;
     }
 
-    public function exportarReporte()
+    /*public function exportarReporte()
     {
         // Obtener los datos de ambas tablas
         $datosCertificaciones = $this->datosMostrar();
@@ -81,7 +81,7 @@ class ReporteCalcular extends Component
 
         // Exportar los datos combinados utilizando la clase ReporteCalcularExport
         return Excel::download(new ReporteCalcularExport($datosCombinados), 'reporte_calcular_mtc.xlsx');
-    }
+    }*/
 
     private function compararDiscrepancias()
     {

@@ -526,7 +526,7 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
                                         @can('reportes.reporteCalcularGasol')
                                             <x-jet-responsive-nav-link class="text-sm truncate"
                                                 href="{{ route('reportes.reporteCalcularGasol') }}" :active="request()->routeIs('reportes.reporteCalcularGasol')">
-                                                Reporte Gasolution
+                                                Reporte MTC Detallado
                                             </x-jet-responsive-nav-link>
                                         @endcan
                                         @can('reportes.reporteCalcular')

@@ -49,6 +49,8 @@
 
             </div>
         </div>
+
+        {{--
         <div x-data="{ open: true }"
             class=" bg-white flex flex-col items-center justify-center relative overflow-hidden w-full">
             <div @click="open = ! open" class="bg-indigo-100 p-6 w-full flex justify-between items-center">
@@ -65,7 +67,7 @@
                 x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 translate-y-10"
                 x-transition:leave-end="opacity-0 translate-y-0" class="w-full bg-white">
                
-                {{--@livewire('resumen-manual')--}}
+                
             </div>
         </div>
         <div x-data="{ open: true }"
@@ -84,9 +86,10 @@
                 x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 translate-y-10"
                 x-transition:leave-end="opacity-0 translate-y-0" class="w-full bg-white">
                
-                {{--@livewire('resumen-organigrama')--}}
+                
             </div>
         </div>
+        --}}
         @endhasanyrole
         
         @hasanyrole('Administrador taller')

@@ -127,6 +127,21 @@ class Certificacion extends Model
         }
     }
 
+    //Scope para reporte 
+    public function scopePagado($query)
+    {
+        return $query->where('pagado', 0);
+    }
+
+    public function scopeEstado($query)
+    {
+        return $query->whereIn('estado', [3, 1]);
+    }
+
+    public function scopeFiltrarPorFechas($query, $fechaInicio, $fechaFin)
+    {
+        return $query->whereBetween('created_at', [$fechaInicio, $fechaFin]);
+    }
 
 
 

@@ -203,7 +203,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified'])
     //Rutas para ver los reportes de los servicios
     Route::get('/Reporte-calcular',ReporteCalcular::class)->name('reportes.reporteCalcular');
     Route::get('/Reporte-calcular-chip',ReporteCalcularChip::class)->name('reportes.reporteCalcularChip');
-    Route::get('/Reporte-calcular-gasol',ReporteCalcularGasol::class)->name('reportes.reporteCalcularGasol');
+    Route::get('/Reporte-calcular-detalle',ReporteCalcularGasol::class)->name('reportes.reporteCalcularGasol');
 
 
     //Prueba Fotos

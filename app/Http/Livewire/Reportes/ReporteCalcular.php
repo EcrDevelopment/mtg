@@ -2,16 +2,12 @@
 
 namespace App\Http\Livewire\Reportes;
 
-use App\Models\Certificacion;
-use App\Models\CertificacionPendiente;
-use App\Models\ServiciosImportados;
+
 use App\Models\Taller;
 use App\Models\TipoServicio;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
-use App\Exports\ReporteCalcularExport;
 use App\Exports\ReporteCalcularSimpleExport;
-use App\Models\Servicio;
 use Illuminate\Support\Facades\Cache;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -19,21 +15,11 @@ use Livewire\Component;
 
 class ReporteCalcular extends Component
 {
-    public $fechaInicio, $fechaFin, $resultados, $resultadosdetalle, $detallesPlacasFaltantes, $talleres, $inspectores, $totalPrecio, $cantidades, $mostrar = false;
-    public $ins = [], $taller = [];
-    public $selectAll = false;
-    public $selectedRows = [];
-    public $editando, $tiposServicios = [];
-    public $certificacionIds = [];
-    public $updatedPrices = [];
-    public $selectedTipoServicios = [];
-    public $reportePorInspector; //= []
-    public $mostrarTablaSimple = false;
-    public $semana = false;
-    public $inspectorTotals;
-    public $reporteTaller, $mostrarTaller = false, $vertaller;
-    public $certificaciones, $serviciosImportados; //
-    protected $listeners = ['preciosActualizados' => 'recargarDatos'];
+    public $fechaInicio, $fechaFin, $talleres, $inspectores, $ins = [], $taller = [];
+    public $resultados, $inspectorTotals;
+    public $reporteTaller, $vertaller, $totalPrecio;
+    public $tipoServicios;
+    //public $certificaciones;
 
 
     protected $rules = [
@@ -45,8 +31,6 @@ class ReporteCalcular extends Component
     {
         $this->inspectores = User::role(['inspector', 'supervisor'])->orderBy('name')->get();
         $this->talleres = Taller::all()->sortBy('nombre');
-        $this->serviciosImportados = ServiciosImportados::all();
-        //$this->tiposServicio = TipoServicio::all()->sortBy('descripcion');
     }
 
     public function render()
@@ -54,238 +38,6 @@ class ReporteCalcular extends Component
         return view('livewire.reportes.reporte-calcular', [
             'tiposServicio' => TipoServicio::all(),
         ]);
-    }
-
-    public function calcularReporte()
-    {
-        $this->validate();
-        $resultadosdetalle = $this->datosMostrar();
-        $totalPrecio = $resultadosdetalle->sum('precio');
-        //Cache::put('reporteCalcular', $this->datosMostrar(), now()->addMinutes(10));
-        $datosCombinados = $this->datosMostrar();
-        $this->totalPrecio = $totalPrecio;
-        $this->reportePorInspector = $resultadosdetalle->groupBy('idInspector');  //collect($this->resultadosdetalle)->groupBy('idInspector')->toArray(); 
-
-        $this->detallesPlacasFaltantes   = $this->compararDiscrepancias();
-        $this->mostrarTablaSimple = true;
-    }
-
-    private function compararDiscrepancias()
-    {
-        $certificaciones = DB::table('certificacion')
-            ->select(
-                'certificacion.idVehiculo',
-                'certificacion.estado',
-                'certificacion.created_at',
-                'certificacion.pagado',
-                'certificacion.idInspector',
-                'certificacion.idTaller',
-                'certificacion.idServicio',
-                'vehiculo.placa as placa',
-            )
-            ->join('vehiculo', 'certificacion.idVehiculo', '=', 'vehiculo.id')
-            ->join('servicio', 'certificacion.idServicio', '=', 'servicio.id')
-            ->join('tiposervicio', 'servicio.tipoServicio_idtipoServicio', '=', 'tiposervicio.id')
-            ->whereIn('tiposervicio.descripcion', ['Conversión a GNV', 'Revisión anual GNV', 'Desmonte de Cilindro'])
-            ->where('certificacion.pagado', 0)
-            ->whereIn('certificacion.estado', [3, 1])
-            ->where(function ($query) {
-                $this->agregarFiltros($query);
-            })
-            ->where(function ($query) {
-                $this->fechaCerti($query);
-            })
-            ->get();
-
-        $serviciosImportados = DB::table('servicios_importados')
-            ->select(
-                'servicios_importados.fecha',
-                'servicios_importados.placa',
-                'servicios_importados.taller',
-                'servicios_importados.certificador',
-                'servicios_importados.tipoServicio',
-            )
-            ->where(function ($query) {
-                if (!empty($this->ins)) {
-                    $query->whereIn('servicios_importados.certificador', $this->ins);
-                }
-
-                if (!empty($this->taller)) {
-                    $query->whereIn('servicios_importados.taller', $this->taller);
-                }
-            })
-            ->where(function ($query) {
-                $this->fechaServImpor($query);
-            })
-            ->get();
-
-        //$placasCertificaciones = $certificaciones->pluck('placa')->unique();
-        // Filtrar servicios importados para que solo incluyan registros únicos
-        $serviciosImportadosUnicos = $serviciosImportados->unique(function ($item) {
-            return $item->placa . $item->taller . $item->certificador . $item->tipoServicio . $item->fecha;
-        });
-        //detalles de servicios_importados únicos
-        $detallesServiciosImportados = $serviciosImportadosUnicos->map(function ($item) {
-            return [
-                'placa' => $item->placa,
-                'taller' => $item->taller,
-                'certificador' => $item->certificador,
-                'tipoServicio' => $item->tipoServicio,
-                'fecha' => $item->fecha
-            ];
-        });
-        //placas de servicios_importados
-        $placasServiciosImportados = $serviciosImportadosUnicos->pluck('placa')->unique();
-        // Filtrar las placas que están en servicios_importados pero no en certificacion para los tipos de servicio requeridos
-        $placasFaltantes = $placasServiciosImportados->reject(function ($placa) use ($certificaciones) {
-            return $certificaciones->where('placa', $placa)
-                ->whereNotIn('tipoServicio', ['Conversión a GNV', 'Revisión anual GNV', 'Desmonte de Cilindro'])
-                ->isNotEmpty();
-        });
-        // Detalles de las placas faltantes
-        $detallesPlacasFaltantes = $detallesServiciosImportados->filter(function ($item) use ($placasFaltantes) {
-            return $placasFaltantes->contains($item['placa']);
-        });
-        //dd($detallesPlacasFaltantes);
-        return $detallesPlacasFaltantes;
-    }
-
-    private function datosMostrar()
-    {
-
-        $certificaciones = DB::table('certificacion')
-            ->select(
-                'certificacion.id',
-                'certificacion.idTaller',
-                'certificacion.idInspector',
-                'certificacion.idVehiculo',
-                'certificacion.idServicio',
-                'certificacion.estado',
-                'certificacion.created_at',
-                'certificacion.precio',
-                'certificacion.pagado',
-                'users.name as nombre',
-                'taller.nombre as taller',
-                'vehiculo.placa as placa',
-                'tiposervicio.descripcion as tiposervicio',
-                //'material.numSerie as matenumSerie',
-                DB::raw('(SELECT material.numSerie FROM serviciomaterial 
-                LEFT JOIN material ON serviciomaterial.idMaterial = material.id 
-                WHERE serviciomaterial.idCertificacion = certificacion.id LIMIT 1) as matenumSerie')
-
-
-            )
-            ->join('users', 'certificacion.idInspector', '=', 'users.id')
-            ->join('taller', 'certificacion.idTaller', '=', 'taller.id')
-            ->join('vehiculo', 'certificacion.idVehiculo', '=', 'vehiculo.id')
-            ->join('servicio', 'certificacion.idServicio', '=', 'servicio.id')
-            ->join('tiposervicio', 'servicio.tipoServicio_idtipoServicio', '=', 'tiposervicio.id')
-            //->leftJoin('serviciomaterial', 'certificacion.id', '=', 'serviciomaterial.idCertificacion')
-            //->leftJoin('material', 'serviciomaterial.idMaterial', '=', 'material.id')
-            ->where('certificacion.pagado', 0)
-            ->whereIn('certificacion.estado', [3, 1])
-            ->where(function ($query) {
-                $this->agregarFiltros($query);
-            })
-            ->where(function ($query) {
-                $this->fechaCerti($query);
-            })
-
-            ->get();
-
-        $certificadosPendientes = DB::table('certificados_pendientes')
-            ->select(
-                'certificados_pendientes.id',
-                'certificados_pendientes.idTaller',
-                'certificados_pendientes.idInspector',
-                'certificados_pendientes.idVehiculo',
-                'certificados_pendientes.idServicio',
-                'certificados_pendientes.estado',
-                'certificados_pendientes.created_at',
-                'certificados_pendientes.pagado',
-                'certificados_pendientes.precio',
-                'users.name as nombre',
-                'taller.nombre as taller',
-                'vehiculo.placa as placa',
-                DB::raw("'Activación de chip (Anual)' as tiposervicio")
-            )
-
-            ->leftJoin('users', 'certificados_pendientes.idInspector', '=', 'users.id')
-            ->leftJoin('taller', 'certificados_pendientes.idTaller', '=', 'taller.id')
-            ->leftJoin('vehiculo', 'certificados_pendientes.idVehiculo', '=', 'vehiculo.id')
-            ->leftJoin('servicio', 'certificados_pendientes.idServicio', '=', 'servicio.id')
-            //->leftJoin('tiposervicio', 'servicio.tipoServicio_idtipoServicio', '=', 'tiposervicio.id')
-            ->where('certificados_pendientes.estado', 1)
-            ->whereNull('certificados_pendientes.idCertificacion')
-            ->where(function ($query) {
-                $this->agregarFiltros($query);
-            })
-            ->where(function ($query) {
-                $this->fechaCeriPendi($query);
-            })
-            ->get();
-
-
-        $resultadosdetalle = $certificaciones->concat($certificadosPendientes);
-
-        return $resultadosdetalle;
-    }
-
-    private function fechaCerti($query)
-    {
-        return $query->whereBetween('certificacion.created_at', [
-            $this->fechaInicio . ' 00:00:00',
-            $this->fechaFin . ' 23:59:59'
-        ]);
-    }
-
-    private function fechaCeriPendi($query)
-    {
-        return $query->whereBetween('certificados_pendientes.created_at', [
-            $this->fechaInicio . ' 00:00:00',
-            $this->fechaFin . ' 23:59:59'
-        ]);
-    }
-    private function fechaServImpor($query)
-    {
-        return $query->whereBetween('servicios_importados.fecha', [
-            $this->fechaInicio . ' 00:00:00',
-            $this->fechaFin . ' 23:59:59'
-        ]);
-    }
-
-    private function agregarFiltros($query)
-    {
-        if (!empty($this->ins)) {
-            $query->whereIn('idInspector', $this->ins);
-        }
-
-        if (!empty($this->taller)) {
-            $query->whereIn('idTaller', $this->taller);
-        }
-    }
-
-    /*public function exportarExcel()
-    {
-        $data = Cache::get('reporteCalcular');
-        //dd($data);
-        if ($data) {
-            $fecha = now()->format('d-m-Y');
-            return Excel::download(new ReporteCalcularExport($data), 'ReporteCalcular' . $fecha . '.xlsx');
-        }
-    }*/
-
-    public function exportarExcel()
-    {
-
-        $datosCertificaciones = $this->datosMostrar();
-        $datosDiscrepancias = $this->compararDiscrepancias();
-        $datosCombinados = $datosCertificaciones->concat($datosDiscrepancias);
-        $data = $datosCombinados;
-        if ($data) {
-            $fecha = now()->format('d-m-Y');
-            return Excel::download(new ReporteCalcularExport($data), 'ReporteCalcular' . $fecha . '.xlsx');
-        }
     }
 
     public function calcularReporteSimple()
@@ -408,13 +160,39 @@ class ReporteCalcular extends Component
                 $resultados[$key]->total_certificacion += $certificado->total_precio;
             }
         }
-        
+
 
         $inspectorTotals = $this->acumularTotales($resultados);
         $this->inspectorTotals = $inspectorTotals;
         $this->resultados = array_values($resultados); //->toArray()
+        $this->tipoServicios = $this->agruparTipoServicio($this->resultados);
         Cache::put('reporteCalcularSimple', $this->inspectorTotals, now()->addMinutes(10));
-        $this->mostrarTablaSimple = false;
+    }
+
+    public function agruparTipoServicio($resultados)
+    {
+        $tipoServicios = [];
+
+        foreach ($resultados as $detalle) {
+            if (!isset($tipoServicios[$detalle->tiposervicio])) {
+                $tipoServicios[$detalle->tiposervicio] = (object) [
+                    'total_dias' => array_sum($detalle->dias),
+                    'dias' => $detalle->dias,
+                    'total' => $detalle->total,
+                ];
+            } else {
+                $tipoServicios[$detalle->tiposervicio]->total_dias += array_sum(
+                    $detalle->dias,
+                );
+                $tipoServicios[$detalle->tiposervicio]->total +=
+                    $detalle->total;
+                foreach ($detalle->dias as $dia => $cantidad) {
+                    $tipoServicios[$detalle->tiposervicio]->dias[$dia] += $cantidad;
+                }
+            }
+        }
+
+        return $tipoServicios;
     }
 
     private function acumularTotales($resultados)
@@ -456,7 +234,7 @@ class ReporteCalcular extends Component
         return $inspectorTotals;
     }
 
-    public function exportarExcelSimple2()
+    /*public function exportarExcelSimple2()
     {
         $data = Cache::get('reporteCalcularSimple');
 
@@ -477,30 +255,58 @@ class ReporteCalcular extends Component
             $fecha = now()->format('d-m-Y');
             return Excel::download(new ReporteCalcularSimpleExport($exportData), 'ReporteCalcular' . $fecha . '.xlsx');
         }
-    }
+    }*/
+
     public function exportarExcelSimple()
-{
-    $inspectorTotals = $this->inspectorTotals;
+    {
+        $inspectorTotals = $this->inspectorTotals;
 
-    if (!empty($inspectorTotals)) {
-        $exportData = [];
+        if (!empty($inspectorTotals)) {
+            $exportData = [];
 
-        foreach ($inspectorTotals as $inspectorName => $totals) {
-            $exportData[] = [
-                'Inspector' => $inspectorName,
-                'Anual Gnv' => $totals['AnualGnv'],
-                'Conversion Gnv' => $totals['ConversionGnv'],
-                'Desmonte' => $totals['Desmonte'],
-                'Duplicado' => $totals['Duplicado'],
-                'Total' =>  'S/' . number_format($totals['Total'], 2, '.', ''),
-            ];
+            foreach ($inspectorTotals as $inspectorName => $totals) {
+                $exportData[] = [
+                    'Inspector' => $inspectorName,
+                    'Anual Gnv' => $totals['AnualGnv'],
+                    'Conversion Gnv' => $totals['ConversionGnv'],
+                    'Desmonte' => $totals['Desmonte'],
+                    'Duplicado' => $totals['Duplicado'],
+                    'Total' =>  'S/' . number_format($totals['Total'], 2, '.', ''),
+                ];
+            }
+
+            $fecha = now()->format('d-m-Y');
+            return Excel::download(new ReporteCalcularSimpleExport($exportData), 'ReporteCalcular' . $fecha . '.xlsx');
+        }
+    }
+
+
+    private function fechaCerti($query)
+    {
+        return $query->whereBetween('certificacion.created_at', [
+            $this->fechaInicio . ' 00:00:00',
+            $this->fechaFin . ' 23:59:59'
+        ]);
+    }
+
+    private function fechaCeriPendi($query)
+    {
+        return $query->whereBetween('certificados_pendientes.created_at', [
+            $this->fechaInicio . ' 00:00:00',
+            $this->fechaFin . ' 23:59:59'
+        ]);
+    }
+
+    private function agregarFiltros($query)
+    {
+        if (!empty($this->ins)) {
+            $query->whereIn('idInspector', $this->ins);
         }
 
-        $fecha = now()->format('d-m-Y');
-        return Excel::download(new ReporteCalcularSimpleExport($exportData), 'ReporteCalcular' . $fecha . '.xlsx');
+        if (!empty($this->taller)) {
+            $query->whereIn('idTaller', $this->taller);
+        }
     }
-}
-
 
 
     public function taller()
@@ -576,50 +382,5 @@ class ReporteCalcular extends Component
         $this->totalPrecio = $totalPrecio;
         // Agrupar por inspector
         $this->reporteTaller = $vertaller->groupBy('idTaller');
-    }
-
-    public function ver($certificacionIds, $tiposServicios)
-    {
-        $this->certificacionIds = $certificacionIds;
-        $this->tiposServicios = $tiposServicios;
-        $this->editando = true;
-    }
-
-
-    public function updatePrecios()
-    {
-        if (count($this->updatedPrices) > 0) {
-            foreach ($this->updatedPrices as $key => $nuevoPrecio) {
-                $certificacionIds = $this->certificacionIds;
-
-                // Actualizar precios en Certificacion
-                Certificacion::whereIn('id', $certificacionIds)
-                    ->whereHas('servicio', function ($query) use ($key) {
-                        $query->whereHas('tipoServicio', function ($query) use ($key) {
-                            $query->where('descripcion', $key);
-                        });
-                    })
-                    ->update(['precio' => $nuevoPrecio]);
-
-                // Actualizar precios en CertificacionPendiente
-                CertificacionPendiente::whereIn('id', $certificacionIds)
-                    ->update(['precio' => $nuevoPrecio]);
-            }
-
-            // Emitir evento para indicar que los precios han sido actualizados
-            $this->emit('preciosActualizados');
-
-            // Refrescar solo la sección de la tabla
-            $this->dispatchBrowserEvent('refresh-table');
-
-            $this->reset(['resultados', 'updatedPrices', 'certificacionIds']);
-            $this->calcularReporte();
-            $this->editando = false;
-        }
-    }
-
-    public function recargarDatos()
-    {
-        $this->calcularReporte();
     }
 }

@@ -56,4 +56,15 @@ class CertificacionPendiente extends Model
         }
        
     }
+
+    //Scope para reporte 
+    public function scopeEstado($query, $estado)
+    {
+        return $query->where('estado', $estado);
+    }
+
+    public function scopeFiltrarPorFechas($query, $fechaInicio, $fechaFin)
+    {
+        return $query->whereBetween('created_at', [$fechaInicio, $fechaFin]);
+    }
 }

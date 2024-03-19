@@ -13,10 +13,10 @@ class Cambiar extends Component
         return view('livewire.cambiar');
     }
 
-    public function cambiar(){
+    /*public function cambiar(){
 
     DB::table('material')->update(['anio'=>DB::raw('añoActivo')]);
     dd('Se actualizo correctamente');
-    }
+    }*/
 
 }

@@ -21,6 +21,7 @@ use App\Http\Livewire\AdministracionCertificaciones;
 use App\Http\Livewire\AdminPermisos;
 use App\Http\Livewire\AdminRoles;
 use App\Http\Livewire\Arreglando;
+use App\Http\Livewire\Cambiar;
 use App\Http\Livewire\CargaFotos;
 use App\Http\Livewire\CargaImagenes;
 use App\Http\Livewire\ConsultarHoja;
@@ -208,6 +209,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified'])
     //Prueba Fotos
     Route::get('/CargaFotos',CargaFotos::class)->name('CargaFotos');
     Route::get('/CargaImagenes',CargaImagenes::class)->name('CargaImagenes');
+    Route::get('/cambiar',Cambiar::class)->name('cambiar');
 
     //Ruta para adminsitracion de tablas
     Route::get('/Tablas/TiposDeServicios',Tiposservicios::class)->name('table.tiposServicio');

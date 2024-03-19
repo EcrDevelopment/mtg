@@ -26,6 +26,7 @@ class Material extends Model
     'grupo',
     'idTipoMaterial',
     'añoActivo',
+    'anio',
     'created_at',
     'updated_at',
     ];

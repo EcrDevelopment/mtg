@@ -683,7 +683,7 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
                                         aria-label="submenu">
                                         <x-jet-responsive-nav-link class="text-sm"
                                             href="{{ route('table.TiposManual') }}" :active="request()->routeIs('table.TiposManual')">
-                                            Tipos de manual
+                                            Tipos de Areas
                                         </x-jet-responsive-nav-link>
 
                                     </ul>

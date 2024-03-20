@@ -17,6 +17,7 @@ use App\Http\Livewire\VistaSolicitud;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PdfController;
 use App\Http\Controllers\uploadController;
+use App\Http\Livewire\ActualizarPrecios;
 use App\Http\Livewire\AdministracionCertificaciones;
 use App\Http\Livewire\AdminPermisos;
 use App\Http\Livewire\AdminRoles;
@@ -204,6 +205,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified'])
     Route::get('/Reporte-calcular',ReporteCalcular::class)->name('reportes.reporteCalcular');
     Route::get('/Reporte-calcular-chip',ReporteCalcularChip::class)->name('reportes.reporteCalcularChip');
     Route::get('/Reporte-calcular-detalle',ReporteCalcularGasol::class)->name('reportes.reporteCalcularGasol');
+    Route::get('/Reporte-actualizar-precio',ActualizarPrecios::class)->name('reportes.reporteActualizarPrecio');
 
 
     //Prueba Fotos

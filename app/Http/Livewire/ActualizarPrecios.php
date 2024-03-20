@@ -1,25 +1,21 @@
 <?php
 
-namespace App\Http\Livewire\Reportes;
+namespace App\Http\Livewire;
 
-
-use Livewire\Component;
-use App\Models\ServiciosImportados;
+use App\Models\Certificacion;
+use App\Models\CertificacionPendiente;
 use App\Models\Taller;
-use App\Models\TipoServicio;
-use App\Exports\ReporteCalcularExport;
 use App\Models\User;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
-use Maatwebsite\Excel\Facades\Excel;
+use Livewire\Component;
 
-class ReporteCalcularGasol extends Component
+class ActualizarPrecios extends Component
 {
-
     public $fechaInicio, $fechaFin, $resultados, $talleres, $inspectores;
     public $ins = [], $taller = [];
     public $totalPrecio, $reportePorInspector, $detallesPlacasFaltantes, $certificacionIds = [];
     public $editando, $tiposServicios = [], $serviciosImportados, $updatedPrices = [];
+    protected $listeners = ['preciosActualizados' => 'recargarDatos'];
 
     protected $rules = [
         "fechaInicio" => 'required|date',
@@ -30,13 +26,11 @@ class ReporteCalcularGasol extends Component
     {
         $this->inspectores = User::role(['inspector', 'supervisor'])->orderBy('name')->get();
         $this->talleres = Taller::orderBy('nombre')->get(); //all()->sortBy('nombre')
-        $this->serviciosImportados = ServiciosImportados::all();
     }
+
     public function render()
     {
-        return view('livewire.reportes.reporte-calcular-gasol', [
-            'tiposServicio' => TipoServicio::all(),
-        ]);
+        return view('livewire.actualizar-precios');
     }
 
     public function calcularReporte()
@@ -44,90 +38,8 @@ class ReporteCalcularGasol extends Component
         $this->validate();
         $resultadosdetalle = $this->datosMostrar();
         $totalPrecio = $resultadosdetalle->sum('precio');
-        //Cache::put('reporteCalcular', $this->datosMostrar(), now()->addMinutes(10));
-        //$datosCombinados = $this->datosMostrar();
         $this->totalPrecio = $totalPrecio;
-        $this->reportePorInspector = $resultadosdetalle->groupBy('idInspector');  //collect($this->resultadosdetalle)->groupBy('idInspector')->toArray(); 
-        $this->detallesPlacasFaltantes   = $this->compararDiscrepancias();
-    }
-
-    private function compararDiscrepancias()
-    {
-        $certificaciones = DB::table('certificacion')
-            ->select(
-                'certificacion.idVehiculo',
-                'certificacion.estado',
-                'certificacion.created_at',
-                'certificacion.pagado',
-                'certificacion.idInspector',
-                'certificacion.idTaller',
-                'certificacion.idServicio',
-                'vehiculo.placa as placa',
-            )
-            ->join('vehiculo', 'certificacion.idVehiculo', '=', 'vehiculo.id')
-            ->join('servicio', 'certificacion.idServicio', '=', 'servicio.id')
-            ->join('tiposervicio', 'servicio.tipoServicio_idtipoServicio', '=', 'tiposervicio.id')
-            ->whereIn('tiposervicio.descripcion', ['Conversión a GNV', 'Revisión anual GNV', 'Desmonte de Cilindro'])
-            ->where('certificacion.pagado', 0)
-            ->whereIn('certificacion.estado', [3, 1])
-            ->where(function ($query) {
-                $this->agregarFiltros($query);
-            })
-            ->where(function ($query) {
-                $this->fechaCerti($query);
-            })
-            ->get();
-
-        $serviciosImportados = DB::table('servicios_importados')
-            ->select(
-                'servicios_importados.fecha',
-                'servicios_importados.placa',
-                'servicios_importados.taller',
-                'servicios_importados.certificador',
-                'servicios_importados.tipoServicio',
-            )
-            ->where(function ($query) {
-                if (!empty($this->ins)) {
-                    $query->whereIn('servicios_importados.certificador', $this->ins);
-                }
-
-                if (!empty($this->taller)) {
-                    $query->whereIn('servicios_importados.taller', $this->taller);
-                }
-            })
-            ->where(function ($query) {
-                $this->fechaServImpor($query);
-            })
-            ->get();
-
-
-        $serviciosImportadosUnicos = $serviciosImportados->unique(function ($item) {
-            return $item->placa . $item->taller . $item->certificador . $item->tipoServicio . $item->fecha;
-        });
-        //detalles de servicios_importados únicos
-        $detallesServiciosImportados = $serviciosImportadosUnicos->map(function ($item) {
-            return [
-                'placa' => $item->placa,
-                'taller' => $item->taller,
-                'certificador' => $item->certificador,
-                'tipoServicio' => $item->tipoServicio,
-                'fecha' => $item->fecha
-            ];
-        });
-        //placas de servicios_importados
-        $placasServiciosImportados = $serviciosImportadosUnicos->pluck('placa')->unique();
-        // Filtrar las placas que están en servicios_importados pero no en certificacion para los tipos de servicio requeridos
-        $placasFaltantes = $placasServiciosImportados->reject(function ($placa) use ($certificaciones) {
-            return $certificaciones->where('placa', $placa)
-                ->whereNotIn('tipoServicio', ['Conversión a GNV', 'Revisión anual GNV']) //, 'Desmonte de Cilindro'
-                ->isNotEmpty();
-        });
-        // Detalles de las placas faltantes
-        $detallesPlacasFaltantes = $detallesServiciosImportados->filter(function ($item) use ($placasFaltantes) {
-            return $placasFaltantes->contains($item['placa']);
-        });
-        //dd($detallesPlacasFaltantes);
-        return $detallesPlacasFaltantes;
+        $this->reportePorInspector = $resultadosdetalle->groupBy('idInspector'); 
     }
 
     private function datosMostrar()
@@ -210,19 +122,6 @@ class ReporteCalcularGasol extends Component
         return $resultadosdetalle;
     }
 
-    public function exportarExcel()
-    {
-
-        $datosCertificaciones = $this->datosMostrar();
-        $datosDiscrepancias = $this->compararDiscrepancias();
-        $datosCombinados = $datosCertificaciones->concat($datosDiscrepancias);
-        $data = $datosCombinados;
-        if ($data) {
-            $fecha = now()->format('d-m-Y');
-            return Excel::download(new ReporteCalcularExport($data), 'ReporteCalcular' . $fecha . '.xlsx');
-        }
-    }
-
     private function fechaCerti($query)
     {
         return $query->whereBetween('certificacion.created_at', [
@@ -238,14 +137,7 @@ class ReporteCalcularGasol extends Component
             $this->fechaFin . ' 23:59:59'
         ]);
     }
-    private function fechaServImpor($query)
-    {
-        return $query->whereBetween('servicios_importados.fecha', [
-            $this->fechaInicio . ' 00:00:00',
-            $this->fechaFin . ' 23:59:59'
-        ]);
-    }
-
+    
     private function agregarFiltros($query)
     {
         if (!empty($this->ins)) {
@@ -255,5 +147,49 @@ class ReporteCalcularGasol extends Component
         if (!empty($this->taller)) {
             $query->whereIn('idTaller', $this->taller);
         }
+    }
+
+    public function ver($certificacionIds, $tiposServicios)
+    {
+        $this->certificacionIds = $certificacionIds;
+        $this->tiposServicios = $tiposServicios;
+        $this->editando = true;
+    }
+
+    public function updatePrecios()
+    {
+        if (count($this->updatedPrices) > 0) {
+            foreach ($this->updatedPrices as $key => $nuevoPrecio) {
+                $certificacionIds = $this->certificacionIds;
+
+                // Actualizar precios en Certificacion
+                Certificacion::whereIn('id', $certificacionIds)
+                    ->whereHas('servicio', function ($query) use ($key) {
+                        $query->whereHas('tipoServicio', function ($query) use ($key) {
+                            $query->where('descripcion', $key);
+                        });
+                    })
+                    ->update(['precio' => $nuevoPrecio]);
+
+                // Actualizar precios en CertificacionPendiente
+                CertificacionPendiente::whereIn('id', $certificacionIds)
+                    ->update(['precio' => $nuevoPrecio]);
+            }
+
+            // Emitir evento para indicar que los precios han sido actualizados
+            $this->emit('preciosActualizados');
+
+            // Refrescar solo la sección de la tabla
+            $this->dispatchBrowserEvent('refresh-table');
+
+            $this->reset(['resultados', 'updatedPrices', 'certificacionIds']);
+            $this->calcularReporte();
+            $this->editando = false;
+        }
+    }
+
+    public function recargarDatos()
+    {
+        $this->calcularReporte();
     }
 }

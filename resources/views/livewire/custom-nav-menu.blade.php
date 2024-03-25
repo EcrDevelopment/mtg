@@ -84,10 +84,12 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
 
                 <x-slot name="content">
                     <!-- Account Management -->
+                    
                     <div class="block px-4 py-2 text-xs text-gray-400">
                         {{ __('Tienes ' .Auth()->user()->unreadNotifications->count() .' notificaciones') }}
                     </div>
                     @foreach (Auth()->user()->unreadNotifications as $notification)
+                        {{-- Notificacion para Solicitud de Material --}}
                         @if ($notification->type == 'App\Notifications\CreateSolicitud')
                             <x-jet-dropdown-link
                                 href="{{ route('leerNotificacion', [$notification->id, $notification->data['idSoli']]) }}">
@@ -96,8 +98,7 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
                             </x-jet-dropdown-link>
                             <div class="border-t border-gray-100"></div>
                         @endif
-                        {{-- aqui va la ruta hacia tu nuevo modulo para ver cual es la anulacion tienes que crear un nuevo componente
-                                 y recibir un id o algo que te muestre la anulacion y el motivo --}}
+                        {{-- Notificacion para Solicitud Anulacion --}}
                         @if ($notification->type == 'App\Notifications\AnulacionSolicitud')
                             <x-jet-dropdown-link href="{{ route('leerAnular', [$notification->id]) }}">
                                 <p class="text-xs "> Nueva solicitud de Anulación <strong
@@ -105,7 +106,7 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
                             </x-jet-dropdown-link>
                             <div class="border-t border-gray-100"></div>
                         @endif
-                        {{--   --}}
+                        {{--  Notificacion para Solicitud de Eliminacion--}}
                         @if ($notification->type == 'App\Notifications\SolicitudEliminacion')
                             <x-jet-dropdown-link href="{{ route('leerEliminar', [$notification->id]) }}">
                                 <p class="text-xs "> Nueva solicitud de Eliminación <strong
@@ -113,7 +114,16 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
                             </x-jet-dropdown-link>
                             <div class="border-t border-gray-100"></div>
                         @endif
+                        {{--  Notificacion para Memorando --}}
+                        @if ($notification->type == 'App\Notifications\MemorandoSolicitud')
+                            <x-jet-dropdown-link href="{{ route('leerMemorando', [$notification->id]) }}">
+                                <p class="text-xs "> Nuevo Memorando <strong
+                                        class="text-indigo-500">{{$notification->data['idMemorando'] }}</strong></p> {{-- var_export --}}
+                            </x-jet-dropdown-link>
+                            <div class="border-t border-gray-100"></div>
+                        @endif
                     @endforeach
+                        {{-- Boton para ver todas las Notificaciones --}}
                     @hasrole('Administrador del sistema|administrador')
                     <div class="mt-2 flex justify-center">
                         <a href="{{ route('Notificaciones') }}"
@@ -718,6 +728,38 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
                                         <x-jet-responsive-nav-link class="text-sm"
                                             href="{{ route('ManualFunciones') }}" :active="request()->routeIs('ManualFunciones')">
                                             Manual de Funciones
+                                        </x-jet-responsive-nav-link>
+
+                                    </ul>
+                                </div>
+                                <div x-show.transition="Open" style="display:none;">
+                                    <ul x-transition:enter="transition-all ease-in-out duration-300"
+                                        x-transition:enter-start="opacity-25 max-h-0"
+                                        x-transition:enter-end="opacity-100 max-h-xl"
+                                        x-transition:leave="transition-all ease-in-out duration-300"
+                                        x-transition:leave-start="opacity-100 max-h-xl"
+                                        x-transition:leave-end="opacity-0 max-h-0"
+                                        class="mt-0.5 divide-y-2 divide-gray-600 overflow-hidden text-sm font-medium bg-gray-600 text-white shadow-inner"
+                                        aria-label="submenu">
+                                        <x-jet-responsive-nav-link class="text-sm"
+                                            href="{{ route('Memorando') }}" :active="request()->routeIs('Memorando')">
+                                            Memorandum
+                                        </x-jet-responsive-nav-link>
+
+                                    </ul>
+                                </div>
+                                <div x-show.transition="Open" style="display:none;">
+                                    <ul x-transition:enter="transition-all ease-in-out duration-300"
+                                        x-transition:enter-start="opacity-25 max-h-0"
+                                        x-transition:enter-end="opacity-100 max-h-xl"
+                                        x-transition:leave="transition-all ease-in-out duration-300"
+                                        x-transition:leave-start="opacity-100 max-h-xl"
+                                        x-transition:leave-end="opacity-0 max-h-0"
+                                        class="mt-0.5 divide-y-2 divide-gray-600 overflow-hidden text-sm font-medium bg-gray-600 text-white shadow-inner"
+                                        aria-label="submenu">
+                                        <x-jet-responsive-nav-link class="text-sm"
+                                            href="{{ route('ListaMemorando') }}" :active="request()->routeIs('ListaMemorando')">
+                                            Lista Memorandums
                                         </x-jet-responsive-nav-link>
 
                                     </ul>

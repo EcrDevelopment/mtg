@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DocumentosController;
+use App\Http\Controllers\MemorandoController;
 use App\Http\Livewire\AsignacionMateriales;
 use App\Http\Livewire\PruebaDocumentosTaller;
 use App\Http\Livewire\CreateSolicitud;
@@ -34,8 +35,10 @@ use App\Http\Livewire\ImportarDesmontes;
 use App\Http\Livewire\ListaCertificaciones;
 use App\Http\Livewire\ListaCertificacionesPendientes;
 use App\Http\Livewire\ListadoChips;
+use App\Http\Livewire\ListaMemorandos;
 use App\Http\Livewire\Logona;
 use App\Http\Livewire\ManualFunciones;
+use App\Http\Livewire\Memorandos;
 use App\Http\Livewire\NotificacionesPendientes;
 use App\Http\Livewire\PrestamoMateriales;
 use App\Http\Livewire\Prueba;
@@ -57,6 +60,7 @@ use App\Http\Livewire\TiposManual;
 use App\Http\Livewire\Usuarios;
 use App\Http\Livewire\VistaEliminacion;
 use App\Http\Livewire\VistaSolicitudAnul;
+use App\Http\Livewire\VistaSolicitudMemorando;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -157,9 +161,10 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified'])
 
     Route::get('/certificados-pendientes',ListaCertificacionesPendientes::class)->middleware('can:certificaciones.pendientes')->name('certificaciones.pendientes');
 
-    Route::get('/Solicitud/{soliId}',VistaSolicitud::class)->name('vistaSolicitud');
+    Route::get('/Solicitud/{soliId}',VistaSolicitud::class)->name('vistaSolicitud');    
     Route::get('/SolicitudAnu/{anuId}/{cerId}/{userId}',VistaSolicitudAnul::class)->name('vistaSolicitudAnul');
     Route::get('/SolicitudEli/{eliId}/{cerId}/{userId}',VistaEliminacion::class)->name('vistaSolicitudEli');
+    Route::get('/Memorando/{memoId}',VistaSolicitudMemorando::class)->name('vistaSolicitudMemorando');
     Route::get('/Notificaciones',NotificacionesPendientes::class)->name('Notificaciones');
     Route::get('/ConsultarHoja',ConsultarHoja::class)->middleware('can:ConsultarHoja')->name('ConsultarHoja');
     //Route::get('/Recepcion-de-materiales',RecepcionMateriales::class)->middleware('can:recepcion')->name('recepcion');
@@ -226,12 +231,10 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified'])
     Route::get('/Tablas/TiposManual',TiposManual::class)->name('table.TiposManual');
 
 
-
-
-
-
-
-
+    //Ruta para Memorandos
+    Route::get('/Memorando',Memorandos::class)->name('Memorando');
+    Route::get('/ListaMemorando',ListaMemorandos::class)->name('ListaMemorando');
+    //Route::get('/Memorando/{memoId}',VistaSolicitudMemorando::class)->name('vistaSolicitudMemorando');
 
 
     //RUTAS PARA STREAM Y DESCARGA DE PDFS
@@ -261,6 +264,9 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified'])
         Route::get('/preConver/{id}', 'generaPdfPreGnv')->name("generaPreGnvPdf");
         Route::get('/preConver/{id}/descargar', 'generaDescargaPreGnv')->name("descargarPreGnvPdf");
 
+        //Rutas para ver  y descargar pdf memorando
+        Route::get('/memorando/{id}', 'generaPdfMemorando')->name("certificadoMemo");
+        Route::get('/memorando/{id}/descargar', 'descargaPdfMemorando')->name("descargarCertiMemo");
 
 
 
@@ -312,6 +318,9 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified'])
     Route::get("Notification/{idNoti}/{idSoli}","App\Http\Controllers\NotificationController@marcarUnaNotificación")->name("leerNotificacion");
     Route::get("Notification/{idNoti}anular","App\Http\Controllers\AnulacionController@marcarAnulacion")->name("leerAnular");
     Route::get("Notification/{idNoti}eliminar","App\Http\Controllers\EliminacionController@marcarEliminacion")->name("leerEliminar");
+    Route::get("Notification/{idNoti}memorando","App\Http\Controllers\MemorandoController@marcarMemorando")->name("leerMemorando");
+    //Route::get('/leer-memorando/{notification}', [MemorandoController::class, 'marcarMemorando'])->name('leerMemorando');
+
 
     Route::get('download/{path}', function($path) { return Illuminate\Support\Facades\Storage::download($path);})->where('path','.*');
     Route::get('/CargoPdf/{id}', function ($id) {

@@ -22,5 +22,15 @@
             </button>
         </div>
 
+        <div>
+            @if(isset($urls))
+                @foreach ($urls as $url)
+                <p>
+                    {{$url}}
+                </p>
+                @endforeach
+            @endif
+        </div>
+
     </div>
 </div>

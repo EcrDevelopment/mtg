@@ -6,7 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Certificacion;
 use App\Models\Duplicado;
 use App\Models\Expediente;
+use App\Models\Memorando;
 use App\Models\Salida;
+use App\Models\User;
+use DateTime;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -315,7 +318,7 @@ class PdfController extends Controller
             return abort(404);
         }
     }
-    
+
     public function descargaPdfModificacion($id)
     {
         if (Certificacion::findOrFail($id)) {
@@ -773,7 +776,7 @@ class PdfController extends Controller
 
                     return $pdf->stream($certificacion->Vehiculo->placa . '-' . $hoja->numSerie . '-anual-glp.pdf');
                 }
-                
+
                 return abort(404);
             }
         } else {
@@ -1406,6 +1409,59 @@ class PdfController extends Controller
             $leer = fgets($archivo);
             $saltodelinea = nl2br($leer);
             echo $saltodelinea;
+        }
+    }
+
+    //Vista y descarga para memorando
+
+    public function generaPdfMemorando($id)
+    {
+        $memorando = Memorando::findOrFail($id);
+        if ($memorando) {
+            $usuario = User::findOrFail($memorando->idUser);
+            $nombreUsuario = $usuario->name;
+            $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
+            $fechaCert = is_string($memorando->fecha) ? new DateTime($memorando->fecha) : $memorando->fecha;
+            $fechaForma = $fechaCert->format('d') . ' días del mes de ' . $meses[$fechaCert->format('m') - 1] . ' del ' . $fechaCert->format('Y');
+
+            $data = [
+                'idUser' => $nombreUsuario,
+                'fecha' => $fechaForma,
+                'remitente' => $memorando->remitente,
+                'cargo' => $memorando->cargo,
+                'motivo' => $memorando->motivo,
+            ];
+
+            $pdf = App::make('dompdf.wrapper');
+            $pdf->loadView('memorando', $data);
+            return $pdf->stream($memorando->id . '-memorando.pdf');
+        } else {
+            abort(404);
+        }
+    }
+
+    public function descargaPdfMemorando($id)
+    {
+        $memorando = Memorando::findOrFail($id);
+        if ($memorando) {
+            $usuario = User::findOrFail($memorando->idUser);
+            $nombreUsuario = $usuario->name;
+            $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
+            $fechaCert = is_string($memorando->fecha) ? new DateTime($memorando->fecha) : $memorando->fecha;
+            $fechaForma = $fechaCert->format('d') . ' días del mes de ' . $meses[$fechaCert->format('m') - 1] . ' del ' . $fechaCert->format('Y');
+            $data = [
+                'idUser' => $nombreUsuario,
+                'fecha' => $fechaForma,
+                'remitente' => $memorando->remitente,
+                'cargo' => $memorando->cargo,
+                'motivo' => $memorando->motivo,
+            ];
+
+            $pdf = App::make('dompdf.wrapper');
+            $pdf->loadView('memorando', $data);
+            return $pdf->download($memorando->id . '-memorando.pdf');
+        } else {
+            abort(404);
         }
     }
 }

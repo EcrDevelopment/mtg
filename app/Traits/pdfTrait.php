@@ -2,10 +2,15 @@
 
 namespace App\Traits;
 
+use App\Models\Archivo;
 use App\Models\Certificacion;
+use App\Models\DocumentoMemorando;
 use App\Models\Duplicado;
 use App\Models\Expediente;
 use App\Models\Imagen;
+use App\Models\Memorando;
+use App\Models\User;
+use DateTime;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Storage;
 use SimpleSoftwareIO\QrCode\Facades\QrCode; //te falto esto
@@ -105,8 +110,8 @@ trait pdfTrait
                 $this->guardarPdfAnualGlp($certi, $expe);
                 break;
             case 5: //tipo servicio = modificacion
-                    $this->guardarPdfModificacion($certi, $expe);
-                    break;
+                $this->guardarPdfModificacion($certi, $expe);
+                break;
 
             case 8: //tipo servicio = duplicado gnv
 
@@ -159,6 +164,35 @@ trait pdfTrait
         ]);
     }
 
+    public function guardaMemorando(Memorando $memorando)
+    {
+        $usuario = User::findOrFail($memorando->idUser);
+        $nombreUsuario = $usuario->name;
+        $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
+        $fechaCert = is_string($memorando->fecha) ? new DateTime($memorando->fecha) : $memorando->fecha;
+        $fechaForma = $fechaCert->format('d') . ' días del mes de ' . $meses[$fechaCert->format('m') - 1] . ' del ' . $fechaCert->format('Y');
+        $data = [
+            'idUser' => $nombreUsuario,
+            'fecha' => $fechaForma,
+            'remitente' => $memorando->remitente,
+            'cargo' => $memorando->cargo,
+            'motivo' => $memorando->motivo,
+        ];
+        $pdf = App::make('dompdf.wrapper');
+        $pdf->loadView('memorando', $data);
+        $archivo =  $pdf->output();
+        //$archivo =  $pdf->download($memorando->id . '-memorando.pdf')->getOriginalContent();
+        // Guarda el archivo en la tabla DocumentoMemorando
+        DocumentoMemorando::create([
+            'nombre' => $memorando->id . '-memorando.pdf',
+            'ruta' => 'public/memorandos/' . $memorando->id . '-memorando.pdf',
+            'extension' => 'pdf',
+            'estado' => 1,
+            'idDocReferenciado' => $memorando->id,
+        ]);
+        Storage::put('public/memorandos/' . $memorando->id . '-memorando.pdf', $archivo);
+    }
+
     public function guardarPdfModificacion(Certificacion $certificacion, Expediente $expe)
     {
 
@@ -198,7 +232,7 @@ trait pdfTrait
         $chip = $certificacion->vehiculo->Equipos->where("idTipoEquipo", 1)->first();
         $equipos = $certificacion->vehiculo->Equipos->where("idTipoEquipo", "!=", 1)->sortBy("idTipoEquipo");
         $hoja = $certificacion->Materiales->where('idTipoMaterial', 1)->first();
-        $urlDelDocumento = 'www.motorgasperu.com'.route('verPdfAnual', $certificacion->id, false);
+        $urlDelDocumento = 'www.motorgasperu.com' . route('verPdfAnual', $certificacion->id, false);
         $qrCode = QrCode::size(70)->generate($urlDelDocumento);
         $data = [
             "fecha" => $fecha,
@@ -213,7 +247,7 @@ trait pdfTrait
             "largo" => $this->devuelveDatoParseado($certificacion->Vehiculo->largo),
             "ancho" => $this->devuelveDatoParseado($certificacion->Vehiculo->ancho),
             "altura" => $this->devuelveDatoParseado($certificacion->Vehiculo->altura),
-            "qrCode"=> $qrCode,
+            "qrCode" => $qrCode,
         ];
         $pdf = App::make('dompdf.wrapper');
         $pdf->loadView('conversionGnv', $data);

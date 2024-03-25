@@ -13,6 +13,9 @@ class CargaImagenes extends Component
     public $archivo=[];
     public $urls;
 
+    public function mount(){
+        $this->listarArchivos();
+    }
 
     public function render()
     {
@@ -29,7 +32,7 @@ class CargaImagenes extends Component
 
     public function listarArchivos(){
 
-        $archivos=Storage::disk('do')->allFiles();
+        $archivos=Storage::disk('do')->allFiles('pruebas');
         $urls=[];
 
         foreach ($archivos as $archivo) {

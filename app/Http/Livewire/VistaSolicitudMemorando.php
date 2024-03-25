@@ -14,7 +14,7 @@ class VistaSolicitudMemorando extends Component
     public function mount($memoId)
     {
         $this->memorando = Memorando::find($memoId);
-        //$this->pdf = $this->memorando->rutaVistaMemorando; 
+        $this->pdf = $this->memorando->rutaVistaMemorando; 
         $this->user = User::find($this->memorando->idUser)->name;
     }
 

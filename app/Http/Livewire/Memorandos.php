@@ -49,7 +49,7 @@ class Memorandos extends Component
             'fecha' => $this->fecha,
         ]);
 
-        $this->guardaMemorando($nuevoMemorando);
+        //$this->guardaMemorando($nuevoMemorando);
         //$users = User::role('inspector')->get();
         $users = User::findOrFail($this->inspector);
         Notification::send($users, new MemorandoSolicitud($nuevoMemorando));

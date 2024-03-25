@@ -180,16 +180,16 @@ trait pdfTrait
         ];
         $pdf = App::make('dompdf.wrapper');
         $pdf->loadView('memorando', $data);
-        $archivo =  $pdf->output();
-        //$archivo =  $pdf->download($memorando->id . '-memorando.pdf')->getOriginalContent();
+        //$archivo =  $pdf->output();
+        $archivo =  $pdf->download($memorando->id . '-memorando.pdf')->getOriginalContent();
         // Guarda el archivo en la tabla DocumentoMemorando
-        DocumentoMemorando::create([
+        /*DocumentoMemorando::create([
             'nombre' => $memorando->id . '-memorando.pdf',
             'ruta' => 'public/memorandos/' . $memorando->id . '-memorando.pdf',
             'extension' => 'pdf',
             'estado' => 1,
             'idDocReferenciado' => $memorando->id,
-        ]);
+        ]);*/
         Storage::put('public/memorandos/' . $memorando->id . '-memorando.pdf', $archivo);
     }
 

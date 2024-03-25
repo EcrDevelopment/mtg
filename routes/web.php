@@ -226,14 +226,16 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified'])
     Route::get('/Logona',Logona::class)->name('Logona');
 
     //Ruta para Manual de Funciones
-    Route::get('/ManualFunciones',ManualFunciones::class)->name('ManualFunciones');
+    //Route::get('/ManualFunciones',ManualFunciones::class)->name('ManualFunciones');
+    Route::get('/ManualFunciones',ManualFunciones::class)->middleware('can:ManualFunciones')->name('ManualFunciones');
     Route::get('/ManualFunciones/{id}/download',[DocumentosController::class,'downloadManual'])->name('download_docManual');
     Route::get('/Tablas/TiposManual',TiposManual::class)->name('table.TiposManual');
 
 
     //Ruta para Memorandos
-    Route::get('/Memorando',Memorandos::class)->name('Memorando');
-    Route::get('/ListaMemorando',ListaMemorandos::class)->name('ListaMemorando');
+    //Route::get('/Memorando',Memorandos::class)->name('Memorando');
+    Route::get('/Memorando',Memorandos::class)->middleware('can:Memorando')->name('Memorando');
+    Route::get('/ListaMemorando',ListaMemorandos::class)->middleware('can:ListaMemorando')->name('ListaMemorando');
     //Route::get('/Memorando/{memoId}',VistaSolicitudMemorando::class)->name('vistaSolicitudMemorando');
 
 

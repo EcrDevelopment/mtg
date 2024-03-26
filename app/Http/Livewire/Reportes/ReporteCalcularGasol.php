@@ -119,7 +119,7 @@ class ReporteCalcularGasol extends Component
         // Filtrar las placas que están en servicios_importados pero no en certificacion para los tipos de servicio requeridos
         $placasFaltantes = $placasServiciosImportados->reject(function ($placa) use ($certificaciones) {
             return $certificaciones->where('placa', $placa)
-                ->whereNotIn('tipoServicio', ['Conversión a GNV', 'Revisión anual GNV']) //, 'Desmonte de Cilindro'
+                ->whereNotIn('tipoServicio', ['Conversión a GNV', 'Revisión anual GNV','Desmonte de Cilindro' ]) //, 'Desmonte de Cilindro'
                 ->isNotEmpty();
         });
         // Detalles de las placas faltantes

@@ -674,10 +674,13 @@
                     @endswitch
                 @endif
             @break
-
+            @case(6)
+                @livewire('servicio-desmonte', ['servicio' => $servicio, 'taller' => $this->taller])
+            @break
             @case(7)
                 @livewire('activacion-de-chips', ['tipoServicio' => $tipoServicio, 'idTaller' => $this->taller])
             @break
+            
 
             @case(8)
                 <x-formato-sugerido />

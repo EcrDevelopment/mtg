@@ -652,6 +652,20 @@ class Certificacion extends Model
         }
     }
 
+    public static function certificarDesmonte( $taller,  $servicio,  User $inspector, $placa){
+
+        $cert = Desmontes::create([
+            "placa" => $placa,
+            "idTaller" => $taller,
+            "idInspector" => $inspector->id,
+            "idServicio" => $servicio,
+            "estado" => 1,
+            "precio" => Servicio::find($servicio)->precio,
+            "pagado" => 0,
+        ]);
+        return $cert;
+    }
+
 
     public static function certificarGnvPre(Taller $taller, Servicio $servicio, Material $hoja, vehiculo $vehiculo, User $inspector)
     {

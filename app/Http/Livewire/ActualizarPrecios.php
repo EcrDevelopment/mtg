@@ -4,6 +4,7 @@ namespace App\Http\Livewire;
 
 use App\Models\Certificacion;
 use App\Models\CertificacionPendiente;
+use App\Models\Desmontes;
 use App\Models\Taller;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -39,7 +40,7 @@ class ActualizarPrecios extends Component
         $resultadosdetalle = $this->datosMostrar();
         $totalPrecio = $resultadosdetalle->sum('precio');
         $this->totalPrecio = $totalPrecio;
-        $this->reportePorInspector = $resultadosdetalle->groupBy('idInspector'); 
+        $this->reportePorInspector = $resultadosdetalle->groupBy('idInspector');
     }
 
     private function datosMostrar()
@@ -101,10 +102,10 @@ class ActualizarPrecios extends Component
                 DB::raw("'Activación de chip (Anual)' as tiposervicio")
             )
 
-            ->leftJoin('users', 'certificados_pendientes.idInspector', '=', 'users.id')
-            ->leftJoin('taller', 'certificados_pendientes.idTaller', '=', 'taller.id')
-            ->leftJoin('vehiculo', 'certificados_pendientes.idVehiculo', '=', 'vehiculo.id')
-            ->leftJoin('servicio', 'certificados_pendientes.idServicio', '=', 'servicio.id')
+            ->Join('users', 'certificados_pendientes.idInspector', '=', 'users.id') //leftJoin
+            ->Join('taller', 'certificados_pendientes.idTaller', '=', 'taller.id')
+            ->Join('vehiculo', 'certificados_pendientes.idVehiculo', '=', 'vehiculo.id')
+            ->Join('servicio', 'certificados_pendientes.idServicio', '=', 'servicio.id')
             ->where('certificados_pendientes.estado', 1)
             ->whereNull('certificados_pendientes.idCertificacion')
             ->where(function ($query) {
@@ -115,9 +116,35 @@ class ActualizarPrecios extends Component
             })
             ->get();
 
+        $desmonte = DB::table('desmontes')
+            ->select(
+                'desmontes.id',
+                'desmontes.placa',
+                'desmontes.idTaller',
+                'desmontes.idInspector',
+                'desmontes.idServicio',
+                'desmontes.estado',
+                'desmontes.created_at',
+                'desmontes.pagado',
+                'desmontes.precio',
+                'users.name as nombre',
+                'taller.nombre as taller',
+                DB::raw("'Desmonte de Cilindro' as tiposervicio")
+            )
+            ->Join('users', 'desmontes.idInspector', '=', 'users.id') 
+            ->Join('taller', 'desmontes.idTaller', '=', 'taller.id')
+            ->Join('servicio', 'desmontes.idServicio', '=', 'servicio.id')
+            ->where('desmontes.estado', 1)
+            ->where(function ($query) {
+                $this->agregarFiltros($query);
+            })
+            ->where(function ($query) {
+                $this->fechaDesmonte($query);
+            })
+            ->get();
 
 
-        $resultadosdetalle = $certificaciones->concat($certificadosPendientes);
+        $resultadosdetalle = $certificaciones->concat($certificadosPendientes)->concat($desmonte);
 
         return $resultadosdetalle;
     }
@@ -137,7 +164,15 @@ class ActualizarPrecios extends Component
             $this->fechaFin . ' 23:59:59'
         ]);
     }
-    
+
+    private function fechaDesmonte($query)
+    {
+        return $query->whereBetween('desmontes.created_at', [
+            $this->fechaInicio . ' 00:00:00',
+            $this->fechaFin . ' 23:59:59'
+        ]);
+    }
+
     private function agregarFiltros($query)
     {
         if (!empty($this->ins)) {
@@ -173,6 +208,9 @@ class ActualizarPrecios extends Component
 
                 // Actualizar precios en CertificacionPendiente
                 CertificacionPendiente::whereIn('id', $certificacionIds)
+                    ->update(['precio' => $nuevoPrecio]);
+                //Actualizar precios en desmonte
+                Desmontes::whereIn('id', $certificacionIds)
                     ->update(['precio' => $nuevoPrecio]);
             }
 

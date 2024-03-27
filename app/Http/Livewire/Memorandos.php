@@ -15,7 +15,7 @@ class Memorandos extends Component
     use pdfTrait;
 
     public $inspectores;
-    public $inspector, $remitente, $destinatario, $cargo, $motivo, $fecha;
+    public $inspector, $remitente, $destinatario, $cargo, $cargoremi, $motivo, $fecha;
     public $mostrarCampos = false;
     public $memorando;
     public $imagen;
@@ -37,6 +37,7 @@ class Memorandos extends Component
             'inspector' => 'required',
             'remitente' => 'required',
             'cargo' => 'required',
+            'cargoremi' => 'required',
             'motivo' => 'required',
             'fecha' => 'required',
         ]);
@@ -45,6 +46,7 @@ class Memorandos extends Component
             'idUser' => $this->inspector,
             'remitente' => $this->remitente,
             'cargo' => $this->cargo,
+            'cargoremi' => $this->cargoremi,
             'motivo' => $this->motivo,
             'fecha' => $this->fecha,
         ]);
@@ -54,7 +56,7 @@ class Memorandos extends Component
         $users = User::findOrFail($this->inspector);
         Notification::send($users, new MemorandoSolicitud($nuevoMemorando));
         $this->memorando = $nuevoMemorando;       
-        $this->reset(['inspector', 'remitente', 'destinatario', 'cargo', 'motivo', 'fecha']);
+        $this->reset(['inspector', 'remitente', 'destinatario', 'cargo', 'cargoremi','motivo', 'fecha']);
         $this->mostrarCampos = true;
         $this->emit("minAlert", ["titulo" => "¡EXCELENTE TRABAJO!", "mensaje" => "El memorando se realizo correctamente", "icono" => "success"]);        
         //return redirect('Memorando');

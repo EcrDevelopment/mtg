@@ -108,10 +108,10 @@
         <p>
             Haber efectuado la evaluación de las condiciones de seguridad respecto de la conversión del
             sistema de combustión a Gas Licuado de Petróleo - GLP. Efectuada por el
-            Taller de Conversión a GLP Autorizado: {{ $taller->nombre }}
+            Taller de Conversión a GLP Autorizado: @if($tallerauto) {{ $tallerauto->nombre }} @else {{ $taller->nombre }} @endif
         </p>
         <P>
-            Ubicado : {{ $taller->direccion }}
+            Ubicado : @if($tallerauto) {{ $tallerauto->direccion }} @else {{ $taller->direccion }} @endif
 
         </P>
 

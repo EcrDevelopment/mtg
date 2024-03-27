@@ -34,6 +34,7 @@ use App\Http\Livewire\ImportarConversiones;
 use App\Http\Livewire\ImportarDesmontes;
 use App\Http\Livewire\ListaCertificaciones;
 use App\Http\Livewire\ListaCertificacionesPendientes;
+use App\Http\Livewire\ListaDesmontes;
 use App\Http\Livewire\ListadoChips;
 use App\Http\Livewire\ListaMemorandos;
 use App\Http\Livewire\Logona;
@@ -160,6 +161,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified'])
     Route::get('/Administracion-de-certificaciones',AdministracionCertificaciones::class)->middleware('can:admin.certificaciones')->name('admin.certificaciones');
 
     Route::get('/certificados-pendientes',ListaCertificacionesPendientes::class)->middleware('can:certificaciones.pendientes')->name('certificaciones.pendientes');
+    Route::get('/certificados-desmontes',ListaDesmontes::class)->middleware('can:certificaciones.desmontes')->name('certificaciones.desmontes');
+
 
     Route::get('/Solicitud/{soliId}',VistaSolicitud::class)->name('vistaSolicitud');    
     Route::get('/SolicitudAnu/{anuId}/{cerId}/{userId}',VistaSolicitudAnul::class)->name('vistaSolicitudAnul');

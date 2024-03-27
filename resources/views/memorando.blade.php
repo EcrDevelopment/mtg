@@ -108,25 +108,15 @@
         <div>
             <p>Lima {{ $fecha }}</p>
             <p>DE: {{ $remitente }}</p>
-            <p><strong>ADMINISTRADORA</strong></p>
+            <p><strong>{{ $cargoremi }}</strong></p>
             <p>PARA: {{ $idUser }}</p>
             <p><strong>{{ $cargo }}</strong></p>
         </div>
         <div>
             <p>De mi consideración.</p>
             <p>Señor {{ $idUser }}, por medio del presente me dirijo a usted para hacer de su conocimiento que es
-                el <strong>{{ $motivo }}</strong> por por brindar
-                @if ($cargo === 'INSPECTOR DE GNV')
-                    Formato de GNV
-                @elseif($cargo === 'INSPECTOR DE GLP')
-                    Formato de GLP
-                @else
-                    Formato
-                @endif 
-                a un taller autorizado sin conocimiento de a empresa, ya que existe un cargo de a quien se entrega los materiales.
+                el {!! nl2br(e($motivo ?? null)) !!}
             </p>
-            <p>Es por estas razones que se toma estas medidas ya que usted es la persona responsable
-                de los materiales que se le asigna y entrega a su persona.</p>
             <p>Sin otra particular</p>
             <p>Atentamente.</p>
         </div>
@@ -138,12 +128,16 @@
             <tr>
                 <td style="text-align: center;">
                     <p style="text-align: center;">
-                        <img src="{{ public_path('/images/firmaIng.png') }}" width="250" height="100" />
-
+                        @if ($remitente == 'LOPEZ HENRIQUEZ SPASOJE BRATZO')
+                            <img src="{{ public_path('/images/firmaIng.png') }}" width="250" height="100" />
+                        @elseif ($remitente == 'LESLY PAMELA EGOAVIL LOMOTE')
+                            <img src="{{ public_path('/images/firmaJR.png') }}" width="250" height="100" />
+                        @else
+                        @endif
                     </p>
                     <h4>-------------------------------------------------------</h4>
                     <h4><strong>{{ $remitente }}</strong></h4>
-                    <h4><strong>Área: ADMINISTRADORA</strong></h4>
+                    <h4><strong>Área: {{ $cargoremi }}</strong></h4>
                 </td>
                 <td style="text-align: center;">
                     <h4></h4>

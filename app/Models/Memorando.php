@@ -15,6 +15,7 @@ class Memorando extends Model
         'remitente',
         'idUser',
         'cargo',
+        'cargoremi',
         'motivo',
     ];
 

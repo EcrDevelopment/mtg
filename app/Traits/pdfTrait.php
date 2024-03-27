@@ -51,6 +51,7 @@ trait pdfTrait
             "empresa" => "MOTORGAS COMPANY S.A.",
             "carro" => $certificacion->Vehiculo,
             "taller" => $certificacion->Taller,
+            "tallerauto" => $certificacion->TallerAuto, //Para taller autorizado
             "servicio" => $certificacion->Servicio,
             "cargaUtil" => $cargaUtil,
             "hoja" => $hoja,
@@ -85,6 +86,7 @@ trait pdfTrait
             "empresa" => "MOTORGAS COMPANY S.A.",
             "carro" => $certificacion->Vehiculo,
             "taller" => $certificacion->Taller,
+            "tallerauto" => $certificacion->TallerAuto, //Para taller autorizado
             "servicio" => $certificacion->Servicio,
             "hoja" => $hoja,
             "equipos" => $equipos,
@@ -176,6 +178,7 @@ trait pdfTrait
             'fecha' => $fechaForma,
             'remitente' => $memorando->remitente,
             'cargo' => $memorando->cargo,
+            'cargoremi' => $memorando->cargoremi,
             'motivo' => $memorando->motivo,
         ];
         $pdf = App::make('dompdf.wrapper');
@@ -278,6 +281,7 @@ trait pdfTrait
             "empresa" => "MOTORGAS COMPANY S.A.",
             "carro" => $certificacion->Vehiculo,
             "taller" => $certificacion->Taller,
+            "tallerauto" => $certificacion->TallerAuto, //Para taller autorizado
             "hoja" => $hoja,
             "numHoja" => $this->completarConCeros($hoja->numSerie),
             "fechaCert" => $fechaCert,
@@ -312,6 +316,7 @@ trait pdfTrait
             "empresa" => "MOTORGAS COMPANY S.A.",
             "carro" => $certificacion->Vehiculo,
             "taller" => $certificacion->Taller,
+            "tallerauto" => $certificacion->TallerAuto, //Para taller autorizado
             "hoja" => $hoja,
             "numHoja" => $this->completarConCeros($hoja->numSerie),
             "fechaCert" => $fechaCert,

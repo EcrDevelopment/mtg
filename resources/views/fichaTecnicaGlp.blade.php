@@ -80,16 +80,16 @@
 <body>
     <header>
         <article>
-            <img style="float:left; padding-left: 3cm; margin-top: 20px" src="{{ $taller->rutaLogo ? '.'.Storage::url($taller->rutaLogo) : ''}}" width="130" height="130"/>
-            <h2 style="margin-top: 40px">{{$taller->nombre}}</h2>
-            <p>{{$taller->direccion}}</p>
+            <img style="float:left; padding-left: 3cm; margin-top: 20px" src="{{ $tallerauto ? '.'.Storage::url($tallerauto->rutaLogo) : ($taller ? '.'.Storage::url($taller->rutaLogo) : '') }}" width="130" height="130"/> {{-- {{ $taller->rutaLogo ? '.'.Storage::url($taller->rutaLogo) : ''}} --}}
+            <h2 style="margin-top: 40px">@if($tallerauto) {{ $tallerauto->nombre }} @else {{ $taller->nombre }} @endif</h2>
+            <p>@if($tallerauto) {{ $tallerauto->direccion }} @else {{ $taller->direccion }} @endif</p>
         </article>
     </header>
     <main>
         <h3 style="background-color:goldenrod;">
             FICHA TÉCNICA
         </h3>
-        <p><strong>Nombre del taller: </strong> {{$taller->nombre}} </p>
+        <p><strong>Nombre del taller: </strong> @if($tallerauto) {{ $tallerauto->nombre }} @else {{ $taller->nombre }} @endif </p>
         <p><strong>Fecha: </strong> {{$fecha}}</p>
         <p><strong>Servicio: </strong>{{'Certificado de '.$servicio->tipoServicio->descripcion.'.'}}</p>
         <p><strong>N° de Certificado: </strong>{{$numHoja}}</p>
@@ -212,7 +212,7 @@
                             <br>
                         </td>
                         <td style="width: 50%;">
-                            <img  src="{{$taller->rutaFirma ? '.'.Storage::url($taller->rutaFirma) : '' }}" width="180" height="90"/>
+                            <img  src="{{ $tallerauto && $tallerauto->rutaFirma ? '.' . Storage::url($tallerauto->rutaFirma) : ($taller && $taller->rutaFirma ? '.' . Storage::url($taller->rutaFirma) : '') }}" width="180" height="90"/> {{-- {{$taller->rutaFirma ? '.'.Storage::url($taller->rutaFirma) : '' }} --}}
                         </td>
                     </tr>
                     <tr>

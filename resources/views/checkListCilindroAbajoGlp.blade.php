@@ -33,7 +33,7 @@
                 <td colspan="6" style="align-self: start; border: 1px solid; border-collapse: collapse;">
                     Taller:
                     <br>
-                    {{ $taller->nombre }}
+                    @if($tallerauto) {{ $tallerauto->nombre }} @else {{ $taller->nombre }} @endif
                 </td>
                 <td colspan="2" style="border: 1px solid; border-collapse: collapse;">
                     Fecha de inspeccion:
@@ -1997,10 +1997,10 @@
                     <img src="{{ './' . Storage::url($inspector->rutaFirma) }}" width="180" height="90" />
                 </td>
                 <td style="border: 1px solid; border-collapse: collapse;width: 25%;text-align: center;">
-                    {{ $taller->representante }}
+                    @if($tallerauto) {{ $tallerauto->representante }} @else {{ $taller->representante }} @endif
                 </td>
                 <td style="border: 1px solid; border-collapse: collapse;width: 25%;">
-                    <img src="{{ './' . Storage::url($taller->rutaFirma) }}" width="180" height="90" />
+                    <img src="{{ $tallerauto && $tallerauto->rutaFirma ? './' . Storage::url($tallerauto->rutaFirma) : ($taller && $taller->rutaFirma ? './' . Storage::url($taller->rutaFirma) : '') }}" width="180" height="90" />
                 </td>
             </tr>
 

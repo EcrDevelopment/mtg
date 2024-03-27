@@ -3,11 +3,16 @@
         <div class="py-2 px-4 bg-indigo-200 w-full rounded-t-md font-semibold flex justify-between items-center">
             <p>Ingrese datos</p>
         </div>
-        <div class="rounded-lg py-4 px-4 grid grid-cols-1 gap-8  w-full">
+        <div class="rounded-lg py-4 px-4 grid grid-cols-2 gap-8  w-full">
             <div>
                 <x-jet-label value="Placa:" />
                 <x-jet-input type="text" wire:model="placa" class="w-full" requerid/>
                 <x-jet-input-error for="placa" />
+            </div>
+            <div>
+                <x-jet-label value="Cilindros:" />
+                <x-jet-input type="number" wire:model="cantidadCertificaciones" class="w-full" requerid/>
+                <x-jet-input-error for="cantidadCertificaciones" />
             </div>
         </div>
         <div class="p-2 w-full flex items-center justify-center ">

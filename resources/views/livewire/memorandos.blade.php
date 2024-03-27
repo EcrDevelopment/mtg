@@ -27,19 +27,32 @@
                 <span class="text-lg font-semibold text-white dark:text-gray-400">Datos del Memorando</span>
             </div>
             <div class="mb-6 px-8 py-2">
+                <div>
+                    <x-jet-label value="Remitente:" />
+                    <x-jet-input type="text"
+                        class="bg-gray-50 border-indigo-500 rounded-md outline-none block w-full "
+                        wire:model="remitente" list="items" />
+                    <datalist id="items">
+                        <option value="LESLY PAMELA EGOAVIL LOMOTE">LESLY PAMELA EGOAVIL LOMOTE</option>
+                        <option value="LOPEZ HENRIQUEZ SPASOJE BRATZO">LOPEZ HENRIQUEZ SPASOJE BRATZO</option>
+                    </datalist>
+                    <x-jet-input-error for="remitente" />
+                </div>
+
                 <div class="grid grid-cols-2 gap-4 py-6">
                     <div>
-                        <x-jet-label value="Remitente:" />
+                        <x-jet-label value="Cargo Remitente:" />
                         <x-jet-input type="text"
                             class="bg-gray-50 border-indigo-500 rounded-md outline-none block w-full "
-                            wire:model="remitente" list="items" />
-                        <datalist id="items">
-                            <option value="LESLY PAMELA EGOAVIL LOMOTE">LESLY PAMELA EGOAVIL LOMOTE</option>
+                            wire:model="cargoremi" list="items3" />
+                        <datalist id="items3">
+                            <option value="ADMINISTRADORA">ADMINISTRADORA</option>
+                            <option value="INGENIERO SUPERVISOR">INGENIERO SUPERVISOR</option>
                         </datalist>
-                        <x-jet-input-error for="remitente" />
+                        <x-jet-input-error for="cargoremi" />
                     </div>
                     <div>
-                        <x-jet-label value="Cargo:" />
+                        <x-jet-label value="Cargo Inspector:" />
                         <x-jet-input type="text"
                             class="bg-gray-50 border-indigo-500 rounded-md outline-none block w-full "
                             wire:model="cargo" list="items2" />
@@ -50,9 +63,12 @@
                         <x-jet-input-error for="cargo" />
                     </div>
                 </div>
+
                 <div>
                     <x-jet-label value="Motivo:" />
-                    <x-jet-input type="text" class="w-full" wire:model="motivo" required />
+                    <x-textarea
+                        class="w-full border-indigo-500 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
+                        wire:model="motivo" required style="height: 200px;" />
                     <x-jet-input-error for="motivo" />
                 </div>
                 <div class="mt-4">
@@ -64,7 +80,8 @@
         <div class="mt-2 max-w-5xl m-auto bg-white rounded-lg shadow-md my-4 py-4">
             <div class="my-2 flex flex-col md:flex-row justify-evenly items-center">
                 <div>
-                    <x-jet-input type="date" class="" wire:model="fecha" required />
+                    <x-jet-input type="date" class="bg-gray-50 border-indigo-500 rounded-md outline-none block w-full" 
+                    wire:model="fecha" required />
                     <x-jet-input-error for="fecha" />
                 </div>
                 <div>

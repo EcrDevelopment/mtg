@@ -24,6 +24,7 @@ class Certificacion extends Model
         "precio",
         "pagado",
         "idDuplicado",
+        "idTallerAuto",
         "created_at",
         "updated_at",
     ];
@@ -48,6 +49,11 @@ class Certificacion extends Model
     public function Taller()
     {
         return $this->belongsTo(Taller::class, 'idTaller');
+    }
+
+    public function TallerAuto()
+    {
+        return $this->belongsTo(Taller::class, 'idTallerAuto');
     }
 
     public function Duplicado()
@@ -548,7 +554,7 @@ class Certificacion extends Model
     }
 
 
-    public static function certificarGlp(Taller $taller, Servicio $servicio, Material $hoja, vehiculo $vehiculo, User $inspector)
+    public static function certificarGlp(Taller $taller, Taller $tallerAuto,Servicio $servicio, Material $hoja, vehiculo $vehiculo, User $inspector)
     {
         $cert = Certificacion::create([
             "idVehiculo" => $vehiculo->id,
@@ -558,6 +564,7 @@ class Certificacion extends Model
             "estado" => 1,
             "precio" => $servicio->precio,
             "pagado" => 0,
+            "idTallerAuto" => $tallerAuto->id, //Para taller autorizado
         ]);
         if ($cert) {
             //cambia el estado de la hoja a consumido

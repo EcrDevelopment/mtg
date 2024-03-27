@@ -39,6 +39,8 @@ class Prueba extends Component
 
     public Certificacion $certificacion, $duplicado;
 
+    public $tallerAuto; //Para talleres autorizados
+
     //variables del certi
     public $vehiculo;
 
@@ -343,6 +345,7 @@ class Prueba extends Component
     public function certificarGlp()
     {
         $taller = Taller::findOrFail($this->taller);
+        $tallerAuto = Taller::findOrFail($this->tallerAuto);
         $servicio = Servicio::findOrFail($this->servicio);
         $hoja = $this->procesaFormato($this->numSugerido, $servicio->tipoServicio->id);
 
@@ -373,7 +376,7 @@ class Prueba extends Component
             return;
         }
 
-        $certi = Certificacion::certificarGlp($taller, $servicio, $hoja, $this->vehiculo, Auth::user());
+        $certi = Certificacion::certificarGlp($taller, $tallerAuto,$servicio, $hoja, $this->vehiculo, Auth::user());
 
         if ($certi) {
             $this->estado = "certificado";
@@ -525,7 +528,7 @@ class Prueba extends Component
                         $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "No fue posible certificar", "icono" => "warning"]);
                     }
                 } else {
-                    $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "HOLA aca la cagas", "icono" => "warning"]);
+                    $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "Debes completar los datos", "icono" => "warning"]);
                 }
             } else {
                 $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "Debes ingresar un vehículo valido para poder certificar", "icono" => "warning"]);

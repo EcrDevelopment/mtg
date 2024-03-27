@@ -332,7 +332,20 @@
                                         <x-jet-input type="date" class="" wire:model="fechaCertificacion" />
                                         <x-jet-input-error for="fechaCertificacion" />
                                     </div>
+
                                     <div>
+                                        <select wire:model="tallerAuto"
+                                            class="bg-gray-50 mx-2 border-indigo-500 rounded-md outline-none ml-1 block w-full ">
+                                            <option value="">Seleccione Taller Autorizado</option>
+                                            @foreach ($talleres as $taller2)
+                                                @if (in_array($taller2->id, [16, 13, 9, 42, 27, 5, 23, 38, 30, 74, 20]))
+                                                    <option value="{{ $taller2->id }}">{{ $taller2->nombre }}</option>
+                                                @endif
+                                            @endforeach
+                                        </select>
+                                        <x-jet-input-error for="tallerAuto" />
+                                    </div>
+                                    <div class="my-2 flex flex-row justify-evenly items-center">
                                         <button wire:click="certificarGlp" wire:loading.attr="disabled" wire.target="certificar"
                                             class="hover:cursor-pointer border border-indigo-500 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 sm:mt-0 inline-flex items-center justify-center px-6 py-3 bg-indigo-400 hover:bg-indigo-500 focus:outline-none rounded">
                                             <p class="text-sm font-medium leading-none text-white">
@@ -344,7 +357,10 @@
                                             </p>
                                         </button>
                                     </div>
+
                                 </div>
+
+
                             </div>
                             {{--
                             <div class="max-w-5xl m-auto bg-white rounded-lg shadow-md my-4 py-4">
@@ -468,6 +484,18 @@
                                     <div>
                                         <x-jet-input type="date" class="" wire:model="fechaCertificacion" />
                                         <x-jet-input-error for="fechaCertificacion" />
+                                    </div>
+                                    <div>
+                                        <select wire:model="tallerAuto"
+                                            class="bg-gray-50 mx-2 border-indigo-500 rounded-md outline-none ml-1 block w-full ">
+                                            <option value="">Seleccione Taller Autorizado</option>
+                                            @foreach ($talleres as $taller2)
+                                                @if (in_array($taller2->id, [16, 13, 9, 42, 27, 5, 23, 38, 30, 74, 20]))
+                                                    <option value="{{ $taller2->id }}">{{ $taller2->nombre }}</option>
+                                                @endif
+                                            @endforeach
+                                        </select>
+                                        <x-jet-input-error for="tallerAuto" />
                                     </div>
                                     <div>
                                         <button wire:click="certificarGlp" wire:loading.attr="disabled" wire.target="certificar"
@@ -674,13 +702,14 @@
                     @endswitch
                 @endif
             @break
+
             @case(6)
                 @livewire('servicio-desmonte', ['servicio' => $servicio, 'taller' => $this->taller])
             @break
+
             @case(7)
                 @livewire('activacion-de-chips', ['tipoServicio' => $tipoServicio, 'idTaller' => $this->taller])
             @break
-            
 
             @case(8)
                 <x-formato-sugerido />

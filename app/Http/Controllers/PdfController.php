@@ -106,6 +106,7 @@ class PdfController extends Controller
                 "empresa" => "MOTORGAS COMPANY S.A.",
                 "carro" => $certificacion->Vehiculo,
                 "taller" => $certificacion->Taller,
+                "tallerauto" => $certificacion->TallerAuto, // para taller autorizado
                 "servicio" => $certificacion->Servicio,
                 "cargaUtil" => $cargaUtil,
                 "hoja" => $hoja,
@@ -138,6 +139,7 @@ class PdfController extends Controller
                 "empresa" => "MOTORGAS COMPANY S.A.",
                 "carro" => $certificacion->Vehiculo,
                 "taller" => $certificacion->Taller,
+                "tallerauto" => $certificacion->TallerAuto, // para taller autorizado
                 "servicio" => $certificacion->Servicio,
                 "cargaUtil" => $cargaUtil,
                 "hoja" => $hoja,
@@ -225,6 +227,7 @@ class PdfController extends Controller
                 "servicio" => $certificacion->Servicio,
                 "inspector" => $certificacion->Inspector,
                 "taller" => $certificacion->taller,
+                "tallerauto" => $certificacion->TallerAuto, // para taller autorizado
                 "fecha" => $certificacion->created_at->format('d/m/Y'),
                 "reductor" => $certificacion->ReductorGlp,
                 "cilindros" => $certificacion->CilindrosGlp,
@@ -250,7 +253,8 @@ class PdfController extends Controller
                 "vehiculo" => $certificacion->Vehiculo,
                 "servicio" => $certificacion->Servicio,
                 "inspector" => $certificacion->Inspector,
-                "taller" => $certificacion->taller,
+                "taller" => $certificacion->Taller,
+                "tallerauto" => $certificacion->TallerAuto, // para taller autorizado
                 "fecha" => $certificacion->created_at->format('d/m/Y'),
                 "reductor" => $certificacion->ReductorGlp,
                 "cilindros" => $certificacion->CilindrosGlp,
@@ -425,6 +429,7 @@ class PdfController extends Controller
                         "empresa" => "MOTORGAS COMPANY S.A.",
                         "carro" => $certificacion->Vehiculo,
                         "taller" => $certificacion->Taller,
+                        "tallerauto" => $certificacion->TallerAuto, // para taller autorizado
                         "hoja" => $hoja,
                         "numHoja" => $this->completarConCeros($hoja->numSerie),
                         "fechaCert" => $fechaCert,
@@ -466,6 +471,7 @@ class PdfController extends Controller
                         "cargaUtil" => $cargaUtil,
                         "carro" => $certificacion->Vehiculo,
                         "taller" => $certificacion->Taller,
+                        "tallerauto" => $certificacion->TallerAuto, // para taller autorizado
                         "hoja" => $hoja,
                         "numHoja" => $this->completarConCeros($hoja->numSerie),
                         "fechaCert" => $fechaCert,
@@ -507,6 +513,7 @@ class PdfController extends Controller
                         "empresa" => "MOTORGAS COMPANY S.A.",
                         "carro" => $certificacion->Vehiculo,
                         "taller" => $certificacion->Taller,
+                        "tallerauto" => $certificacion->TallerAuto, // para taller autorizado
                         "hoja" => $hoja,
                         "numHoja" => $this->completarConCeros($hoja->numSerie),
                         "fechaCert" => $fechaCert,
@@ -548,6 +555,7 @@ class PdfController extends Controller
                         "cargaUtil" => $cargaUtil,
                         "carro" => $certificacion->Vehiculo,
                         "taller" => $certificacion->Taller,
+                        "tallerauto" => $certificacion->TallerAuto, // para taller autorizado
                         "hoja" => $hoja,
                         "numHoja" => $this->completarConCeros($hoja->numSerie),
                         "fechaCert" => $fechaCert,
@@ -1429,6 +1437,7 @@ class PdfController extends Controller
                 'fecha' => $fechaForma,
                 'remitente' => $memorando->remitente,
                 'cargo' => $memorando->cargo,
+                'cargoremi' => $memorando->cargoremi,
                 'motivo' => $memorando->motivo,
             ];
 
@@ -1454,6 +1463,7 @@ class PdfController extends Controller
                 'fecha' => $fechaForma,
                 'remitente' => $memorando->remitente,
                 'cargo' => $memorando->cargo,
+                'cargoremi' => $memorando->cargoremi,
                 'motivo' => $memorando->motivo,
             ];
 

@@ -56,9 +56,11 @@
                                 <i class="fas fa-sort float-right mt-0.5"></i>
                             @endif
                         </th>
+                        {{--
                         <th scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left">
                             Motivo
                         </th>
+                        --}}
                         <th scope="col" class="text-sm font-medium font-semibold text-white px-6 py-4 text-left"
                             wire:click="order('fecha')">
                             Fecha de creación
@@ -104,6 +106,7 @@
                                     </p>
                                 </div>
                             </td>
+                            {{--
                             <td class="pl-2">
                                 <div class="flex items-center">
                                     <p class="text-sm leading-none text-gray-600 ml-2">
@@ -111,6 +114,7 @@
                                     </p>
                                 </div>
                             </td>
+                            --}}
                             <td class="pl-2">
                                 <div class="flex items-center">
                                     <p class="text-sm leading-none text-gray-600 ml-2">

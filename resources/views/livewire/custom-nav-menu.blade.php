@@ -724,7 +724,7 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
 
                                     <i class="fa-solid fa-caret-up ml-1  text-white w-4 h-4" x-show="Open"></i>
                                 </div>
-                                @hasanyrole('administrador|supervisor|Administrador del sistema')
+                                
                                 <div x-show.transition="Open" style="display:none;">
                                     <ul x-transition:enter="transition-all ease-in-out duration-300"
                                         x-transition:enter-start="opacity-25 max-h-0"
@@ -741,7 +741,7 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
 
                                     </ul>
                                 </div>
-                                
+                                @hasanyrole('administrador|supervisor|Administrador del sistema')
                                 <div x-show.transition="Open" style="display:none;">
                                     <ul x-transition:enter="transition-all ease-in-out duration-300"
                                         x-transition:enter-start="opacity-25 max-h-0"

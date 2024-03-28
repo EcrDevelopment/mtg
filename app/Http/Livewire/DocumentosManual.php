@@ -4,6 +4,7 @@ namespace App\Http\Livewire;
 
 use Livewire\Component;
 use App\Models\DocumentoManual;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Livewire\WithFileUploads;
 
@@ -12,6 +13,7 @@ class DocumentosManual extends Component
     use WithFileUploads;
     public $tDocumentos;
     public $openEdit,$documento,$nuevoPdf;
+    public $user;
 
     protected $rules=[
         "documento.tipomanual_id"=>"required|numeric|min:1",        
@@ -21,9 +23,27 @@ class DocumentosManual extends Component
 
     protected $listeners=["eliminar"=>"delete","resetDocumento"=>"refrescaDocumento"];
 
-    public function render()
+    /*public function render()
     {
         $this->tDocumentos = DocumentoManual::with('tipoManual')->get();
+        return view('livewire.documentos-manual');
+    }*/
+
+    public function mount()
+    {      
+        $this->user = Auth::user();
+    }
+
+    public function render()
+    {
+        if ($this->user->hasRole('inspector')) {
+            $this->tDocumentos = DocumentoManual::whereHas('tipoManual', function ($query) {
+                $query->where('nombreTipo', 'Inspector');
+            })->with('tipoManual')->get();
+        } else {
+            $this->tDocumentos = DocumentoManual::with('tipoManual')->get();
+        }
+
         return view('livewire.documentos-manual');
     }
 

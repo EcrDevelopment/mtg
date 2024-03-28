@@ -47,6 +47,7 @@
                                         Descargar
                                     </span>
                                 </a>
+                                @hasanyrole('administrador|supervisor|Administrador del sistema')
                                 <button wire:click="abrirModal({{ $doc->id }})"
                                     class="group flex py-2 px-2 text-center items-center rounded-md bg-amber-300 font-bold text-white cursor-pointer hover:bg-amber-400 hover:animate-pulse">
                                     <i class="fas fa-pen"></i>
@@ -64,6 +65,7 @@
                                         Eliminar
                                     </span>
                                 </button>
+                                @endhasanyrole
                             
                             </div>
                         </div>

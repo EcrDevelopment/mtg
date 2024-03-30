@@ -1,5 +1,6 @@
 <?php
 
+use App\Loggin\SimpleFormatter;
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
@@ -116,6 +117,13 @@ return [
 
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
+        ],
+
+        'migracion_expedientes' => [
+            'driver' => 'single',
+            'tap'=>[SimpleFormatter::class],
+            'level' => 'debug',
+            'path' => storage_path('logs/migracion_expedientes.log'),
         ],
     ],
 

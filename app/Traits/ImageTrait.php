@@ -34,6 +34,11 @@ trait ImageTrait
             Storage::disk('do')->put($nuevaRuta, $contenidoArchivo);
             Storage::disk('do')->setVisibility($nuevaRuta, 'public');
 
+            // Verificar que el archivo se haya subido correctamente
+            if (!Storage::disk('do')->exists($nuevaRuta)) {
+                throw new \Exception("No se pudo subir el archivo a DigitalOcean Spaces.");
+            }
+
             // Eliminar el archivo local
             unlink($rutaArchivoLocal);
 
@@ -45,18 +50,16 @@ trait ImageTrait
             ]);
 
             // Registrar la migración exitosa
-            Log::channel('migracion_imagenes')->notice("Se migró correctamente el archivo con ID: $file->id hacia Digital Ocean con la ruta: $nuevaRuta" );
+            Log::channel('migracion_expedientes')->notice("Se migró correctamente el archivo con ID: $file->id hacia Digital Ocean con la ruta: $nuevaRuta");
 
             return $nuevaRuta; // Devolver la nueva ruta del archivo en DigitalOcean Spaces
         } catch (\Exception $e) {
             // Manejar cualquier error que pueda ocurrir durante la migración
-            Log::channel('migracion_imagenes')->error("Error al migrar archivo con ID: $file->id. Error: " . $e->getMessage());
+            Log::channel('migracion_expedientes')->error("Error al migrar archivo con ID: $file->id. Error: " . $e->getMessage());
             return false;
         }
     }
 
 
-    private function guardaArchivoEnDo($archivo,$carpeta,$data){
 
-    }
 }

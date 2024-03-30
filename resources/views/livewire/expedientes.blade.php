@@ -101,7 +101,7 @@
                                     <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                         <p class="text-gray-900 whitespace-no-wrap">
                                             {{
-                                            date("d/m/Y  h:i a", strtotime($item->created_at)) 
+                                            date("d/m/Y  h:i a", strtotime($item->created_at))
                                             }}
                                             </p>
                                     </td>
@@ -189,7 +189,7 @@
                     </div>
                 </div>
             </div>
-           
+
             @if ($expedientes->hasPages())
                 <div>
                     <div class="-mx-4 sm:-mx-8 px-4 sm:px-8 py-2 overflow-x-auto">
@@ -201,7 +201,7 @@
                     </div>
                 </div>
             @endif
-                       
+
         @else
             <div class="px-6 py-4 text-center font-bold bg-indigo-200 rounded-md">
                 No se encontro ningun registro.
@@ -222,7 +222,7 @@
             <div>
                 <span class="flex justify-end font-ligth text-sm">ultima actualizacion:{{$expediente->updated_at}}</span>
             </div>
-                
+
                 @if ($expediente->estado == 2)
                     @if ($observaciones)
                         <h1>Observaciones: </h1>
@@ -311,11 +311,18 @@
                             @foreach ($files as $fil)
                                 <div class="flex flex-wrap w-1/3 ">
                                     <div class="w-full p-1 items-center justify-center">
-                                        <img alt="gallery"
+                                        @if ($fil->migrado==0)
+                                            <img alt="gallery"
                                             class="mx-auto flex object-cover object-center w-36 h-36 rounded-lg"
                                             src="{{ Storage::url($fil->ruta) }}">
-                                        <a class="flex" wire:click="deleteFile({{ $fil->id }})"><i
-                                                class="fas fa-trash mt-1 mx-auto hover:text-indigo-400"></i></a>
+                                        @else
+                                            <img alt="gallery"
+                                            class="mx-auto flex object-cover object-center w-36 h-36 rounded-lg"
+                                            src="{{ Storage::disk('do')->url($fil->ruta) }}">
+                                        @endif
+                                        <a class="flex" wire:click="deleteFile({{ $fil->id }})">
+                                            <i class="fas fa-trash mt-1 mx-auto hover:text-indigo-400"></i>
+                                        </a>
                                     </div>
                                 </div>
                             @endforeach
@@ -369,15 +376,7 @@
                     <div class="container px-5 py-2 mx-auto lg:px-32">
                         <div class="flex flex-wrap -m-1 md:-m-2">
                             @foreach ($documentos as $fil)
-                            {{--
-                            <div class="flex flex-wrap w-1/3 ">
-                                <div class="w-full p-1 md:p-1 items-center justify-center text-center">                                    
-                                    <img alt="gallery" class="mx-auto flex object-cover object-center w-15 h-15 rounded-lg" src="/images/{{$fil->extension}}.png">
-                                    <p class="truncate text-sm" >{{ $fil->nombre }}</p>
-                                    <a class="flex" wire:click="deleteFile({{ $fil->id }})"><i class="fas fa-trash mt-1 mx-auto hover:text-indigo-400"></i></a>
-                                </div>
-                            </div>
-                            --}}
+
                                 <div class="flex flex-wrap w-1/5 ">
                                     <div class="w-full p-1 md:p-2 items-center justify-center text-center">
                                         <img alt="gallery"

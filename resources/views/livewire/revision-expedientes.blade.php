@@ -99,7 +99,7 @@
                                             <th class="cursor-pointer hover:font-bold hover:text-indigo-500  px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
                                                 wire:click="order('certificado')">
                                                 Certificado
-    
+
                                                 @if ($sort == 'certificado')
                                                     @if ($direction = 'asc')
                                                         <i class="fas fa-sort-alpha-up-alt float-right mt-0.5"></i>
@@ -208,7 +208,7 @@
                                                             </span>
                                                         </td>
                                                     @break
-    
+
                                                     @case(2)
                                                         <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                                             <span
@@ -219,7 +219,7 @@
                                                             </span>
                                                         </td>
                                                     @break
-    
+
                                                     @case(3)
                                                         <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                                             <span
@@ -230,7 +230,7 @@
                                                             </span>
                                                         </td>
                                                     @break
-    
+
                                                     @case(4)
                                                         <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                                             <span
@@ -241,7 +241,7 @@
                                                             </span>
                                                         </td>
                                                     @break
-    
+
                                                     @default
                                                         <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                                             <span
@@ -252,7 +252,7 @@
                                                             </span>
                                                         </td>
                                                 @endswitch
-    
+
                                                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                                     {{-- @livewire('edit-usuario', ['usuario' => $usuario], key($usuario->id)) --}}
                                                     <div class="flex justify-end">
@@ -288,7 +288,7 @@
                 @endif
             </x-tablerev>
         </div>
-    
+
         <x-jet-dialog-modal wire:model="editando" wire:loading.attr="disabled" wire:target="deleteFile">
             <x-slot name="title" class="font-bold">
                 <h1 class="text-xl font-bold">Revision de Expediente</h1>
@@ -308,22 +308,28 @@
                     <h3 class="text-sm font-bold ">Certificado : </h3>
                     <p class="text-sm font-bold text-red-500">{{ $expediente->certificado }}</p>
                 </div>
-    
+
                 <h1 class="pt-2  font-semibold sm:text-lg text-gray-900">
                     Fotografias:
                 </h1>
                 <hr />
                 @if (count($files))
-    
+
                     <section class="my-4 pb-4 overflow-hidden border-dotted border-2 text-gray-700 ">
                         <div class="container px-5 py-2 mx-auto lg:pt-12 lg:px-32">
                             <div class="flex flex-wrap -m-1 md:-m-2">
                                 @foreach ($files as $fil)
                                     <div class="flex flex-wrap p-1 relative">
                                         <div class="w-full items-center justify-center ">
+                                            @if ($fil->migrado == 0)
                                             <img alt="gallery"
-                                                class="mx-auto flex object-cover object-center w-full rounded-lg"
-                                                src="{{ Storage::url($fil->ruta) }}">
+                                            class="mx-auto flex object-cover object-center w-full rounded-lg"
+                                            src="{{ Storage::url($fil->ruta) }}">
+                                            @else
+                                            <img alt="gallery"
+                                            class="mx-auto flex object-cover object-center w-full rounded-lg"
+                                            src="{{ 'https://motorgas.ams3.digitaloceanspaces.com/'.$fil->ruta }}">
+                                            @endif
                                         </div>
                                         <div class="absolute mt-2 w-full bottom-3 flex justify-center items-center">
                                             <a class="group max-w-max relative mx-1 flex flex-col items-center justify-center rounded-full bg-white border border-gray-500 p-1 text-gray-500 hover:bg-gray-200 hover:text-gray-600"
@@ -378,7 +384,7 @@
                     Documentos:
                 </h1>
                 <hr />
-    
+
                 @if (count($documentos))
                     <section class="mt-4  overflow-hidden border-dotted border-2 text-gray-700 "
                         id="{{ 'sections-' . $identificador }}">
@@ -413,11 +419,16 @@
                                                             </div>
                                                         </div>
                                                     </a>
-                                                    <a wire:click="download('{{ $fil->ruta }}')"><i
-                                                            class="fas fa-download mt-1 mx-auto hover:text-indigo-400"></i></a>
+                                                    <a wire:click.prevent="download({{$fil->id}})" wire:loading.class="cursor-not-allowed">
+                                                        <i class="fas fa-download mt-1 mx-auto hover:text-indigo-400" wire:loading.remove wire:target="download({{$fil->id}})"></i>
+                                                        <svg class="animate-spin h-5 w-5 mx-auto mt-1 text-indigo-600" wire:loading wire:target="download({{$fil->id}})" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V2.55A9.95 9.95 0 0012 2c-1.871 0-3.624.518-5.122 1.423M4.64 4.64l1.415 1.415M19.95 4.95l-1.415 1.415"></path>
+                                                        </svg>
+                                                    </a>
                                                 </div>
                                             </div>
-    
+
                                         </div>
                                     </div>
                                 @endforeach
@@ -466,8 +477,8 @@
                             @endif
                         @endforeach
                     </div>
-    
-    
+
+
                     @if ($observacionesEx)
                         <h1 class="mt-4">Listado de observaciones:</h1>
                         <hr class="my-2">
@@ -483,7 +494,7 @@
                             @endforeach
                         </div>
                     @endif
-    
+
                     <hr class="my-2">
                     <div class="flex items-center justify-center w-full">
                         <label for="activo" class="hover:text-indigo-500 hover:cursor-pointer">
@@ -492,7 +503,7 @@
                             Agregar Comentario
                         </label>
                     </div>
-    
+
                     @if ($activo)
                         <div class="m-2">
                             <x-jet-label value="Comentario:" for="comentario" />
@@ -510,9 +521,9 @@
                     Guardar
                 </x-jet-button>
             </x-slot>
-    
+
         </x-jet-dialog-modal>
-    
+
         @push('js')
             <script>
                 Livewire.on('quitaCheck', () => {
@@ -526,7 +537,7 @@
                 Livewire.on('activaCheck', () => {
                     var check = document.querySelector('#activo');
                     check.checked = true;
-    
+
                 });
             </script>
             <script>
@@ -538,18 +549,18 @@
     </div>
 
     {{--PANTALLA DE CARGA
-    <div class="hidden w-full h-screen flex flex-col justify-center items-center bg-gray-200 " wire:loading.remove.class="hidden">     
+    <div class="hidden w-full h-screen flex flex-col justify-center items-center bg-gray-200 " wire:loading.remove.class="hidden">
         <div class="flex">
             <img src="{{ asset('images/mtg.png') }}" alt="Logo Motorgas Company" width="150" height="150">
         </div>
         <div class="text-center">
             <i class="fa-solid fa-circle-notch fa-xl animate-spin text-indigo-800 "></i>
-          
+
             <p class="text-center text-black font-bold italic">CARGANDO...</p>
         </div>
         <div class="flex">
         </div>
-    </div>  
+    </div>
     --}}
 </div>
 

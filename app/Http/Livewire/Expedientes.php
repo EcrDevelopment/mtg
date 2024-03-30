@@ -8,14 +8,11 @@ use App\Models\ExpedienteObservacion;
 use App\Models\Imagen;
 use App\Models\Observacion;
 use App\Models\Taller;
-use App\Models\User;
-use Hamcrest\Core\HasToString;
 use Illuminate\Support\Facades\Storage;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Intervention\Image\Facades\Image;
 
 class Expedientes extends Component
 {
@@ -89,27 +86,6 @@ class Expedientes extends Component
 
     public function render()
     {
-        /*
-        $filtros1=[['expedientes.placa','like','%'.$this->search.'%'],['expedientes.usuario_idusuario', '=', Auth::id()]];  
-        $filtros2=[['expedientes.certificado','like','%'.$this->search.'%'],['expedientes.usuario_idusuario', '=', Auth::id()]];  
-
-        if($this->es!=null){
-           array_push($filtros1,['expedientes.estado','like','%'.$this->es.'%']);
-           array_push($filtros2,['expedientes.estado','like','%'.$this->es.'%']);
-        }
-
-                 
-            $expedientes= DB::table('expedientes') 
-            ->select('expedientes.*', 'tiposervicio.descripcion')             
-            ->join('servicio', 'expedientes.servicio_idservicio', '=', 'servicio.id')
-            ->join('tiposervicio', 'tiposervicio.id', '=', 'servicio.tipoServicio_idtipoServicio')           
-            ->where($filtros1)
-            ->orWhere($filtros2)           
-            ->orderBy($this->sort,$this->direction)
-            ->paginate($this->cant);                 
-        
-
-        */
 
         if ($this->readyToLoad) {
             $expedientes = Expediente::placaOcertificado($this->search)
@@ -172,10 +148,10 @@ class Expedientes extends Component
         }
     }
 
-    public function actualizar(){       
-        
-        $this->validate();        
-        
+    public function actualizar(){
+
+        $this->validate();
+
         if(count($this->fotosnuevas)>0){
             foreach($this->fotosnuevas as $key=>$fn){
                 $file_sa= new imagen();
@@ -191,7 +167,7 @@ class Expedientes extends Component
                 ]);
             }
         }
-        
+
 
         foreach($this->documentosnuevos as $key=>$file){
             $file_save= new imagen();
@@ -212,69 +188,16 @@ class Expedientes extends Component
 
         $this->expediente->servicio_idservicio=$this->servicioSeleccionado;
 
-        $this->expediente->save();     
+        $this->expediente->save();
 
-       // $this->reset();   
-        
-        $this->reset(['editando','expediente','documentosnuevos','fotosnuevas']);        
-        
+       // $this->reset();
+
+        $this->reset(['editando','expediente','documentosnuevos','fotosnuevas']);
+
         $this->emit('alert','El expediente se actualizo correctamente');
 
         $this->identificador=rand();
     }
-
-    /*public function actualizar()
-    {
-        $this->validate();
-
-        // Cargar nuevas fotos
-        if (count($this->fotosnuevas) > 0) {
-            foreach ($this->fotosnuevas as $key => $fn) {
-                // Crear una nueva instancia de imagen con Intervention Image
-                $imagenProcesada = Image::make($fn)->encode($fn->extension(), 75);
-
-                // Almacenar la imagen procesada en el storage
-                $ruta = "public/expedientes/" . trim($this->expediente->placa) . '-foto' . ($key + 1) . $this->identificador . '-' . $this->expediente->certificado . '.' . $fn->extension();
-                Storage::put($ruta, $imagenProcesada->__toString());
-
-                // Crear una nueva instancia de Imagen en la base de datos
-                Imagen::create([
-                    'nombre' => trim($this->expediente->placa) . '-foto' . ($key + 1) . $this->identificador . '-' . $this->expediente->certificado,
-                    'ruta' => $ruta,
-                    'extension' => $fn->extension(),
-                    'Expediente_idExpediente' => $this->expediente->id,
-                ]);
-            }
-        }
-
-        // Cargar nuevos documentos
-        if (count($this->documentosnuevos) > 0) {
-            foreach ($this->documentosnuevos as $key => $file) {
-                // Almacenar documentos directamente en el storage
-                $ruta = $file->storeAs('public/expedientes', trim($this->expediente->placa) . '-doc' . ($key + 1) . $this->identificador . '-' . $this->expediente->certificado . '.' . $file->extension());
-
-                // Crear una nueva instancia de Imagen en la base de datos
-                Imagen::create([
-                    'nombre' => trim($this->expediente->placa) . '-doc' . ($key + 1) . $this->identificador . '-' . $this->expediente->certificado,
-                    'ruta' => $ruta,
-                    'extension' => $file->extension(),
-                    'Expediente_idExpediente' => $this->expediente->id,
-                ]);
-            }
-        }
-
-        // Actualizar otros campos del expediente
-        $this->expediente->idTaller = $this->tallerSeleccionado;
-        $this->expediente->estado = 1;
-        $this->expediente->servicio_idservicio = $this->servicioSeleccionado;
-        $this->expediente->save();
-
-        // Limpiar propiedades y emitir alerta
-        $this->reset(['editando', 'expediente', 'documentosnuevos', 'fotosnuevas']);
-        $this->emit('alert', 'El expediente se actualizó correctamente');
-        $this->identificador = rand();
-    }*/
-
 
 
     public function updated($propertyName)
@@ -286,7 +209,11 @@ class Expedientes extends Component
     {
         $imgs = Imagen::where('Expediente_idExpediente', '=', $expediente->id)->get();
         foreach ($imgs as $img) {
-            Storage::delete($img->ruta);
+            if($img->migrado==0){
+                Storage::delete($img->ruta);
+            }else{
+                Storage::disk('do')->delete($img->ruta);
+            }
         }
         $expediente->delete();
         $this->expediente = Expediente::make();
@@ -298,7 +225,12 @@ class Expedientes extends Component
     //borrar imagen de bd
     public function deleteFile(Imagen $file)
     {
-        Storage::delete([$file->ruta]);
+        //Storage::delete([$file->ruta]);
+        if($file->migrado==0){
+            Storage::delete($file->ruta);
+        }else{
+            Storage::disk('do')->delete($file->ruta);
+        }
         $file->delete();
         $this->reset(["files"]);
         // $this->identificador=rand();
@@ -309,7 +241,11 @@ class Expedientes extends Component
     //borrar documentos en bs
     public function deleteDocument(Imagen $file)
     {
-        Storage::delete([$file->ruta]);
+        if($file->migrado==0){
+            Storage::delete($file->ruta);
+        }else{
+            Storage::disk('do')->delete($file->ruta);
+        }
         $file->delete();
         $this->reset(["documentos"]);
         // $this->identificador=rand();

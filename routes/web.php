@@ -164,7 +164,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified'])
     Route::get('/certificados-desmontes',ListaDesmontes::class)->middleware('can:certificaciones.desmontes')->name('certificaciones.desmontes');
 
 
-    Route::get('/Solicitud/{soliId}',VistaSolicitud::class)->name('vistaSolicitud');    
+    Route::get('/Solicitud/{soliId}',VistaSolicitud::class)->name('vistaSolicitud');
     Route::get('/SolicitudAnu/{anuId}/{cerId}/{userId}',VistaSolicitudAnul::class)->name('vistaSolicitudAnul');
     Route::get('/SolicitudEli/{eliId}/{cerId}/{userId}',VistaEliminacion::class)->name('vistaSolicitudEli');
     Route::get('/Memorando/{memoId}',VistaSolicitudMemorando::class)->name('vistaSolicitudMemorando');
@@ -284,7 +284,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified'])
 
 
         //Rutas para descargar certificado preconversion GLP
-        Route::get('/preConverGlp/{id}', 'generaPdfPreGlp')->name("generaPreGlpPdf");
+        Route::get('/preConverGlp/{id}','generaPdfPreGlp')->name("generaPreGlpPdf");
         Route::get('/preConverGlp/{id}/descargar', 'generaDescargaPreGlp')->name("descargarPreGlpPdf");
 
         //Rutas para ver certificado anual GLP

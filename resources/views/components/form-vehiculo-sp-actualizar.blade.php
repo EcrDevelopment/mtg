@@ -31,7 +31,7 @@
                     <x-jet-input type="text" class="w-full" wire:model="vehiculo.placa"  maxlength="7" />
                     <x-jet-input-error for="vehiculo.placa" />
                 </div>
-                
+
                 <div class="w-2/6 mt-4">
                     <input wire:model="noPlaca" id="checkbox1" type="checkbox"
                         value="1"
@@ -40,7 +40,7 @@
                             En trámite
                         </label>
                 </div>
-                
+
             </div>
             <div>
                 <x-jet-label value="Categoria:" />
@@ -62,6 +62,8 @@
                     <option value="O2">O2</option>
                     <option value="O3">O3</option>
                     <option value="O4">O4</option>
+                    <option value="M1-C3">M1-C1</option>
+                    <option value="M1-C3">M1-C2</option>
                     <option value="M1-C3">M1-C3</option>
                     <option value="M2-C1">M2-C1</option>
                     <option value="M2-C2">M2-C2</option>

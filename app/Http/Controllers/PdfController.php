@@ -761,7 +761,7 @@ class PdfController extends Controller
                     $equipos = $certificacion->Vehiculo->Equipos->where("idTipoEquipo", ">", 3)->sortBy("idTipoEquipo");
                     $cargaUtil = $this->calculaCargaUtil($certificacion->Vehiculo->pesoBruto, $certificacion->Vehiculo->pesoNeto);
                     // Genera el código QR
-                    $urlDelDocumento = 'www.motorgasperu.com' . route('verPdfPreInicialGlp', $id, false); //tu ruta es para inicial no para preconver 
+                    $urlDelDocumento = 'www.motorgasperu.com' . route('verPdfPreInicialGlp', $id, false); //tu ruta es para inicial no para preconver
                     $qrCode = QrCode::size(70)->generate($urlDelDocumento);
                     $data = [
                         "fecha" => $fecha,
@@ -769,6 +769,7 @@ class PdfController extends Controller
                         "cargaUtil" => $cargaUtil,
                         "carro" => $certificacion->Vehiculo,
                         "taller" => $certificacion->Taller,
+                        "tallerauto" => $certificacion->TallerAuto, // para taller autorizado
                         "hoja" => $hoja,
                         "numHoja" => $this->completarConCeros($hoja->numSerie),
                         "fechaCert" => $fechaCert,

@@ -338,7 +338,7 @@
                                             class="bg-gray-50 mx-2 border-indigo-500 rounded-md outline-none ml-1 block w-full ">
                                             <option value="">Seleccione Taller Autorizado</option>
                                             @foreach ($talleres as $taller2)
-                                                @if (in_array($taller2->id, [16, 13, 9, 42, 5, 23, 38, 30, 74, 20, 88, 89, 78, 46]))
+                                                @if (in_array($taller2->id, [16, 13, 9, 42, 5, 23, 38, 30, 74, 20, 88, 89, 78, 46, 73]))
                                                     <option value="{{ $taller2->id }}">{{ $taller2->nombre }}</option>
                                                 @endif
                                             @endforeach
@@ -490,7 +490,7 @@
                                             class="bg-gray-50 mx-2 border-indigo-500 rounded-md outline-none ml-1 block w-full ">
                                             <option value="">Seleccione Taller Autorizado</option>
                                             @foreach ($talleres as $taller2)
-                                                @if (in_array($taller2->id, [16, 13, 9, 42, 5, 23, 38, 30, 74, 20, 88, 89, 78, 46]))
+                                                @if (in_array($taller2->id, [16, 13, 9, 42, 5, 23, 38, 30, 74, 20, 88, 89, 78, 46, 73]))
                                                     <option value="{{ $taller2->id }}">{{ $taller2->nombre }}</option>
                                                 @endif
                                             @endforeach

@@ -47,7 +47,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div x-data="{ isOpen: false }" class="flex bg-white items-center p-2 rounded-md mb-4">
                         <span>Inspector: </span>
                         <div class="relative">
@@ -67,6 +66,7 @@
                             </div>
                         </div>
                     </div>
+                    
 
                     <div class="flex items-center space-x-2">
                         <div class="flex bg-white items-center p-2 w-1/2 md:w-48 rounded-md mb-4 ">
@@ -101,32 +101,23 @@
 
         <!-- Tabla ACTUALIZAR -->
         @if (isset($reportePorInspector))
+
             <div wire.model="resultados">
-                {{--
-                <div class="m-auto flex justify-center items-center bg-gray-300 rounded-md w-full p-4 mt-4">
-                    <button wire:click="exportarExcel"
-                        class="bg-green-400 px-6 py-4 w-1/3 text-sm rounded-md text-sm text-white font-semibold tracking-wide cursor-pointer ">
-                        <p class="truncate"><i class="fa-solid fa-file-excel fa-lg"></i> Desc. Excel </p>
-                    </button>
+                <div class="p-2 flex justify-end m-auto flex items-space-around">
+                    <a wire:click="ver({{ json_encode(collect($reportePorInspector)->pluck('id')->toArray()) }}, {{ json_encode(collect($reportePorInspector)->pluck('tiposervicio')->unique()->toArray()) }})"
+                        class="group flex py-4 px-4 text-center rounded-md bg-blue-300 font-bold text-white cursor-pointer hover:bg-blue-400 hover:animate-pulse">
+                        <i class="fas fa-edit"></i>
+                        <span
+                            class="group-hover:opacity-100 transition-opacity bg-gray-800 px-1 text-sm text-gray-100 rounded-md absolute left-1/2-translate-x-1/2 translate-y-full opacity-0 m-4 mx-auto z-100">
+                            Editar Precios
+                        </span>
+                    </a>
                 </div>
-                --}}
 
-                @foreach ($reportePorInspector as $inspectorId => $certificacionesInspector)
+                @foreach ($reportePorInspector->groupBy('nombre') as $inspector => $reporte)
                     <div class="bg-gray-200  px-8 py-4 rounded-xl w-full mt-4">
-                        <div class="p-2 w-full justify-between m-auto flex items-space-around">
-                            @php $nombreInspector = $certificacionesInspector[0]->nombre ?? 'Nombre no disponible' @endphp
-                            <h2 class="text-indigo-600 text-xl font-bold mb-4">{{ $nombreInspector }}</h2>
-                            <a wire:click="ver({{ json_encode(collect($certificacionesInspector)->pluck('id')->toArray()) }}, {{ json_encode(collect($certificacionesInspector)->pluck('tiposervicio')->unique()->toArray()) }})"
-                                class="group flex py-4 px-4 text-center rounded-md bg-blue-300 font-bold text-white cursor-pointer hover:bg-blue-400 hover:animate-pulse">
-                                <i class="fas fa-edit"></i>
-                                <span
-                                    class="group-hover:opacity-100 transition-opacity bg-gray-800 px-1 text-sm text-gray-100 rounded-md absolute left-1/2-translate-x-1/2 translate-y-full opacity-0 m-4 mx-auto z-100">
-                                    Editar Precios
-                                </span>
-                            </a>
-                        </div>
-
-                        @if (!empty($certificacionesInspector) && count($certificacionesInspector) > 0)
+                        <h2 class="text-indigo-600 text-xl font-bold mb-4">{{ $inspector }}</h2>
+                        @if (!empty($reporte))
                             <div class="overflow-x-auto m-auto w-full">
                                 <div class="inline-block min-w-full py-2 sm:px-6">
                                     <div class="overflow-hidden">
@@ -181,7 +172,7 @@
                                             </thead>
 
                                             <tbody>
-                                                @foreach ($certificacionesInspector as $key => $item)
+                                                @foreach ($reporte as $key => $item)
                                                     <tr class="border-b dark:border-neutral-500 bg-orange-200">
                                                         {{-- <td class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
                                                                 <input type="checkbox" wire:model="selectedRows.{{ $inspectorId }}.{{ $key }}" />
@@ -269,14 +260,14 @@
                                                         Total: {{-- ({{ $certificacionesInspector[0]->nombre }}) --}}
                                                     </td>
                                                     <td class="border-r px-6 py-3 dark:border-neutral-500 font-bold">
-                                                        {{ number_format(collect($certificacionesInspector)->sum('precio'), 2) }}
+                                                        {{ number_format(collect($reporte)->sum('precio'), 2) }}
                                                     </td>
                                                 </tr>
                                             </tbody>
                                         </table>
                                         <div class="mt-4">
                                             <ul class="grid grid-cols-2 gap-4">
-                                                @foreach (collect($certificacionesInspector)->groupBy('tiposervicio') as $tipoServicio => $detalle)
+                                                @foreach (collect($reporte)->groupBy('tiposervicio') as $tipoServicio => $detalle)
                                                     <li
                                                         class="flex items-center justify-between bg-gray-100 p-3 rounded-md shadow">
                                                         <span
@@ -296,6 +287,7 @@
                         @endif
                     </div>
                 @endforeach
+
             </div>
         @endif
 

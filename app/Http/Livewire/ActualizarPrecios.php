@@ -16,6 +16,7 @@ class ActualizarPrecios extends Component
     public $ins = [], $taller = [];
     public $totalPrecio, $reportePorInspector, $detallesPlacasFaltantes, $certificacionIds = [];
     public $editando, $tiposServicios = [], $serviciosImportados, $updatedPrices = [];
+    
     protected $listeners = ['preciosActualizados' => 'recargarDatos'];
 
     protected $rules = [
@@ -40,7 +41,8 @@ class ActualizarPrecios extends Component
         $resultadosdetalle = $this->datosMostrar();
         $totalPrecio = $resultadosdetalle->sum('precio');
         $this->totalPrecio = $totalPrecio;
-        $this->reportePorInspector = $resultadosdetalle->groupBy('idInspector');
+        //$this->reportePorInspector = $resultadosdetalle->groupBy('idInspector');
+        $this->reportePorInspector = $resultadosdetalle;
     }
 
     private function datosMostrar()
@@ -131,7 +133,7 @@ class ActualizarPrecios extends Component
                 'taller.nombre as taller',
                 DB::raw("'Desmonte de Cilindro' as tiposervicio")
             )
-            ->Join('users', 'desmontes.idInspector', '=', 'users.id') 
+            ->Join('users', 'desmontes.idInspector', '=', 'users.id')
             ->Join('taller', 'desmontes.idTaller', '=', 'taller.id')
             ->Join('servicio', 'desmontes.idServicio', '=', 'servicio.id')
             ->where('desmontes.estado', 1)
@@ -191,7 +193,7 @@ class ActualizarPrecios extends Component
         $this->editando = true;
     }
 
-    public function updatePrecios()
+    /*public function updatePrecios()
     {
         if (count($this->updatedPrices) > 0) {
             foreach ($this->updatedPrices as $key => $nuevoPrecio) {
@@ -224,10 +226,68 @@ class ActualizarPrecios extends Component
             $this->calcularReporte();
             $this->editando = false;
         }
+    }*/
+
+    public function updatePrecios()
+    {
+        if (count($this->updatedPrices) > 0) {
+            foreach ($this->updatedPrices as $tipoServicio => $nuevoPrecio) {
+                $certificacionIds = $this->certificacionIds;
+                switch ($tipoServicio) {
+                    case 'Conversión a GNV':
+                    case 'Revisión anual GNV':
+                    case 'Conversión a GLP':
+                    case 'Revisión anual GLP':
+                    case 'Modificación':
+                    case 'Duplicado GNV':
+                    case 'Duplicado GLP':
+                    case 'Conversión a GNV + Chip':
+                    case 'Chip por deterioro': //revisar chip por deterioro
+                    case 'Pre-conversión GNV':
+                    case 'Pre-conversión GLP':
+                        Certificacion::whereIn('id', $certificacionIds)
+                            ->whereHas('servicio', function ($query) use ($tipoServicio) {
+                                $query->whereHas('tipoServicio', function ($query) use ($tipoServicio) {
+                                    $query->where('descripcion', $tipoServicio);
+                                });
+                            })
+                            ->update(['precio' => $nuevoPrecio]);
+                        break;
+
+                    case 'Activación de chip (Anual)':
+                        CertificacionPendiente::whereIn('id', $certificacionIds)
+                            ->update(['precio' => $nuevoPrecio]);
+                        break;
+
+                    case 'Desmonte de Cilindro':
+                        Desmontes::whereIn('id', $certificacionIds)
+                            ->update(['precio' => $nuevoPrecio]);
+                        break;
+
+                    default:
+                        // Manejo de error 
+                        break;
+                }
+            }
+
+            // Emitir evento para indicar que los precios han sido actualizados
+            $this->emit('preciosActualizados');
+
+            // Refrescar solo la sección de la tabla
+            $this->dispatchBrowserEvent('refresh-table');
+
+            $this->reset(['resultados', 'updatedPrices', 'certificacionIds']);
+            $this->calcularReporte();
+            $this->editando = false;
+        }
     }
+
 
     public function recargarDatos()
     {
         $this->calcularReporte();
     }
+
+
+
 }

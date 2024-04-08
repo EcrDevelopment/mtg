@@ -58,6 +58,11 @@
                                         <x-jet-input type="date" class="" wire:model="fechaCertificacion" />
                                         <x-jet-input-error for="fechaCertificacion" />
                                     </div>
+                                    <div class="w-full md:w-2/6 flex justify-center items-center">                                        
+                                        <x-jet-input type="checkbox" wire:model="externo" class="w-4 h-4 text-indigo-600 bg-white border-gray-300 rounded outline-none hover:cursor-pointer focus:ring-indigo-600  focus:ring-1 dark:bg-gray-600 dark:border-gray-500" />
+                                        <x-jet-label value="Externo" class="py-2 ml-2 text-sm font-medium text-gray-900 select-none hover:cursor-pointer " />
+                                        <x-jet-input-error for="externo" />
+                                    </div>
                                     <div>
                                         <button wire:click="certificar" wire:loading.attr="disabled" wire.target="certificar"
                                             class="hover:cursor-pointer border border-indigo-500 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 sm:mt-0 inline-flex items-center justify-center px-6 py-3 bg-indigo-400 hover:bg-indigo-500 focus:outline-none rounded">

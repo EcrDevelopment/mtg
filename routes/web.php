@@ -41,6 +41,7 @@ use App\Http\Livewire\Logona;
 use App\Http\Livewire\ManualFunciones;
 use App\Http\Livewire\Memorandos;
 use App\Http\Livewire\NotificacionesPendientes;
+use App\Http\Livewire\PreciospoInspector;
 use App\Http\Livewire\PrestamoMateriales;
 use App\Http\Livewire\Prueba;
 use App\Http\Livewire\PruebaExcel;
@@ -91,12 +92,6 @@ Route::get('index', function () {
 });
 Route::get('about', function () {
     return view('about');
-});
-Route::get('aniversario', function () {
-    return view('aniversario');
-});
-Route::get('aniversario2', function () {
-    return view('aniversario2');
 });
 Route::get('services', function () {
     return view('services');
@@ -175,6 +170,9 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified'])
     Route::get('/Servicio',Prueba::class)->middleware('can:servicio')->name('servicio');
     //para servicio modificacion
     Route::get('/ServicioModi',ServicioModi::class)->middleware('can:ServicioModi')->name('ServicioModi');
+
+    //PRECIOS PARA INSPECTOR
+    Route::get('/PreciosInspector',PreciospoInspector::class)->name('PreciosInspector');
 
 
     Route::get('/Solucion',Arreglando::class)->name('solucion');

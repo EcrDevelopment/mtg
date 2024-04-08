@@ -25,6 +25,7 @@ class Certificacion extends Model
         "pagado",
         "idDuplicado",
         "idTallerAuto",
+        "externo",
         "created_at",
         "updated_at",
     ];

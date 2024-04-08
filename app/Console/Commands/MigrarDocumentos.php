@@ -3,10 +3,12 @@
 namespace App\Console\Commands;
 
 use App\Models\Imagen;
+use App\Traits\ImageTrait;
 use Illuminate\Console\Command;
 
 class MigrarDocumentos extends Command
 {
+    use ImageTrait;
     /**
      * The name and signature of the console command.
      *

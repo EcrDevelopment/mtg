@@ -30,7 +30,7 @@ class MigrarDocumentos extends Command
     {
         $this->info('Iniciando migración de archivos...');
 
-        Imagen::where('estado', 0)->chunk(1000, function ($imagenes) {
+        Imagen::where('migrado', 0)->chunk(1000, function ($imagenes) {
             foreach ($imagenes as $file) {
                 $this->migrarArchivoDeExpedienteLocal($file);
             }

@@ -89,7 +89,7 @@ class ReporteCalcularExport implements FromCollection, WithHeadings, WithMapping
                 $data['fecha'] ?? 'S.F',
                 '',
                 '',
-                '',
+                $data['precio'] ?? 'S.P',
                 'discrepancia',
             ];
         } else {

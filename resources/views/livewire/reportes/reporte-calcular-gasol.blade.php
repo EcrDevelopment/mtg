@@ -315,6 +315,9 @@
                                             <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
                                                 Fecha
                                             </th>
+                                            <th scope="col" class="border-r px-6 py-4 dark:border-neutral-500">
+                                                Precio
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -363,6 +366,10 @@
                                                 <td
                                                     class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
                                                     {{ $item['fecha'] ?? 'N.A' }}
+                                                </td>
+                                                <td
+                                                    class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
+                                                    {{ $item['precio'] ?? 'N.A' }}
                                                 </td>
                                             </tr>
                                         @endforeach

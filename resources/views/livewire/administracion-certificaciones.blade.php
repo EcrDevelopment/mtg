@@ -171,6 +171,18 @@
                                                 </p>
                                             @break
 
+                                            @case(6)
+                                                <p class="text-sm leading-none text-gray-600 ml-2 p-2 bg-blue-200 rounded-full">
+                                                    Desmonte de Cilindro
+                                                </p>
+                                            @break
+
+                                            @case(7)
+                                                <p class="text-sm leading-none text-gray-600 ml-2 p-2 bg-blue-200 rounded-full">
+                                                    Activación de chip (Anual)
+                                                </p>
+                                            @break
+
                                             @case(8)
                                                 <p
                                                     class="text-sm leading-none text-gray-600 ml-2 p-2 bg-green-200 rounded-full">
@@ -427,6 +439,8 @@
 
     </x-table-administracion-certificaciones>
 
+
+    {{-- MODAL PARA VER REVISION EXPEDIENTES --}}
     <x-jet-dialog-modal wire:model="editando" wire:loading.attr="disabled" wire:target="deleteFile">
         <x-slot name="title" class="font-bold">
             <h1 class="text-xl font-bold">Revision de Expediente</h1>
@@ -570,6 +584,8 @@
 
     </x-jet-dialog-modal>
 
+
+    {{-- JS --}}
     @push('js')
         <script>
             Livewire.on('deleteCertificacion', certificacionId => {

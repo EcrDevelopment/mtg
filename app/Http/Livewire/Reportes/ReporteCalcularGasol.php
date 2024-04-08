@@ -83,6 +83,7 @@ class ReporteCalcularGasol extends Component
                 'servicios_importados.fecha',
                 'servicios_importados.placa',
                 'servicios_importados.taller',
+                'servicios_importados.precio',
                 'servicios_importados.certificador',
                 'servicios_importados.tipoServicio',
             )
@@ -102,7 +103,7 @@ class ReporteCalcularGasol extends Component
 
 
         $serviciosImportadosUnicos = $serviciosImportados->unique(function ($item) {
-            return $item->placa . $item->taller . $item->certificador . $item->tipoServicio . $item->fecha;
+            return $item->placa . $item->taller . $item->certificador . $item->tipoServicio . $item->fecha . $item->precio;
         });
         //detalles de servicios_importados únicos
         $detallesServiciosImportados = $serviciosImportadosUnicos->map(function ($item) {
@@ -111,7 +112,8 @@ class ReporteCalcularGasol extends Component
                 'taller' => $item->taller,
                 'certificador' => $item->certificador,
                 'tipoServicio' => $item->tipoServicio,
-                'fecha' => $item->fecha
+                'fecha' => $item->fecha,
+                'precio' => $item->precio,
             ];
         });
         //placas de servicios_importados

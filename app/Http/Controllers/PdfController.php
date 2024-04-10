@@ -945,6 +945,7 @@ class PdfController extends Controller
                         "hoja" => $hoja,
                         "equipos" => $equipos,
                         "chip" => $chip,
+                        "fechaCert" => $fechaCert, //para fecha cert
                         "fechaAntiguo" => $fechaAntiguo,
                         "hojaAntiguo" => $hojaAntiguo,
                         "pesos" => $antiguo->calculaPesos,
@@ -990,6 +991,7 @@ class PdfController extends Controller
                         "hoja" => $hoja,
                         "equipos" => $equipos,
                         "chip" => $chip,
+                        "fechaCert" => $fechaCert, //para fecha cert
                         "fechaAntiguo" => $fechaAntiguo,
                         "hojaAntiguo" => $hojaAntiguo,
                         "pesos" => $antiguo->calculaPesos,

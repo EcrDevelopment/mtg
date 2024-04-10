@@ -45,7 +45,10 @@ class ListaCertificacionesPendientes extends Component
         
         $certi=$this->pendiente;
         $certi->Vehiculo->update(["combustible"=>$this->combustible,"pesoNeto"=>$this->pesoNeto]);
-        //dd($certi);
+        $precio=$certi->precio;
+
+        //PENDIENTE REVISAR EL COMPORTAMIENTO DE LOS PRECIOS.
+        /*
         $aux = Servicio::where([['taller_idtaller', $certi->Taller->id], ['tipoServicio_idtipoServicio', 2]])->first(); // su existiera otro servicio pendiente se deberia agregar una validacion para activacion de chip(anual == 2)
         if($aux){
             $precio= $aux->precio;
@@ -59,11 +62,13 @@ class ListaCertificacionesPendientes extends Component
         if($certi->pagado>0){
             $precio=$certi->precio;
         }
+        */
+
         $hoja=$this->procesaFormato($this->numSugerido,11);
         //dd($hoja);
         if($hoja!=null){
             //crea una certificacion
-            $certif= Certificacion::certificarGnvPendiente($certi->Taller, $certi->Servicio, $hoja, $certi->Vehiculo, $certi->Inspector,$precio);
+            $certif= Certificacion::certificarGnvPendiente($certi->Taller, $certi->Servicio, $hoja, $certi->Vehiculo, $certi->Inspector,$precio, $certi->externo);
             //Encuentra el expediente y cambia su estado
             $expe=Expediente::find($certi->idExpediente);
             if($expe){

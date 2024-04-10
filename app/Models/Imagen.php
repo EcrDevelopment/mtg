@@ -20,7 +20,8 @@ class Imagen extends Model
         'ruta',
         'extension',
         'estado',
-        'Expediente_idExpediente'
+        'Expediente_idExpediente',
+        'migrado',
     ];
 
     public function Expediente(): BelongsTo

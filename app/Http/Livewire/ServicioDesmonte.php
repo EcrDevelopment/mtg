@@ -10,6 +10,7 @@ class ServicioDesmonte extends Component
 {
     public $desmonte,$placa,$estado="esperando", $taller , $servicio;
     public $cantidadCertificaciones = 1;
+    public $serviexterno = false;
 
     protected $rules=[
         "placa"=>"required|min:6|max:7",
@@ -46,7 +47,7 @@ class ServicioDesmonte extends Component
         $this->validate();
 
         for ($i = 0; $i < $this->cantidadCertificaciones; $i++) {
-            $certificar = Certificacion::certificarDesmonte($this->taller, $this->servicio, Auth::user(), $this->placa);
+            $certificar = Certificacion::certificarDesmonte($this->taller, $this->servicio, Auth::user(), $this->placa, $this->serviexterno);
 
             if (!$certificar) {
                 $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "Ocurrió un error al certificar", "icono" => "warning"]);

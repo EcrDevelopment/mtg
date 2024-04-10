@@ -23,6 +23,7 @@ class CertificacionPendiente extends Model
     "idExpediente",
     'precio',
     'pagado',    
+    'externo',
     'created_at',
     'updated_at',        
     ]; 

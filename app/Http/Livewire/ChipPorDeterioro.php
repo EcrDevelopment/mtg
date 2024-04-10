@@ -11,6 +11,7 @@ class ChipPorDeterioro extends Component
 {
 
     public $chips,$nombre,$placa,$estado="esperando", $taller , $servicio;
+    public $serviexterno = false;
 
     //protected $listeners = ['cargaVehiculo' => 'carga', "refrescaVehiculo" => "refrescaVe"];
 
@@ -33,7 +34,7 @@ class ChipPorDeterioro extends Component
 
         $chip=$this->chips->first();
 
-        $certificar = Certificacion::certificarChipDeterioro($this->taller,  $this->servicio, $chip, Auth::user(), $this->nombre, $this->placa);
+        $certificar = Certificacion::certificarChipDeterioro($this->taller,  $this->servicio, $chip, Auth::user(), $this->nombre, $this->placa, $this->serviexterno);
 
         if($certificar){
             $this->estado="ChipConsumido";                   

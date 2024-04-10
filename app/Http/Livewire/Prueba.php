@@ -10,6 +10,7 @@ use App\Models\Duplicado;
 use App\Models\Expediente;
 use App\Models\Imagen;
 use App\Models\Material;
+use App\Models\PrecioInspector;
 use App\Models\Servicio;
 use App\Models\ServicioMaterial;
 use App\Models\Taller;
@@ -19,6 +20,7 @@ use Illuminate\Queue\Listener;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
+use Illuminate\Http\Request;
 use Livewire\WithFileUploads;
 
 class Prueba extends Component
@@ -32,6 +34,7 @@ class Prueba extends Component
 
 
     public $externo = false;
+    public $serviexterno = false;
 
     public $imagenes = [];
 
@@ -40,7 +43,7 @@ class Prueba extends Component
     public Certificacion $certificacion, $duplicado;
 
     public $tallerAuto; //Para talleres autorizados
-
+    //public $precioexterno;
     //variables del certi
     public $vehiculo;
 
@@ -285,7 +288,6 @@ class Prueba extends Component
         $taller = Taller::findOrFail($this->taller);
         $servicio = Servicio::findOrFail($this->servicio);
         $hoja = $this->procesaFormato($this->numSugerido, $servicio->tipoServicio->id);
-
         if (!$hoja) {
             $this->emit("minAlert", ["titulo" => "AVISO DEL SISTEMA", "mensaje" => "No fue posible certificar", "icono" => "warning"]);
             return;
@@ -313,7 +315,7 @@ class Prueba extends Component
             return;
         }
 
-        $certi = Certificacion::certificarGnv($taller, $servicio, $hoja, $this->vehiculo, Auth::user());
+        $certi = Certificacion::certificarGnv($taller, $servicio, $hoja, $this->vehiculo, Auth::user(), $this->serviexterno);
 
         if ($certi) {
             $this->estado = "certificado";
@@ -376,7 +378,7 @@ class Prueba extends Component
             return;
         }
 
-        $certi = Certificacion::certificarGlp($taller, $tallerAuto,$servicio, $hoja, $this->vehiculo, Auth::user());
+        $certi = Certificacion::certificarGlp($taller, $tallerAuto, $servicio, $hoja, $this->vehiculo, Auth::user(), $this->serviexterno);
 
         if ($certi) {
             $this->estado = "certificado";
@@ -420,7 +422,7 @@ class Prueba extends Component
             return;
         }
 
-        $certi = Certificacion::certificarModi($taller, $servicio, $hoja, $this->vehiculo, Auth::user());
+        $certi = Certificacion::certificarModi($taller, $servicio, $hoja, $this->vehiculo, Auth::user(), $this->serviexterno);
 
         if ($certi) {
             $this->estado = "certificado";
@@ -487,7 +489,7 @@ class Prueba extends Component
         if ($hoja != null) {
             if (isset($this->vehiculo)) {
                 if ($this->vehiculo->esCertificableGnv) {
-                    $certi = Certificacion::certificarGnvPre($taller, $servicio, $hoja, $this->vehiculo, Auth::user());
+                    $certi = Certificacion::certificarGnvPre($taller, $servicio, $hoja, $this->vehiculo, Auth::user(), $this->serviexterno);
                     if ($certi) {
                         $this->estado = "certificado";
                         $this->certificacion = $certi;
@@ -516,7 +518,7 @@ class Prueba extends Component
         if ($hoja != null) {
             if (isset($this->vehiculo)) {
                 if ($this->vehiculo->esCertificableGlp) {
-                    $certi = Certificacion::certificarGlpPre($taller, $servicio, $hoja, $this->vehiculo, Auth::user());
+                    $certi = Certificacion::certificarGlpPre($taller, $servicio, $hoja, $this->vehiculo, Auth::user(), $this->serviexterno);
                     if ($certi) {
                         $this->estado = "certificado";
                         $this->certificacion = $certi;
@@ -597,7 +599,7 @@ class Prueba extends Component
             if ($hoja != null) {
                 if (!empty($chip)) {
                     if (!empty($this->vehiculo) && $this->vehiculo->esCertificableGnv) {
-                        $certi = Certificacion::certificarGnvConChip($taller, $servicio, $hoja, $this->vehiculo, Auth::user(), $chip);
+                        $certi = Certificacion::certificarGnvConChip($taller, $servicio, $hoja, $this->vehiculo, Auth::user(), $chip, $this->serviexterno);
 
                         if ($certi) {
                             $this->estado = "certificado";
@@ -682,7 +684,7 @@ class Prueba extends Component
                         $servicio = Servicio::find($this->servicio);
 
                         $duplicado = $this->creaDuplicadoExterno();
-                        $certi = Certificacion::duplicarCertificadoExternoGnv(Auth::user(), $this->vehiculo, $servicio, $taller, $hoja, $duplicado);
+                        $certi = Certificacion::duplicarCertificadoExternoGnv(Auth::user(), $this->vehiculo, $servicio, $taller, $hoja, $duplicado, $this->serviexterno);
                         $this->estado = "certificado";
                         $this->certificacion = $certi;
                         $this->emit("minAlert", ["titulo" => "¡EXCELENTE TRABAJO!", "mensaje" => "Tu certificado N°: " . $certi->Hoja->numSerie . " esta listo.", "icono" => "success"]);
@@ -696,7 +698,7 @@ class Prueba extends Component
 
                 if ($this->certificado && $servicio) {
                     $dupli = $this->creaDuplicado($this->certificado);
-                    $certi = Certificacion::duplicarCertificadoGnv($dupli, $taller, Auth::user(), $servicio, $hoja);
+                    $certi = Certificacion::duplicarCertificadoGnv($dupli, $taller, Auth::user(), $servicio, $hoja, $this->serviexterno);
                     $this->estado = "certificado";
                     $this->certificacion = $certi;
                     $this->emit("minAlert", ["titulo" => "¡EXCELENTE TRABAJO!", "mensaje" => "Tu certificado N°: " . $certi->Hoja->numSerie . " esta listo.", "icono" => "success"]);

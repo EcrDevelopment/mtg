@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Http\Livewire\PreciospoInspector;
+use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -555,17 +557,25 @@ class Certificacion extends Model
     }
 
 
-    public static function certificarGlp(Taller $taller, Taller $tallerAuto,Servicio $servicio, Material $hoja, vehiculo $vehiculo, User $inspector)
+    public static function certificarGlp(Taller $taller, Taller $tallerAuto, Servicio $servicio, Material $hoja, vehiculo $vehiculo, User $inspector, $externoValue)
     {
+        if ($externoValue == 0) {
+            $precio = $servicio->precio;
+        }
+        elseif ($externoValue == 1 ) {
+            $precio = PrecioInspector::where([['idServicio', $servicio->TipoServicio->id],['idUsers',$inspector->id]])->first()->precio;
+        }
+
         $cert = Certificacion::create([
             "idVehiculo" => $vehiculo->id,
             "idTaller" => $taller->id,
             "idInspector" => $inspector->id,
             "idServicio" => $servicio->id,
             "estado" => 1,
-            "precio" => $servicio->precio,
+            "precio" => $precio,
             "pagado" => 0,
             "idTallerAuto" => $tallerAuto->id, //Para taller autorizado
+            "externo" => $externoValue, 
         ]);
         if ($cert) {
             //cambia el estado de la hoja a consumido
@@ -582,16 +592,26 @@ class Certificacion extends Model
         }
     }
 
-    public static function certificarGnv(Taller $taller, Servicio $servicio, Material $hoja, vehiculo $vehiculo, User $inspector)
+    public static function certificarGnv(Taller $taller, Servicio $servicio, Material $hoja, vehiculo $vehiculo, User $inspector, $externoValue)  
     {
+        //Condicion para jalar el precio de la tabla servicios o precios_inspector
+        if ($externoValue == 0) {
+            $precio = $servicio->precio;
+        }
+        elseif ($externoValue == 1 ) {
+            $precio = PrecioInspector::where([['idServicio', $servicio->TipoServicio->id],['idUsers',$inspector->id]])->first()->precio;
+        }
+        //$precio = PrecioInspector::where([['idServicio', $servicio->TipoServicio->id],['idUsers',$inspector->id]])->first()->precio;
+
         $cert = Certificacion::create([
             "idVehiculo" => $vehiculo->id,
             "idTaller" => $taller->id,
             "idInspector" => $inspector->id,
             "idServicio" => $servicio->id,
             "estado" => 1,
-            "precio" => $servicio->precio,
+            "precio" => $precio,
             "pagado" => 0,
+            "externo" => $externoValue, //agregamos el nuevo campo externo
         ]);
         if ($cert) {
             //cambia el estado de la hoja a consumido
@@ -607,16 +627,25 @@ class Certificacion extends Model
             return null;
         }
     }
-    public static function certificarModi(Taller $taller, Servicio $servicio, Material $hoja, vehiculo $vehiculo, User $inspector)
+    public static function certificarModi(Taller $taller, Servicio $servicio, Material $hoja, vehiculo $vehiculo, User $inspector, $externoValue)
     {
+        //Condicion para jalar el precio de la tabla servicios o precios_inspector
+        if ($externoValue == 0) {
+            $precio = $servicio->precio;
+        }
+        elseif ($externoValue == 1 ) {
+            $precio = PrecioInspector::where([['idServicio', $servicio->TipoServicio->id],['idUsers',$inspector->id]])->first()->precio;
+        }
+
         $cert = Certificacion::create([
             "idVehiculo" => $vehiculo->id,
             "idTaller" => $taller->id,
             "idInspector" => $inspector->id,
             "idServicio" => $servicio->id,
             "estado" => 1,
-            "precio" => $servicio->precio,
+            "precio" => $precio,
             "pagado" => 0,
+            "externo" => $externoValue, //agregamos el nuevo campo externo
         ]);
         if ($cert) {
             //cambia el estado de la hoja a consumido
@@ -633,7 +662,17 @@ class Certificacion extends Model
         }
     }
 
-    public static function certificarChipDeterioro( $taller,  $servicio,Material $chip,  User $inspector, $nombre, $placa){
+    //Cambiar la variable $servicio por una Clase Servicio para evitar posibles errores en la obtencion del precio.
+    public static function certificarChipDeterioro($taller,  $servicio, Material $chip,  User $inspector, $nombre, $placa, $externoValue)
+    {
+        //Condicion para jalar el precio de la tabla servicios o precios_inspector
+        if ($externoValue == 0) {
+            //$precio = $servicio->precio;
+           $precio = Servicio::find($servicio)->precio;
+        }
+        elseif ($externoValue == 1 ) {
+           $precio = PrecioInspector::where([['idServicio', Servicio::find($servicio)->TipoServicio->id],['idUsers',$inspector->id]])->first()->precio;//te recomiendo que trates de cambiarla(idServicio) para que no haga hueviar
+        }
 
         $cert = Certificacion::create([
             "idVehiculo" => 1,
@@ -641,13 +680,14 @@ class Certificacion extends Model
             "idInspector" => $inspector->id,
             "idServicio" => $servicio,
             "estado" => 1,
-            "precio" => Servicio::find($servicio)->precio,
+            "precio" => $precio, 
             "pagado" => 0,
+            "externo" => $externoValue,
         ]);
         if ($cert) {
             //cambia el estado de la hoja a consumido
-           // $chip->update(["estado" => 4, "ubicacion" => "En poder del cliente"]);
-            $chip->update(["estado"=>4,"ubicacion"=>"En poder del cliente ".$nombre."/".$placa,"descripcion"=>"Chip consumido por deterioro"]);
+            // $chip->update(["estado" => 4, "ubicacion" => "En poder del cliente"]);
+            $chip->update(["estado" => 4, "ubicacion" => "En poder del cliente " . $nombre . "/" . $placa, "descripcion" => "Chip consumido por deterioro"]);
             //crea y guarda el servicio y material usado en esta certificacion
             $servM = ServicioMaterial::create([
                 "idMaterial" => $chip->id,
@@ -660,7 +700,14 @@ class Certificacion extends Model
         }
     }
 
-    public static function certificarDesmonte( $taller,  $servicio,  User $inspector, $placa){
+    public static function certificarDesmonte($taller,  $servicio,  User $inspector, $placa, $externoValue)
+    {
+        if ($externoValue == 0) {
+           $precio = Servicio::find($servicio)->precio;
+        }
+        elseif ($externoValue == 1 ) {
+           $precio = PrecioInspector::where([['idServicio', Servicio::find($servicio)->TipoServicio->id],['idUsers',$inspector->id]])->first()->precio;
+        }
 
         $cert = Desmontes::create([
             "placa" => $placa,
@@ -668,23 +715,33 @@ class Certificacion extends Model
             "idInspector" => $inspector->id,
             "idServicio" => $servicio,
             "estado" => 1,
-            "precio" => Servicio::find($servicio)->precio,
+            "precio" => $precio,
             "pagado" => 0,
+            "externo" => $externoValue,
         ]);
         return $cert;
     }
 
 
-    public static function certificarGnvPre(Taller $taller, Servicio $servicio, Material $hoja, vehiculo $vehiculo, User $inspector)
+    public static function certificarGnvPre(Taller $taller, Servicio $servicio, Material $hoja, vehiculo $vehiculo, User $inspector, $externoValue)
     {
+        //Condicion para jalar el precio de la tabla servicios o precios_inspector
+        if ($externoValue == 0) {
+            $precio = $servicio->precio;
+        }
+        elseif ($externoValue == 1 ) {
+            $precio = PrecioInspector::where([['idServicio', $servicio->TipoServicio->id],['idUsers',$inspector->id]])->first()->precio;
+        }
+
         $cert = Certificacion::create([
             "idVehiculo" => $vehiculo->id,
             "idTaller" => $taller->id,
             "idInspector" => $inspector->id,
             "idServicio" => $servicio->id,
             "estado" => 3,
-            "precio" => $servicio->precio,
+            "precio" => $precio,
             "pagado" => 0,
+            "externo" => $externoValue,
         ]);
         if ($cert) {
             //cambia el estado de la hoja a consumido
@@ -701,16 +758,25 @@ class Certificacion extends Model
         }
     }
 
-    public static function certificarGlpPre(Taller $taller, Servicio $servicio, Material $hoja, vehiculo $vehiculo, User $inspector)
+    public static function certificarGlpPre(Taller $taller, Servicio $servicio, Material $hoja, vehiculo $vehiculo, User $inspector, $externoValue)
     {
+        //Condicion para jalar el precio de la tabla servicios o precios_inspector
+        if ($externoValue == 0) {
+            $precio = $servicio->precio;
+        }
+        elseif ($externoValue == 1 ) {
+            $precio = PrecioInspector::where([['idServicio', $servicio->TipoServicio->id],['idUsers',$inspector->id]])->first()->precio;
+        }
+
         $cert = Certificacion::create([
             "idVehiculo" => $vehiculo->id,
             "idTaller" => $taller->id,
             "idInspector" => $inspector->id,
             "idServicio" => $servicio->id,
             "estado" => 3,
-            "precio" => $servicio->precio,
+            "precio" => $precio,
             "pagado" => 0,
+            "externo" => $externoValue,
         ]);
         if ($cert) {
             //cambia el estado de la hoja a consumido
@@ -727,7 +793,7 @@ class Certificacion extends Model
         }
     }
 
-    public static function certificarGnvPendiente(Taller $taller, Servicio $servicio, Material $hoja, vehiculo $vehiculo, User $inspector, $precio)
+    public static function certificarGnvPendiente(Taller $taller, Servicio $servicio, Material $hoja, vehiculo $vehiculo, User $inspector, $precio, $externoValue)
     {
         $cert = Certificacion::create([
             "idVehiculo" => $vehiculo->id,
@@ -737,6 +803,7 @@ class Certificacion extends Model
             "estado" => 1,
             "precio" => $precio,
             "pagado" => 0,
+            "externo" => $externoValue,
         ]);
         if ($cert) {
             //cambia el estado de la hoja a consumido
@@ -779,16 +846,25 @@ class Certificacion extends Model
         }
     }
 
-    public static function certificarGnvConChip(Taller $taller, Servicio $servicio, Material $hoja, vehiculo $vehiculo, User $inspector, Material $chip)
+    public static function certificarGnvConChip(Taller $taller, Servicio $servicio, Material $hoja, vehiculo $vehiculo, User $inspector, Material $chip, $externoValue)
     {
+        //Condicion para jalar el precio de la tabla servicios o precios_inspector
+        if ($externoValue == 0) {
+            $precio = $servicio->precio;
+        }
+        elseif ($externoValue == 1 ) {
+            $precio = PrecioInspector::where([['idServicio', $servicio->TipoServicio->id],['idUsers',$inspector->id]])->first()->precio;
+        }
+
         $cert = Certificacion::create([
             "idVehiculo" => $vehiculo->id,
             "idTaller" => $taller->id,
             "idInspector" => $inspector->id,
             "idServicio" => $servicio->id,
             "estado" => 1,
-            "precio" => $servicio->precio,
+            "precio" => $precio,
             "pagado" => 0,
+            "externo" => $externoValue, //agregamos el nuevo campo externo
         ]);
         if ($cert) {
             //cambia el estado de la hoja a consumido
@@ -813,17 +889,26 @@ class Certificacion extends Model
         }
     }
 
-    public static function duplicarCertificadoExternoGnv(User $inspector, Vehiculo $vehiculo, Servicio $servicio, Taller $taller, Material $hoja, Duplicado $duplicado)
+    public static function duplicarCertificadoExternoGnv(User $inspector, Vehiculo $vehiculo, Servicio $servicio, Taller $taller, Material $hoja, Duplicado $duplicado, $externoValue)
     {
+        //Condicion para jalar el precio de la tabla servicios o precios_inspector
+        if ($externoValue == 0) {
+            $precio = $servicio->precio;
+        }
+        elseif ($externoValue == 1 ) {
+            $precio = PrecioInspector::where([['idServicio', $servicio->TipoServicio->id],['idUsers',$inspector->id]])->first()->precio;
+        }
+
         $cert = Certificacion::create([
             "idVehiculo" => $vehiculo->id,
             "idTaller" => $taller->id,
             "idInspector" => $inspector->id,
             "idServicio" => $servicio->id,
             "estado" => 1,
-            "precio" => $servicio->precio,
+            "precio" => $precio,
             "pagado" => 0,
-            "idDuplicado" => $duplicado->id
+            "idDuplicado" => $duplicado->id,
+            "externo" => $externoValue, //agregamos el nuevo campo externo
         ]);
         if ($cert) {
             //cambia el estado de la hoja a consumido
@@ -840,8 +925,16 @@ class Certificacion extends Model
         }
     }
 
-    public static function duplicarCertificadoGnv(Duplicado $duplicado, Taller $taller, User $inspector, Servicio $servicio, Material $hoja)
+    public static function duplicarCertificadoGnv(Duplicado $duplicado, Taller $taller, User $inspector, Servicio $servicio, Material $hoja, $externoValue)
     {
+        //Condicion para jalar el precio de la tabla servicios o precios_inspector
+        if ($externoValue == 0) {
+            $precio = $servicio->precio;
+        }
+        elseif ($externoValue == 1 ) {
+            $precio = PrecioInspector::where([['idServicio', $servicio->TipoServicio->id],['idUsers',$inspector->id]])->first()->precio;
+        }
+
         $anterior = Certificacion::find($duplicado->idAnterior);
         $cert = Certificacion::create([
             "idVehiculo" => $anterior->Vehiculo->id,
@@ -849,9 +942,10 @@ class Certificacion extends Model
             "idInspector" => $inspector->id,
             "idServicio" => $servicio->id,
             "estado" => 1,
-            "precio" => $servicio->precio,
+            "precio" => $precio,
             "pagado" => 0,
-            "idDuplicado" => $duplicado->id
+            "idDuplicado" => $duplicado->id,
+            "externo" => $externoValue, //agregamos el nuevo campo externo
         ]);
 
         if ($cert) {

@@ -30,6 +30,8 @@ class ServicioModi extends Component
 
     public $externo = false;
 
+    public $serviexterno = false;
+
     public $imagenes = [];
 
     public $servicioExterno, $tallerExterno, $fechaExterno;
@@ -291,7 +293,7 @@ class ServicioModi extends Component
             return;
         }
 
-        $certi = Certificacion::certificarModi($taller, $servicio, $hoja, $this->vehiculo, $usuario); //Auth::user()
+        $certi = Certificacion::certificarModi($taller, $servicio, $hoja, $this->vehiculo, $usuario, $this->serviexterno); //Auth::user()
         
 
         if ($certi) {

@@ -65,7 +65,10 @@ class ActualizarPrecios extends Component
                 'tiposervicio.descripcion as tiposervicio',
                 DB::raw('(SELECT material.numSerie FROM serviciomaterial 
                 LEFT JOIN material ON serviciomaterial.idMaterial = material.id 
-                WHERE serviciomaterial.idCertificacion = certificacion.id LIMIT 1) as matenumSerie')
+                WHERE serviciomaterial.idCertificacion = certificacion.id LIMIT 1) as matenumSerie'),
+                DB::raw('(SELECT material.ubicacion FROM serviciomaterial 
+                LEFT JOIN material ON serviciomaterial.idMaterial = material.id 
+                WHERE serviciomaterial.idCertificacion = certificacion.id LIMIT 1) as mateubicacion')
 
 
             )

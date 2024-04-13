@@ -66,7 +66,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
 
                     <div class="flex items-center space-x-2">
                         <div class="flex bg-white items-center p-2 w-1/2 md:w-48 rounded-md mb-4 ">
@@ -199,7 +199,26 @@
                                                         </td>
                                                         <td
                                                             class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                            {{ $item->placa ?? 'En tramite' }}</td>
+                                                            {{-- {{ $item->placa ?? 'En tramite' }} --}}
+                                                            @if ($item->tiposervicio == 'Chip por deterioro')
+                                                                {{-- muestra lo que esta despues de cliente
+                                                                    {{ str_replace('En poder del cliente ', '', $item->mateubicacion) ?? 'N.A' }}
+                                                                --}}
+                                                                {{-- esto me muestra lo que esta despues del / --}}
+                                                                @php
+                                                                    $ubicacionParts = explode(
+                                                                        '/',
+                                                                        $item->mateubicacion,
+                                                                    );
+                                                                    $secondPart = isset($ubicacionParts[1])
+                                                                        ? trim($ubicacionParts[1])
+                                                                        : 'N.A';
+                                                                    echo $secondPart;
+                                                                @endphp
+                                                            @else
+                                                                {{ $item->placa ?? 'En tramite' }}
+                                                            @endif
+                                                        </td>
                                                         <td
                                                             class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
                                                             {{ $item->tiposervicio ?? 'N.E' }}</td>

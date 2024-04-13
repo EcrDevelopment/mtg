@@ -172,7 +172,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified'])
     Route::get('/ServicioModi',ServicioModi::class)->middleware('can:ServicioModi')->name('ServicioModi');
 
     //PRECIOS PARA INSPECTOR
-    Route::get('/PreciosInspector',PreciospoInspector::class)->name('PreciosInspector');
+    Route::get('/PreciosInspector',PreciospoInspector::class)->middleware('can:PreciosInspector')->name('PreciosInspector');
 
 
     Route::get('/Solucion',Arreglando::class)->name('solucion');

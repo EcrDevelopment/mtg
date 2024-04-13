@@ -382,6 +382,12 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
                                                 Listado de talleres
                                             </x-jet-responsive-nav-link>
                                         @endcan
+                                        @can('PreciosInspector')
+                                            <x-jet-responsive-nav-link class="text-sm" href="{{ route('PreciosInspector') }}"
+                                                :active="request()->routeIs('PreciosInspector')">
+                                                Precio de Inspectores
+                                            </x-jet-responsive-nav-link>
+                                        @endcan
 
                                         @can('editar-taller')
                                             @if (Auth::user()->taller)

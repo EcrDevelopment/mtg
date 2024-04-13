@@ -561,9 +561,19 @@ class Certificacion extends Model
     {
         if ($externoValue == 0) {
             $precio = $servicio->precio;
-        }
-        elseif ($externoValue == 1 ) {
-            $precio = PrecioInspector::where([['idServicio', $servicio->TipoServicio->id],['idUsers',$inspector->id]])->first()->precio;
+        } elseif ($externoValue == 1) {
+            //$precio = PrecioInspector::where([['idServicio', $servicio->TipoServicio->id],['idUsers',$inspector->id]])->first()->precio;
+            $precio = PrecioInspector::where([
+                ['idServicio', $servicio->TipoServicio->id],
+                ['idUsers', $inspector->id]
+            ])->first();
+
+            if ($precio) {
+                $precio = $precio->precio;
+            } else {
+                // Si el inspector no tiene asignado un precio para su tiposervicio retorna 0
+                $precio = 0;
+            }
         }
 
         $cert = Certificacion::create([
@@ -575,7 +585,7 @@ class Certificacion extends Model
             "precio" => $precio,
             "pagado" => 0,
             "idTallerAuto" => $tallerAuto->id, //Para taller autorizado
-            "externo" => $externoValue, 
+            "externo" => $externoValue,
         ]);
         if ($cert) {
             //cambia el estado de la hoja a consumido
@@ -592,16 +602,24 @@ class Certificacion extends Model
         }
     }
 
-    public static function certificarGnv(Taller $taller, Servicio $servicio, Material $hoja, vehiculo $vehiculo, User $inspector, $externoValue)  
+    public static function certificarGnv(Taller $taller, Servicio $servicio, Material $hoja, vehiculo $vehiculo, User $inspector, $externoValue)
     {
         //Condicion para jalar el precio de la tabla servicios o precios_inspector
         if ($externoValue == 0) {
             $precio = $servicio->precio;
+        } elseif ($externoValue == 1) {
+            //$precio = PrecioInspector::where([['idServicio', $servicio->TipoServicio->id],['idUsers',$inspector->id]])->first()->precio;
+            $precio = PrecioInspector::where([
+                ['idServicio', $servicio->TipoServicio->id],
+                ['idUsers', $inspector->id]
+            ])->first();
+
+            if ($precio) {
+                $precio = $precio->precio;
+            } else {
+                $precio = 0;
+            }
         }
-        elseif ($externoValue == 1 ) {
-            $precio = PrecioInspector::where([['idServicio', $servicio->TipoServicio->id],['idUsers',$inspector->id]])->first()->precio;
-        }
-        //$precio = PrecioInspector::where([['idServicio', $servicio->TipoServicio->id],['idUsers',$inspector->id]])->first()->precio;
 
         $cert = Certificacion::create([
             "idVehiculo" => $vehiculo->id,
@@ -632,9 +650,8 @@ class Certificacion extends Model
         //Condicion para jalar el precio de la tabla servicios o precios_inspector
         if ($externoValue == 0) {
             $precio = $servicio->precio;
-        }
-        elseif ($externoValue == 1 ) {
-            $precio = PrecioInspector::where([['idServicio', $servicio->TipoServicio->id],['idUsers',$inspector->id]])->first()->precio;
+        } elseif ($externoValue == 1) {
+            $precio = PrecioInspector::where([['idServicio', $servicio->TipoServicio->id], ['idUsers', $inspector->id]])->first()->precio;
         }
 
         $cert = Certificacion::create([
@@ -668,10 +685,19 @@ class Certificacion extends Model
         //Condicion para jalar el precio de la tabla servicios o precios_inspector
         if ($externoValue == 0) {
             //$precio = $servicio->precio;
-           $precio = Servicio::find($servicio)->precio;
-        }
-        elseif ($externoValue == 1 ) {
-           $precio = PrecioInspector::where([['idServicio', Servicio::find($servicio)->TipoServicio->id],['idUsers',$inspector->id]])->first()->precio;//te recomiendo que trates de cambiarla(idServicio) para que no haga hueviar
+            $precio = Servicio::find($servicio)->precio;
+        } elseif ($externoValue == 1) {
+            //$precio = PrecioInspector::where([['idServicio', Servicio::find($servicio)->TipoServicio->id],['idUsers',$inspector->id]])->first()->precio;//te recomiendo que trates de cambiarla(idServicio) para que no haga hueviar
+            $precio = PrecioInspector::where([
+                ['idServicio', Servicio::find($servicio)->TipoServicio->id],
+                ['idUsers', $inspector->id]
+            ])->first();
+
+            if ($precio) {
+                $precio = $precio->precio;
+            } else {
+                $precio = 0;
+            }
         }
 
         $cert = Certificacion::create([
@@ -680,7 +706,7 @@ class Certificacion extends Model
             "idInspector" => $inspector->id,
             "idServicio" => $servicio,
             "estado" => 1,
-            "precio" => $precio, 
+            "precio" => $precio,
             "pagado" => 0,
             "externo" => $externoValue,
         ]);
@@ -703,10 +729,19 @@ class Certificacion extends Model
     public static function certificarDesmonte($taller,  $servicio,  User $inspector, $placa, $externoValue)
     {
         if ($externoValue == 0) {
-           $precio = Servicio::find($servicio)->precio;
-        }
-        elseif ($externoValue == 1 ) {
-           $precio = PrecioInspector::where([['idServicio', Servicio::find($servicio)->TipoServicio->id],['idUsers',$inspector->id]])->first()->precio;
+            $precio = Servicio::find($servicio)->precio;
+        } elseif ($externoValue == 1) {
+            //$precio = PrecioInspector::where([['idServicio', Servicio::find($servicio)->TipoServicio->id], ['idUsers', $inspector->id]])->first()->precio;
+            $precio = PrecioInspector::where([
+                ['idServicio', Servicio::find($servicio)->TipoServicio->id],
+                ['idUsers', $inspector->id]
+            ])->first();
+
+            if ($precio) {
+                $precio = $precio->precio;
+            } else {
+                $precio = 0;
+            }
         }
 
         $cert = Desmontes::create([
@@ -728,9 +763,18 @@ class Certificacion extends Model
         //Condicion para jalar el precio de la tabla servicios o precios_inspector
         if ($externoValue == 0) {
             $precio = $servicio->precio;
-        }
-        elseif ($externoValue == 1 ) {
-            $precio = PrecioInspector::where([['idServicio', $servicio->TipoServicio->id],['idUsers',$inspector->id]])->first()->precio;
+        } elseif ($externoValue == 1) {
+            //$precio = PrecioInspector::where([['idServicio', $servicio->TipoServicio->id], ['idUsers', $inspector->id]])->first()->precio;
+            $precio = PrecioInspector::where([
+                ['idServicio', $servicio->TipoServicio->id],
+                ['idUsers', $inspector->id]
+            ])->first();
+
+            if ($precio) {
+                $precio = $precio->precio;
+            } else {
+                $precio = 0;
+            }
         }
 
         $cert = Certificacion::create([
@@ -763,9 +807,18 @@ class Certificacion extends Model
         //Condicion para jalar el precio de la tabla servicios o precios_inspector
         if ($externoValue == 0) {
             $precio = $servicio->precio;
-        }
-        elseif ($externoValue == 1 ) {
-            $precio = PrecioInspector::where([['idServicio', $servicio->TipoServicio->id],['idUsers',$inspector->id]])->first()->precio;
+        } elseif ($externoValue == 1) {
+            //$precio = PrecioInspector::where([['idServicio', $servicio->TipoServicio->id], ['idUsers', $inspector->id]])->first()->precio;
+            $precio = PrecioInspector::where([
+                ['idServicio', $servicio->TipoServicio->id],
+                ['idUsers', $inspector->id]
+            ])->first();
+
+            if ($precio) {
+                $precio = $precio->precio;
+            } else {
+                $precio = 0;
+            }
         }
 
         $cert = Certificacion::create([
@@ -851,9 +904,18 @@ class Certificacion extends Model
         //Condicion para jalar el precio de la tabla servicios o precios_inspector
         if ($externoValue == 0) {
             $precio = $servicio->precio;
-        }
-        elseif ($externoValue == 1 ) {
-            $precio = PrecioInspector::where([['idServicio', $servicio->TipoServicio->id],['idUsers',$inspector->id]])->first()->precio;
+        } elseif ($externoValue == 1) {
+            //$precio = PrecioInspector::where([['idServicio', $servicio->TipoServicio->id], ['idUsers', $inspector->id]])->first()->precio;
+            $precio = PrecioInspector::where([
+                ['idServicio', $servicio->TipoServicio->id],
+                ['idUsers', $inspector->id]
+            ])->first();
+
+            if ($precio) {
+                $precio = $precio->precio;
+            } else {
+                $precio = 0;
+            }
         }
 
         $cert = Certificacion::create([
@@ -894,9 +956,18 @@ class Certificacion extends Model
         //Condicion para jalar el precio de la tabla servicios o precios_inspector
         if ($externoValue == 0) {
             $precio = $servicio->precio;
-        }
-        elseif ($externoValue == 1 ) {
-            $precio = PrecioInspector::where([['idServicio', $servicio->TipoServicio->id],['idUsers',$inspector->id]])->first()->precio;
+        } elseif ($externoValue == 1) {
+            //$precio = PrecioInspector::where([['idServicio', $servicio->TipoServicio->id], ['idUsers', $inspector->id]])->first()->precio;
+            $precio = PrecioInspector::where([
+                ['idServicio', $servicio->TipoServicio->id],
+                ['idUsers', $inspector->id]
+            ])->first();
+    
+            if ($precio) {
+                $precio = $precio->precio;
+            } else {
+                $precio = 0;
+            }
         }
 
         $cert = Certificacion::create([
@@ -930,9 +1001,18 @@ class Certificacion extends Model
         //Condicion para jalar el precio de la tabla servicios o precios_inspector
         if ($externoValue == 0) {
             $precio = $servicio->precio;
-        }
-        elseif ($externoValue == 1 ) {
-            $precio = PrecioInspector::where([['idServicio', $servicio->TipoServicio->id],['idUsers',$inspector->id]])->first()->precio;
+        } elseif ($externoValue == 1) {
+            //$precio = PrecioInspector::where([['idServicio', $servicio->TipoServicio->id], ['idUsers', $inspector->id]])->first()->precio;
+            $precio = PrecioInspector::where([
+                ['idServicio', $servicio->TipoServicio->id],
+                ['idUsers', $inspector->id]
+            ])->first();
+    
+            if ($precio) {
+                $precio = $precio->precio;
+            } else {
+                $precio = 0;
+            }
         }
 
         $anterior = Certificacion::find($duplicado->idAnterior);

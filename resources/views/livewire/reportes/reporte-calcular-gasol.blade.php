@@ -112,7 +112,7 @@
                     <div class="bg-gray-200  px-8 py-4 rounded-xl w-full mt-4">
                         <div class="p-2 w-full justify-between m-auto flex items-space-around">
                             @php $nombreInspector = $certificacionesInspector[0]->nombre ?? 'Nombre no disponible' @endphp
-                            <h2 class="text-indigo-600 text-xl font-bold mb-4">{{ $nombreInspector }}</h2>                            
+                            <h2 class="text-indigo-600 text-xl font-bold mb-4">{{ $nombreInspector }}</h2>
                         </div>
 
                         @if (!empty($certificacionesInspector) && count($certificacionesInspector) > 0)
@@ -197,7 +197,21 @@
                                                         </td>
                                                         <td
                                                             class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
-                                                            {{ $item->placa ?? 'En tramite' }}</td>
+                                                            @if ($item->tiposervicio == 'Chip por deterioro')
+                                                                @php
+                                                                    $ubicacionParts = explode(
+                                                                        '/',
+                                                                        $item->mateubicacion,
+                                                                    );
+                                                                    $secondPart = isset($ubicacionParts[1])
+                                                                        ? trim($ubicacionParts[1])
+                                                                        : 'N.A';
+                                                                    echo $secondPart;
+                                                                @endphp
+                                                            @else
+                                                                {{ $item->placa ?? 'En tramite' }}
+                                                            @endif
+                                                        </td>
                                                         <td
                                                             class="whitespace-nowrap border-r px-6 py-3 dark:border-neutral-500">
                                                             {{ $item->tiposervicio ?? 'N.E' }}</td>

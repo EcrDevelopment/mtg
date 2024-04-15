@@ -121,7 +121,7 @@ class ReporteCalcularGasol extends Component
         // Filtrar las placas que están en servicios_importados pero no en certificacion para los tipos de servicio requeridos
         $placasFaltantes = $placasServiciosImportados->reject(function ($placa) use ($certificaciones) {
             return $certificaciones->where('placa', $placa)
-                ->whereNotIn('tipoServicio', ['Conversión a GNV', 'Revisión anual GNV','Desmonte de Cilindro' ]) //, 'Desmonte de Cilindro'
+                ->whereNotIn('tipoServicio', ['Conversión a GNV', 'Revisión anual GNV','Desmonte de Cilindro', 'Desmonte de Cilindro' ]) // Revisar esto porque desmonte corresponde a la tabla desmonte y no certificacion  (, 'Desmonte de Cilindro')
                 ->isNotEmpty();
         });
         // Detalles de las placas faltantes
@@ -152,7 +152,10 @@ class ReporteCalcularGasol extends Component
                 'tiposervicio.descripcion as tiposervicio',
                 DB::raw('(SELECT material.numSerie FROM serviciomaterial 
                 LEFT JOIN material ON serviciomaterial.idMaterial = material.id 
-                WHERE serviciomaterial.idCertificacion = certificacion.id LIMIT 1) as matenumSerie')
+                WHERE serviciomaterial.idCertificacion = certificacion.id LIMIT 1) as matenumSerie'),
+                DB::raw('(SELECT material.ubicacion FROM serviciomaterial 
+                LEFT JOIN material ON serviciomaterial.idMaterial = material.id 
+                WHERE serviciomaterial.idCertificacion = certificacion.id LIMIT 1) as mateubicacion')
 
 
             )

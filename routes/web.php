@@ -27,7 +27,10 @@ use App\Http\Livewire\Cambiar;
 use App\Http\Livewire\CargaFotos;
 use App\Http\Livewire\CargaImagenes;
 use App\Http\Livewire\ConsultarHoja;
+use App\Http\Livewire\ContratosTrabajos;
+use App\Http\Livewire\EditarEmpleado;
 use App\Http\Livewire\EditarTaller;
+use App\Http\Livewire\Empleados;
 use App\Http\Livewire\FinalizarPreConversion;
 use App\Http\Livewire\ImportarAnuales;
 use App\Http\Livewire\ImportarConversiones;
@@ -227,17 +230,20 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified'])
     Route::get('/Logona',Logona::class)->name('Logona');
 
     //Ruta para Manual de Funciones
-    //Route::get('/ManualFunciones',ManualFunciones::class)->name('ManualFunciones');
     Route::get('/ManualFunciones',ManualFunciones::class)->middleware('can:ManualFunciones')->name('ManualFunciones');
     Route::get('/ManualFunciones/{id}/download',[DocumentosController::class,'downloadManual'])->name('download_docManual');
     Route::get('/Tablas/TiposManual',TiposManual::class)->name('table.TiposManual');
 
 
     //Ruta para Memorandos
-    //Route::get('/Memorando',Memorandos::class)->name('Memorando');
     Route::get('/Memorando',Memorandos::class)->middleware('can:Memorando')->name('Memorando');
     Route::get('/ListaMemorando',ListaMemorandos::class)->middleware('can:ListaMemorando')->name('ListaMemorando');
-    //Route::get('/Memorando/{memoId}',VistaSolicitudMemorando::class)->name('vistaSolicitudMemorando');
+
+    //Rutas para contrato trabajo
+    Route::get('/ContratoTrabajo',ContratosTrabajos::class)->name('ContratoTrabajo');
+    Route::get('/Empleados',Empleados::class)->name('Empleados');
+    Route::get('/Empleado/{idEmpleado}/download',[DocumentosController::class,'downloadEmpleado'])->name('download_docEmpleado');
+    Route::get('/Empleado/{idEmpleado}',EditarEmpleado::class)->name('editar-empleado');
 
 
     //RUTAS PARA STREAM Y DESCARGA DE PDFS
@@ -270,6 +276,10 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified'])
         //Rutas para ver  y descargar pdf memorando
         Route::get('/memorando/{id}', 'generaPdfMemorando')->name("certificadoMemo");
         Route::get('/memorando/{id}/descargar', 'descargaPdfMemorando')->name("descargarCertiMemo");
+
+        //Rutas para ver y descargar pdf contrato
+        Route::get('/contrato/{id}', 'generaPdfContrato')->name("contratoTrabajo");
+        Route::get('/contrato/{id}/descargar', 'descargaPdfContrato')->name("descargarContratoTrabajo");
 
 
 

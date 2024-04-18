@@ -63,4 +63,9 @@ class ListaMemorandos extends Component
         Memorando::destroy($memorandoId);
         $this->emit('memoEliminado');
     }
+
+    public function agregar()
+    {
+        return redirect()->route('Memorando');
+    }
 }

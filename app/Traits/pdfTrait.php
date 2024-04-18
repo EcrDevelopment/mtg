@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Models\Archivo;
 use App\Models\Certificacion;
+use App\Models\ContratoTrabajo;
 use App\Models\DocumentoMemorando;
 use App\Models\Duplicado;
 use App\Models\Expediente;
@@ -194,6 +195,63 @@ trait pdfTrait
             'idDocReferenciado' => $memorando->id,
         ]);*/
         Storage::put('public/memorandos/' . $memorando->id . '-memorando.pdf', $archivo);
+    }
+
+    public function guardaContrato(ContratoTrabajo $contrato)
+    {
+        $usuario = User::findOrFail($contrato->idUser);
+        $nombreUsuario = $usuario->name;
+
+        $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
+        $fechaCert = is_string($contrato->fechaInicio) ? new DateTime($contrato->fechaInicio) : $contrato->fechaInicio;
+        $fechaForma = $fechaCert->format('d') . ' de ' . $meses[$fechaCert->format('m') - 1] . ' del ' . $fechaCert->format('Y');
+        $fechaCert2 = is_string($contrato->fechaExpiracion) ? new DateTime($contrato->fechaExpiracion) : $contrato->fechaExpiracion;
+        $fechaForma2 = $fechaCert2->format('d') . ' de ' . $meses[$fechaCert2->format('m') - 1] . ' del ' . $fechaCert2->format('Y');
+        $pagoForma2 = $this->convertirMontoAPalabras($contrato->pago);
+        $valorSoles = $contrato->pago % 1000;
+        $pagoForma = $contrato->pago . ' - ' . $pagoForma2 . ' con 00/' . $valorSoles . ' soles';
+
+        $data = [
+            'nombreEmpleado' => $nombreUsuario,
+            'dniEmpleado' => $contrato->dniEmpleado,
+            'domicilioEmpleado' => $contrato->domicilioEmpleado,
+            'fechaInicio' => $fechaForma,
+            'fechaExpiracion' => $fechaForma2,
+            'cargo' => $contrato->cargo,
+            'pago' => $pagoForma,
+        ];
+        $pdf = App::make('dompdf.wrapper');
+        $pdf->loadView('contrato', $data);
+        $archivo =  $pdf->download($contrato->id . '-contrato.pdf')->getOriginalContent();
+        Storage::put('public/contratos/' . $contrato->id . '-contrato.pdf', $archivo);
+    }
+    
+    //Formatear pago de contrato
+    private function convertirMontoAPalabras($monto)
+    {
+        $unidades = array('', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve', 'diez', 'once', 'doce', 'trece', 'catorce', 'quince', 'dieciséis', 'diecisiete', 'dieciocho', 'diecinueve');
+        $decenas = array(20 => 'veinte', 30 => 'treinta', 40 => 'cuarenta', 50 => 'cincuenta', 60 => 'sesenta', 70 => 'setenta', 80 => 'ochenta', 90 => 'noventa');
+        $centenas = array(100 => 'cien', 200 => 'doscientos', 300 => 'trescientos', 400 => 'cuatrocientos', 500 => 'quinientos', 600 => 'seiscientos', 700 => 'setecientos', 800 => 'ochocientos', 900 => 'novecientos');
+        $miles = array(1000 => 'mil', 1000000 => 'millón', 1000000000 => 'mil millones');
+        foreach (array_reverse($miles, true) as $valor => $palabra) {
+            if ($monto >= $valor) {
+                $parteEntera = floor($monto / $valor); // Obtener la parte entera del monto
+                $parteRestante = $monto % $valor; // Obtener la parte restante del monto
+                $parteEnteraStr = ($parteEntera == 1 && $valor == 1000) ? '' : $this->convertirMontoAPalabras($parteEntera); // Evitar "uno" para "mil"
+                return trim($parteEnteraStr . ' ' . $palabra . ($parteRestante > 0 ? ' ' . $this->convertirMontoAPalabras($parteRestante) : '')); // Devolver la combinación de la parte entera y la parte restante
+            }
+        }
+        if ($monto >= 100) {
+            $centena = floor($monto / 100) * 100; // Obtener la centena más cercana
+            $decena = $monto - $centena; // Obtener la parte restante (decenas y unidades)
+            return $centenas[$centena] . ($decena ? ' ' . $this->convertirMontoAPalabras($decena) : ''); // Devolver la combinación de centena y parte restante
+        }
+        if ($monto >= 20) {
+            $decena = floor($monto / 10) * 10; // Obtener la decena más cercana
+            $unidad = $monto % 10; // Obtener la unidad
+            return $decenas[$decena] . ($unidad ? ' y ' . $unidades[$unidad] : ''); // Devolver la combinación de decena y unidad
+        }
+        return $unidades[$monto];
     }
 
     public function guardarPdfModificacion(Certificacion $certificacion, Expediente $expe)
